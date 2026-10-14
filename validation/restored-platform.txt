@@ -1,0 +1,18 @@
+houmo-qwen38-27b Up 2 minutes (healthy)
+gateway-admin Up 25 hours (healthy)
+gateway-admin-agent Up 25 hours (healthy)
+ai-model-gateway Up 25 hours (healthy)
+ballot-reader Up 26 hours (healthy)
+houmo-matcha-tts Up 26 hours (healthy)
+houmo-kokoro-tts Up 26 hours (healthy)
+houmo-sensevoice-cpu Up 26 hours (healthy)
+cix-cv Up 26 hours (healthy)
+houmo-qwen3guard-stream-0.6b Up 26 hours (healthy)
+milvus Up 17 hours
+minio Up 26 hours
+neo4j Up 26 hours
+paradedb Up 26 hours
+redis Up 26 hours
+mysql Up 26 hours
+qwen38
+{"ok":true,"service":"ai-model-gateway","version":"0.9.0","api_keys_enabled":1,"management_configured":true,"guard_mode":"off","generation_defaults_enabled":false}

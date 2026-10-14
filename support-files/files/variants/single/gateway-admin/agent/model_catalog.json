@@ -1,0 +1,746 @@
+{
+  "schema_version": 1,
+  "description": "已适配模型下载与部署配方。版本和镜像以 runtime_baseline.json / release/versions.yaml 为准。",
+  "source_date": "2026-09-28",
+  "models": [
+    {
+      "id": "copaw-flash-9b",
+      "capability": "chat",
+      "component": "hliellama-default",
+      "device": "LQ50",
+      "service": "copaw",
+      "container": "houmo-copaw",
+      "directory": "houmo-docker-deployment",
+      "compose": "compose.yaml",
+      "min_ram_gb": 2,
+      "files": [
+        {
+          "url": "https://llmoss.houmoai.com/application_software/models/general/1.3.0/HiModel-Copaw-flash-9b-p256-128K-b1-2core-1d-xh2-v1.3.0-20260427015847.gguf",
+          "target": "cix_telecom_projects/houmo-HLIELLama-xh2/models/copaw_flash_9b_w4a8_128k_b1_1chip_2cores_v1.3.0/HiModel-Copaw-flash-9b-p256-128K-b1-2core-1d-xh2-v1.3.0-20260427015847.gguf",
+          "size": 7253323328,
+          "sha256": "ce4c05f65c283744f979e306f746607c3bdc0d966a50834cb1c38ae7644f68e0"
+        }
+      ]
+    },
+    {
+      "id": "spark-x1-4b",
+      "capability": "chat",
+      "component": "hliellama-spark",
+      "device": "LQ50",
+      "service": "spark-x1",
+      "container": "houmo-spark-x1",
+      "directory": "houmo-docker-deployment",
+      "compose": "compose.yaml",
+      "min_ram_gb": 2,
+      "files": [
+        {
+          "url": "https://llmoss.houmoai.com/application_software/models/general/1.5.0/HiModel_xh2_Spark_x1-4b-w4a8-256K-b1-2core-1d-xh2-v1.5.0-20260904.gguf",
+          "target": "cix_telecom_projects/xunfei-spark/HiModel_xh2_Spark_x1-4b-w4a8-256K-b1-2core-1d-xh2-v1.5.0-20260904.gguf",
+          "size": 8266037056,
+          "sha256": "b1a45870e7a09989ee36c3c63649ef03303b71967a6dd1a8a68b5867162ec4b8"
+        }
+      ]
+    },
+    {
+      "id": "qwen3-vl-8b",
+      "capability": "chat",
+      "component": "hliellama-default",
+      "device": "LQ50",
+      "service": "qwen-vl",
+      "container": "houmo-qwen3-vl-8b",
+      "directory": "houmo-docker-deployment",
+      "compose": "compose.yaml",
+      "min_ram_gb": 2,
+      "files": [
+        {
+          "url": "https://llmoss.houmoai.com/application_software/models/general/1.3.0/HiModel_xh2_qwen3-vl_8b_256_32k_b1_1chip_2cores_v1.3.0_20260615.gguf",
+          "target": "cix_telecom_projects/qwen3-vl-8b/HiModel_xh2_qwen3-vl_8b_256_32k_b1_1chip_2cores_v1.3.0_20260615.gguf",
+          "size": 5955083328,
+          "sha256": "23f439d478a3a468ab1d3690bd2a7cdea2a962bd846d3f28816b29584e7816de"
+        },
+        {
+          "url": "https://llmoss.houmoai.com/application_software/models/general/1.3.0/mmproj_xh2_qwen3-vl_8b_2cores_vit_448x448_v1.3.0_20260615.gguf",
+          "target": "cix_telecom_projects/qwen3-vl-8b/mmproj_xh2_qwen3-vl_8b_2cores_vit_448x448_v1.3.0_20260615.gguf",
+          "size": 784155936,
+          "sha256": "c62f8b2fede5f4d2b1e718d83e9f5fae0d19c1fd496b8ceab5c51a6efd49b501"
+        }
+      ]
+    },
+    {
+      "id": "qwen3.8-27b",
+      "capability": "chat",
+      "component": "hliellama-default",
+      "device": "LQ50",
+      "service": "qwen38",
+      "container": "houmo-qwen38-27b",
+      "directory": "houmo-docker-deployment",
+      "compose": "compose.yaml",
+      "min_ram_gb": 2,
+      "files": [
+        {
+          "target": "cix_telecom_projects/qwen3.8-27b/HiModel-Qwen3.8-27b-mtp-w4a8-p256-128K-b1-2core-1d-xh2-v1.5.0-20260911181708.gguf",
+          "size": 20695534688,
+          "sha256": "9c2deaee0582274f02e0bf06e9fda18d7eaf61f73ccf449146e2c89b7b832345",
+          "oci_source": {
+            "registry": "http://36.111.34.121:15436",
+            "repository": "aistore/qwen3-8-27b",
+            "reference": "v1",
+            "resolve_tag": true,
+            "manifest_digest": null,
+            "blob_digest": "sha256:9c2deaee0582274f02e0bf06e9fda18d7eaf61f73ccf449146e2c89b7b832345",
+            "blob_size": 20695534688,
+            "format": "blob",
+            "files": {
+              "payload/home/cix/cix_telecom_projects/qwen3.8-27b/HiModel-Qwen3.8-27b-mtp-w4a8-p256-128K-b1-2core-1d-xh2-v1.5.0-20260911181708.gguf": null
+            }
+          }
+        },
+        {
+          "target": "cix_telecom_projects/qwen3.8-27b/mmproj-Qwen3.8-27b-mtp-w4a8-vit-dynamic-m96-m196-m384-m704-m1536-xh2-v1.5.0-20260911181222.gguf",
+          "size": 3007966880,
+          "sha256": "830c502df06021faaa4df112dd1bf1597c775345b28f7229ec1a639552d0c71d",
+          "oci_source": {
+            "registry": "http://36.111.34.121:15436",
+            "repository": "aistore/qwen3-8-27b",
+            "reference": "v1",
+            "resolve_tag": true,
+            "manifest_digest": null,
+            "blob_digest": "sha256:830c502df06021faaa4df112dd1bf1597c775345b28f7229ec1a639552d0c71d",
+            "blob_size": 3007966880,
+            "format": "blob",
+            "files": {
+              "payload/home/cix/cix_telecom_projects/qwen3.8-27b/mmproj-Qwen3.8-27b-mtp-w4a8-vit-dynamic-m96-m196-m384-m704-m1536-xh2-v1.5.0-20260911181222.gguf": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "bge-m3",
+      "capability": "embeddings",
+      "component": "hliellama-default",
+      "device": "LQ50",
+      "service": "bge-m3",
+      "container": "houmo-bge-m3",
+      "directory": "houmo-docker-deployment",
+      "compose": "compose.yaml",
+      "min_ram_gb": 2,
+      "files": [
+        {
+          "url": "https://llmoss.houmoai.com/application_software/models/general/1.4.0/HiModel_xh2_bge-0.5b_0.5k_b10_1chip_2cores_v1.4.0_20260720.gguf",
+          "target": "cix_telecom_projects/HiModel_xh2_bge-0.5b_0.5k_b10_1chip_2cores_v1.4.0_20260720.gguf",
+          "size": 1006033536,
+          "sha256": "fab0b86a16eb2d0910e1f124546408b459774e937e702f47870686e90cc75f42"
+        }
+      ]
+    },
+    {
+      "id": "bge-reranker-v2-m3",
+      "capability": "rerank",
+      "component": "hliellama-default",
+      "device": "LQ50",
+      "service": "reranker",
+      "container": "houmo-reranker",
+      "directory": "houmo-docker-deployment",
+      "compose": "compose.yaml",
+      "min_ram_gb": 2,
+      "files": [
+        {
+          "url": "https://llmoss.houmoai.com/application_software/models/general/1.4.0/HiModel_xh2_bge-reranker-v2-m3-0.5b_0.5k_b10_1chip_2cores_v1.4.0_20260720.gguf",
+          "target": "cix_telecom_projects/HiModel_xh2_bge-reranker-v2-m3-0.5b_0.5k_b10_1chip_2cores_v1.4.0_20260720.gguf",
+          "size": 1006261440,
+          "sha256": "1d5208b3003df9fe324245efc2727d694cc859e3ce5c2a713ef0ac02d4ba3d2a"
+        }
+      ]
+    },
+    {
+      "id": "cosyvoice3-0.5b",
+      "capability": "audio_tts",
+      "component": "hlievllm-cosyvoice",
+      "device": "LQ50",
+      "service": "cosyvoice",
+      "container": "houmo-cosyvoice3",
+      "directory": "houmo-docker-deployment",
+      "compose": "compose.yaml",
+      "min_ram_gb": 4,
+      "files": [
+        {
+          "url": "https://llmoss.houmoai.com/application_software/models/general/1.4.0/HiModel_xh2_cosyvoice3-0.5b-2512_256_2k_b1_1chip_2cores_v1.4.0_20260720.gguf",
+          "target": "cix_telecom_projects/cosyvoice3/HiModel_xh2_cosyvoice3-0.5b-2512_256_2k_b1_1chip_2cores_v1.4.0_20260720.gguf",
+          "size": 2522755840,
+          "sha256": "3938b8a410ba88147d45cb860c903e2ee011351615f42d7f12bbc14005f17207"
+        }
+      ]
+    },
+    {
+      "id": "qwen3guard-stream-0.6b",
+      "capability": "moderation",
+      "component": "qwen3guard-stream-cpu",
+      "device": "CPU",
+      "service": "qwen3guard",
+      "container": "houmo-qwen3guard-stream-0.6b",
+      "directory": "houmo-docker-deployment",
+      "compose": "compose.yaml",
+      "min_ram_gb": 6,
+      "files": [
+        {
+          "url": "https://www.modelscope.cn/models/Qwen/Qwen3Guard-Stream-0.6B/resolve/master/config.json",
+          "target": "cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/config.json",
+          "size": 1509,
+          "sha256": "b3bcfee86ed04c86e3c92000a2768d3c879564ac45e7e97909bce2e5767503cd"
+        },
+        {
+          "url": "https://www.modelscope.cn/models/Qwen/Qwen3Guard-Stream-0.6B/resolve/master/configuration_qwen3.py",
+          "target": "cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/configuration_qwen3.py",
+          "size": 11817,
+          "sha256": "db0bc8f36ab1857247263250cd37d62a3be8dacb58c75f486ddfbc0510dbb83e"
+        },
+        {
+          "url": "https://www.modelscope.cn/models/Qwen/Qwen3Guard-Stream-0.6B/resolve/master/generation_config.json",
+          "target": "cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/generation_config.json",
+          "size": 161,
+          "sha256": "52a5a5dd9227794548c6de5e0a1c8bc795a662912bdae6a3a7e4226c542e835c"
+        },
+        {
+          "url": "https://www.modelscope.cn/models/Qwen/Qwen3Guard-Stream-0.6B/resolve/master/LICENSE",
+          "target": "cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/LICENSE",
+          "size": 11343,
+          "sha256": "832dd9e00a68dd83b3c3fb9f5588dad7dcf337a0db50f7d9483f310cd292e92e"
+        },
+        {
+          "url": "https://www.modelscope.cn/models/Qwen/Qwen3Guard-Stream-0.6B/resolve/master/merges.txt",
+          "target": "cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/merges.txt",
+          "size": 1671853,
+          "sha256": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5"
+        },
+        {
+          "url": "https://www.modelscope.cn/models/Qwen/Qwen3Guard-Stream-0.6B/resolve/master/modeling_qwen3_guard.py",
+          "target": "cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/modeling_qwen3_guard.py",
+          "size": 28666,
+          "sha256": "69cefff967313df5d8292afe3e7a9cec1f7bad5d52a15108bb52d4cff79f62ec"
+        },
+        {
+          "url": "https://www.modelscope.cn/models/Qwen/Qwen3Guard-Stream-0.6B/resolve/master/README.md",
+          "target": "cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/README.md",
+          "size": 14638,
+          "sha256": "2ca500382dcdbba770cfb4c98ff4ae09f7c671a561b572a83b68e54e26bde9ce"
+        },
+        {
+          "url": "https://www.modelscope.cn/models/Qwen/Qwen3Guard-Stream-0.6B/resolve/master/tokenizer_config.json",
+          "target": "cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/tokenizer_config.json",
+          "size": 9732,
+          "sha256": "d5d09f07b48c3086c508b30d1c9114bd1189145b74e982a265350c923acd8101"
+        },
+        {
+          "url": "https://www.modelscope.cn/models/Qwen/Qwen3Guard-Stream-0.6B/resolve/master/tokenizer.json",
+          "target": "cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/tokenizer.json",
+          "size": 11422654,
+          "sha256": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4"
+        },
+        {
+          "url": "https://www.modelscope.cn/models/Qwen/Qwen3Guard-Stream-0.6B/resolve/master/vocab.json",
+          "target": "cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/vocab.json",
+          "size": 3383407,
+          "sha256": "87a257b04b17642a0688c98cd1df89c398bda4fee532d6f88b38a659ecb4ac8d"
+        },
+        {
+          "url": "https://www.modelscope.cn/models/Qwen/Qwen3Guard-Stream-0.6B/resolve/master/model.safetensors",
+          "target": "cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/model.safetensors",
+          "size": 1194258680,
+          "sha256": "e0a2eac6cc79cca5bf35bf8fb356f94c333dd9715f4f0dd58883b01f2fe33419"
+        }
+      ]
+    },
+    {
+      "id": "mobilenet_v2",
+      "capability": "cv_classify",
+      "component": "cix-cv",
+      "device": "CIX-NPU",
+      "service": "cix-cv",
+      "container": "cix-cv",
+      "directory": "cv_deploy",
+      "compose": "compose.yaml",
+      "min_ram_gb": 1,
+      "files": [
+        {
+          "url": "https://www.modelscope.cn/models/cix/ai_model_hub_26_Q2/resolve/master/models/ComputeVision/Image_Classification/onnx_mobilenet_v2/mobilenet_v2.cix",
+          "target": "cv_deploy/models/mobilenet_v2/model.cix",
+          "size": 4481728,
+          "sha256": "22b70733472c08b6437c0caeb5eb0885b1dfcc343b6b58b66c02129c8197266c"
+        }
+      ]
+    },
+    {
+      "id": "inception_v3",
+      "capability": "cv_classify",
+      "component": "cix-cv",
+      "device": "CIX-NPU",
+      "service": "cix-cv",
+      "container": "cix-cv",
+      "directory": "cv_deploy",
+      "compose": "compose.yaml",
+      "min_ram_gb": 1,
+      "files": [
+        {
+          "url": "https://www.modelscope.cn/models/cix/ai_model_hub_26_Q2/resolve/master/models/ComputeVision/Image_Classification/onnx_inception_v3/inception_v3.cix",
+          "target": "cv_deploy/models/inception_v3/model.cix",
+          "size": 18200268,
+          "sha256": "77b489efb0c65a3ebdff6d2d097735756f36974e47b5a90b2df2388615002a47"
+        }
+      ]
+    },
+    {
+      "id": "yolov11_l",
+      "capability": "cv_detect",
+      "component": "cix-cv",
+      "device": "CIX-NPU",
+      "service": "cix-cv",
+      "container": "cix-cv",
+      "directory": "cv_deploy",
+      "compose": "compose.yaml",
+      "min_ram_gb": 1,
+      "files": [
+        {
+          "url": "https://www.modelscope.cn/models/cix/ai_model_hub_yolo_series/resolve/master/models/ComputeVision/Object_Detection/onnx_yolov11_l/yolov11_l.cix",
+          "target": "cv_deploy/models/yolov11_l/model.cix",
+          "size": 29294544,
+          "sha256": "499a72658c7e77d701bbb97d1dcc71d55dac94723ef1d86c04b4d84215da7568"
+        }
+      ]
+    },
+    {
+      "id": "yolov11_n",
+      "capability": "cv_detect",
+      "component": "cix-cv",
+      "device": "CIX-NPU",
+      "service": "cix-cv",
+      "container": "cix-cv",
+      "directory": "cv_deploy",
+      "compose": "compose.yaml",
+      "min_ram_gb": 1,
+      "files": [
+        {
+          "url": "https://www.modelscope.cn/models/cix/ai_model_hub_yolo_series/resolve/master/models/ComputeVision/Object_Detection/onnx_yolov11_n/yolov11_n.cix",
+          "target": "cv_deploy/models/yolov11_n/model.cix",
+          "size": 4433596,
+          "sha256": "b2cc7dae87cc29f6779e8260181168b9d97b6a90eab24a450ac0186e057761bc"
+        }
+      ]
+    },
+    {
+      "id": "yolov11n_obb",
+      "capability": "cv_detect",
+      "component": "cix-cv",
+      "device": "CIX-NPU",
+      "service": "cix-cv",
+      "container": "cix-cv",
+      "directory": "cv_deploy",
+      "compose": "compose.yaml",
+      "min_ram_gb": 1,
+      "files": [
+        {
+          "url": "https://www.modelscope.cn/models/cix/ai_model_hub_yolo_series/resolve/master/models/ComputeVision/Object_Detection/onnx_yolov11n-obb/yolov11n-obb.cix",
+          "target": "cv_deploy/models/yolov11n_obb/model.cix",
+          "size": 5157552,
+          "sha256": "f2a38e896cbffd740448d61a28152869b12201acf1548b247f50a835423e08b8"
+        }
+      ]
+    },
+    {
+      "id": "yolov12_s",
+      "capability": "cv_detect",
+      "component": "cix-cv",
+      "device": "CIX-NPU",
+      "service": "cix-cv",
+      "container": "cix-cv",
+      "directory": "cv_deploy",
+      "compose": "compose.yaml",
+      "min_ram_gb": 1,
+      "files": [
+        {
+          "url": "https://www.modelscope.cn/models/cix/ai_model_hub_yolo_series/resolve/master/models/ComputeVision/Object_Detection/onnx_yolov12_s/yolov12_s.cix",
+          "target": "cv_deploy/models/yolov12_s/model.cix",
+          "size": 12479948,
+          "sha256": "2167313b411b95da140717ee997100fc300e293fade049e446dc1014d58f7831"
+        }
+      ]
+    },
+    {
+      "id": "yolov12_m",
+      "capability": "cv_detect",
+      "component": "cix-cv",
+      "device": "CIX-NPU",
+      "service": "cix-cv",
+      "container": "cix-cv",
+      "directory": "cv_deploy",
+      "compose": "compose.yaml",
+      "min_ram_gb": 1,
+      "files": [
+        {
+          "url": "https://www.modelscope.cn/models/cix/ai_model_hub_yolo_series/resolve/master/models/ComputeVision/Object_Detection/onnx_yolov12_m/yolov12_m.cix",
+          "target": "cv_deploy/models/yolov12_m/model.cix",
+          "size": 18468280,
+          "sha256": "070560fd388854bc473f3a9c8088405e92d2fa0c14163b576c838d836647a400"
+        }
+      ]
+    },
+    {
+      "id": "bytetrack_s",
+      "capability": "cv_detect",
+      "component": "cix-cv",
+      "device": "CIX-NPU",
+      "service": "cix-cv",
+      "container": "cix-cv",
+      "directory": "cv_deploy",
+      "compose": "compose.yaml",
+      "min_ram_gb": 1,
+      "files": [
+        {
+          "url": "https://www.modelscope.cn/models/cix/ai_model_hub_26_Q2/resolve/master/models/ComputeVision/Object_Tracking/onnx_bytetrack_s/bytetrack_s.cix",
+          "target": "cv_deploy/models/bytetrack_s/model.cix",
+          "size": 9786332,
+          "sha256": "2d7fd29daba8996bbe08f47ddc4ac0f17e45d74f983366e2121c33697f7e011a"
+        }
+      ]
+    },
+    {
+      "id": "retinaface",
+      "capability": "cv_face",
+      "component": "cix-cv",
+      "device": "CIX-NPU",
+      "service": "cix-cv",
+      "container": "cix-cv",
+      "directory": "cv_deploy",
+      "compose": "compose.yaml",
+      "min_ram_gb": 1,
+      "files": [
+        {
+          "url": "https://www.modelscope.cn/models/cix/ai_model_hub_26_Q2/resolve/master/models/ComputeVision/Face_Detection/onnx_retinaface/retinaface.cix",
+          "target": "cv_deploy/models/retinaface/model.cix",
+          "size": 1323540,
+          "sha256": "3e3ba5da338a47824ffa4c12048dce98b79ce5e01a4dd5049f0d91be6e397d13"
+        }
+      ]
+    },
+    {
+      "id": "yolov5s_face",
+      "capability": "cv_face",
+      "component": "cix-cv",
+      "device": "CIX-NPU",
+      "service": "cix-cv",
+      "container": "cix-cv",
+      "directory": "cv_deploy",
+      "compose": "compose.yaml",
+      "min_ram_gb": 1,
+      "files": [
+        {
+          "url": "https://www.modelscope.cn/models/cix/ai_model_hub_yolo_series/resolve/master/models/ComputeVision/Face_Detection/onnx_yolov5_face/yolov5s-face.cix",
+          "target": "cv_deploy/models/yolov5s_face/model.cix",
+          "size": 11122788,
+          "sha256": "6316e8b7f0ccf093cb21ddc389f6bda35c3bb8b488ece5d0d4962e1a6757b34f"
+        }
+      ]
+    },
+    {
+      "id": "scrfd",
+      "capability": "cv_face",
+      "component": "cix-cv",
+      "device": "CIX-NPU",
+      "service": "cix-cv",
+      "container": "cix-cv",
+      "directory": "cv_deploy",
+      "compose": "compose.yaml",
+      "min_ram_gb": 1,
+      "files": [
+        {
+          "url": "https://www.modelscope.cn/models/cix/ai_model_hub_26_Q2/resolve/master/models/ComputeVision/Face_Recognition/onnx_scrfd_arcface/scrfd.cix",
+          "target": "cv_deploy/models/scrfd/model.cix",
+          "size": 4882836,
+          "sha256": "64d833c68d1b44e11857ef02c4138651bba3b6b791660d6b3bc32c9b1912ad95"
+        }
+      ]
+    },
+    {
+      "id": "arcface",
+      "capability": "cv_face",
+      "component": "cix-cv",
+      "device": "CIX-NPU",
+      "service": "cix-cv",
+      "container": "cix-cv",
+      "directory": "cv_deploy",
+      "compose": "compose.yaml",
+      "min_ram_gb": 1,
+      "files": [
+        {
+          "url": "https://www.modelscope.cn/models/cix/ai_model_hub_26_Q2/resolve/master/models/ComputeVision/Face_Recognition/onnx_scrfd_arcface/arcface.cix",
+          "target": "cv_deploy/models/arcface/model.cix",
+          "size": 31710904,
+          "sha256": "51fe26169e82c608a9d5fec9e5f0e283b075e3428cc86c6e3e22d57126baed16"
+        }
+      ]
+    },
+    {
+      "id": "yolov8l_seg",
+      "capability": "cv_segment",
+      "component": "cix-cv",
+      "device": "CIX-NPU",
+      "service": "cix-cv",
+      "container": "cix-cv",
+      "directory": "cv_deploy",
+      "compose": "compose.yaml",
+      "min_ram_gb": 1,
+      "files": [
+        {
+          "url": "https://www.modelscope.cn/models/cix/ai_model_hub_yolo_series/resolve/master/models/ComputeVision/Semantic_Segmentation/onnx_yolov8_segmentation/yolov8l_seg.cix",
+          "target": "cv_deploy/models/yolov8l_seg/model.cix",
+          "size": 58021536,
+          "sha256": "33f827cebd2589af0d401fce85b2d81e771d8fd2ba942f901145f38a255069d5"
+        }
+      ]
+    },
+    {
+      "id": "kokoro-82m",
+      "capability": "audio_tts",
+      "component": "kokoro-cix",
+      "device": "CIX-NPU+CPU",
+      "service": "kokoro-tts",
+      "container": "houmo-kokoro-tts",
+      "directory": "kokoro-cix",
+      "compose": "docker-compose.yml",
+      "min_ram_gb": 3,
+      "files": [
+        {
+          "url": "https://www.modelscope.cn/models/cix/ai_model_hub_26_Q2/resolve/master/models/Audio/TTS/onnx_kokoro/bert2.cix",
+          "target": "kokoro-cix/model/bert2.cix",
+          "size": 15966904,
+          "sha256": "670e3800aa3608e24fd6e6996d9a8c42504c391c811cdeff21143e78dbfdd76b"
+        },
+        {
+          "url": "https://www.modelscope.cn/models/cix/ai_model_hub_26_Q2/resolve/master/models/Audio/TTS/onnx_kokoro/predictor.cix",
+          "target": "kokoro-cix/model/predictor.cix",
+          "size": 16222444,
+          "sha256": "e4f639b219b696009574e63751a80a98797e86916dc6b99bd48c17974897cb21"
+        },
+        {
+          "url": "https://www.modelscope.cn/models/cix/ai_model_hub_26_Q2/resolve/master/models/Audio/TTS/onnx_kokoro/text_encoder.cix",
+          "target": "kokoro-cix/model/text_encoder.cix",
+          "size": 18479572,
+          "sha256": "32eac0bc8feafdd9605a2309221ce1e3fa30cabc006dc04980a11f37e73b2412"
+        },
+        {
+          "url": "https://www.modelscope.cn/models/cix/ai_model_hub_26_Q2/resolve/master/models/Audio/TTS/onnx_kokoro/decoder00.cix",
+          "target": "kokoro-cix/model/decoder00.cix",
+          "size": 83444156,
+          "sha256": "d0f0e87371a07b5f5ffd25990bf0d420b167fbd95690d3418ea6834392a01f0d"
+        },
+        {
+          "url": "https://www.modelscope.cn/models/cix/ai_model_hub_26_Q2/resolve/master/models/Audio/TTS/onnx_kokoro/decoder01.cix",
+          "target": "kokoro-cix/model/decoder01.cix",
+          "size": 142560,
+          "sha256": "bff09da7487bad8f5287490deb82e4b2a09c9c43a1c852f9d33e94eac33ff157"
+        },
+        {
+          "url": "https://www.modelscope.cn/models/cix/ai_model_hub_26_Q2/resolve/master/models/Audio/TTS/onnx_kokoro/model/decoder1.onnx",
+          "target": "kokoro-cix/model/model/decoder1.onnx",
+          "size": 78956832,
+          "sha256": "f83401afc195c877d35b79b9d6ef7937db325bf1cd0fd0e7e60665e5b9e75848"
+        },
+        {
+          "url": "https://www.modelscope.cn/models/cix/ai_model_hub_26_Q2/resolve/master/models/Audio/TTS/onnx_kokoro/voices/zf_xiaoyi.pt",
+          "target": "kokoro-cix/model/voices/zf_xiaoyi.pt",
+          "size": 523430,
+          "sha256": "b5235dbaeef85a4c613bf78af9a88ff63c25bac5f26ba77e36186d8b7ebf05e2"
+        },
+        {
+          "url": "https://www.modelscope.cn/models/cix/ai_model_hub_26_Q2/resolve/master/models/Audio/TTS/onnx_kokoro/voices/af_heart.pt",
+          "target": "kokoro-cix/model/voices/af_heart.pt",
+          "size": 523425,
+          "sha256": "0ab5709b8ffab19bfd849cd11d98f75b60af7733253ad0d67b12382a102cb4ff"
+        }
+      ]
+    },
+    {
+      "id": "matcha-zh",
+      "capability": "audio_tts",
+      "component": "matcha-tts-cpu",
+      "device": "CPU",
+      "service": "matcha-tts",
+      "container": "houmo-matcha-tts",
+      "directory": "matcha-tts-cpu",
+      "compose": "docker-compose.yml",
+      "min_ram_gb": 1,
+      "files": [
+        {
+          "url": "https://huggingface.co/csukuangfj/matcha-icefall-zh-baker/resolve/main/model-steps-3.onnx",
+          "target": "matcha-tts-cpu/model/matcha-icefall-zh-baker/model-steps-3.onnx",
+          "size": 75624611,
+          "sha256": "ef7ebdf5987e16a5836136a51d6f3560ca997ffd33d06a40daab5af92b4b86e5"
+        },
+        {
+          "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/vocoder-models/vocos-22khz-univ.onnx",
+          "target": "matcha-tts-cpu/model/vocos-22khz-univ.onnx",
+          "size": 53884024,
+          "sha256": "0574a135aa1db2de6e181050db2ec528496cacd4a4701fc5d7faf9f9804c0081"
+        },
+        {
+          "url": "https://huggingface.co/csukuangfj/matcha-icefall-zh-baker/resolve/main/date.fst",
+          "target": "matcha-tts-cpu/model/matcha-icefall-zh-baker/date.fst",
+          "size": 59154,
+          "sha256": "eb8aa079ae3cb81d8f4404992f39d61a0cb990947512b5b8d1e54d1f6980e718"
+        },
+        {
+          "url": "https://huggingface.co/csukuangfj/matcha-icefall-zh-baker/resolve/main/lexicon.txt",
+          "target": "matcha-tts-cpu/model/matcha-icefall-zh-baker/lexicon.txt",
+          "size": 1363705,
+          "sha256": "38b886d46aefa50da6322a64d72fd595d5f4fae1051adb160d647541b1e0a4a2"
+        },
+        {
+          "url": "https://huggingface.co/csukuangfj/matcha-icefall-zh-baker/resolve/main/number.fst",
+          "target": "matcha-tts-cpu/model/matcha-icefall-zh-baker/number.fst",
+          "size": 64482,
+          "sha256": "743f402181fcfebf76cc2f0546b71fa26476e626fbe4e460fb7b4c3a7a8bd5bd"
+        },
+        {
+          "url": "https://huggingface.co/csukuangfj/matcha-icefall-zh-baker/resolve/main/phone.fst",
+          "target": "matcha-tts-cpu/model/matcha-icefall-zh-baker/phone.fst",
+          "size": 88630,
+          "sha256": "1ac2b6fa56b1442320c4de7db08353bab8963a2b57f365eebcdd3a2d3562f8d7"
+        },
+        {
+          "url": "https://huggingface.co/csukuangfj/matcha-icefall-zh-baker/resolve/main/README.md",
+          "target": "matcha-tts-cpu/model/matcha-icefall-zh-baker/README.md",
+          "size": 370,
+          "sha256": "d47ef70781df15845b6f28c6c071dee9e51b52c36797a8130a620c5c8895929c"
+        },
+        {
+          "url": "https://huggingface.co/csukuangfj/matcha-icefall-zh-baker/resolve/main/tokens.txt",
+          "target": "matcha-tts-cpu/model/matcha-icefall-zh-baker/tokens.txt",
+          "size": 19591,
+          "sha256": "56209b2bf609d5ac1d66ede6dae7bf5254bd3f8aa24c4a6823713d5b884d87ba"
+        },
+        {
+          "url": "https://huggingface.co/csukuangfj/matcha-icefall-zh-baker/resolve/main/dict/hmm_model.utf8",
+          "target": "matcha-tts-cpu/model/matcha-icefall-zh-baker/dict/hmm_model.utf8",
+          "size": 519739,
+          "sha256": "f17790586ac86dd048c8adffed052c4bd2b28ed0682972c1275e59040c0589a7"
+        },
+        {
+          "url": "https://huggingface.co/csukuangfj/matcha-icefall-zh-baker/resolve/main/dict/idf.utf8",
+          "target": "matcha-tts-cpu/model/matcha-icefall-zh-baker/dict/idf.utf8",
+          "size": 5998717,
+          "sha256": "dbd1e03d72b2263cc8d84a4304ed77677eed9e7deaf43a1a5133bbba9733b535"
+        },
+        {
+          "url": "https://huggingface.co/csukuangfj/matcha-icefall-zh-baker/resolve/main/dict/jieba.dict.utf8",
+          "target": "matcha-tts-cpu/model/matcha-icefall-zh-baker/dict/jieba.dict.utf8",
+          "size": 5071204,
+          "sha256": "3043b77068e09c9904f27cad82f12b6ebe9dbdb5aeff3b25e45ab7f9c1122b55"
+        },
+        {
+          "url": "https://huggingface.co/csukuangfj/matcha-icefall-zh-baker/resolve/main/dict/README.md",
+          "target": "matcha-tts-cpu/model/matcha-icefall-zh-baker/dict/README.md",
+          "size": 683,
+          "sha256": "8bcc7c2ed7dff082d9a99c09de0bfd72249bf3b5c4298a3af328da40cbd8cfd1"
+        },
+        {
+          "url": "https://huggingface.co/csukuangfj/matcha-icefall-zh-baker/resolve/main/dict/stop_words.utf8",
+          "target": "matcha-tts-cpu/model/matcha-icefall-zh-baker/dict/stop_words.utf8",
+          "size": 8974,
+          "sha256": "b788b8a939d2e2fe079abd579ea98f12f9fb84370bfd0dddd81bb9381f7ab42c"
+        },
+        {
+          "url": "https://huggingface.co/csukuangfj/matcha-icefall-zh-baker/resolve/main/dict/user.dict.utf8",
+          "target": "matcha-tts-cpu/model/matcha-icefall-zh-baker/dict/user.dict.utf8",
+          "size": 829194,
+          "sha256": "5faabcd0c52adf512de77fd7eee3d556da8c98b50f493b47c66a981b3a24959c"
+        },
+        {
+          "url": "https://huggingface.co/csukuangfj/matcha-icefall-zh-baker/resolve/main/dict/pos_dict/char_state_tab.utf8",
+          "target": "matcha-tts-cpu/model/matcha-icefall-zh-baker/dict/pos_dict/char_state_tab.utf8",
+          "size": 327139,
+          "sha256": "28b7be1dd7369766a51445af4d42e9a2ba4bf374c13be5bc1ca7721e27271dbb"
+        },
+        {
+          "url": "https://huggingface.co/csukuangfj/matcha-icefall-zh-baker/resolve/main/dict/pos_dict/prob_emit.utf8",
+          "target": "matcha-tts-cpu/model/matcha-icefall-zh-baker/dict/pos_dict/prob_emit.utf8",
+          "size": 1687686,
+          "sha256": "c33c4cb7edf3b3a5947df7209b6e9f267eae1f21335d9e2bd2521ea07105457a"
+        },
+        {
+          "url": "https://huggingface.co/csukuangfj/matcha-icefall-zh-baker/resolve/main/dict/pos_dict/prob_start.utf8",
+          "target": "matcha-tts-cpu/model/matcha-icefall-zh-baker/dict/pos_dict/prob_start.utf8",
+          "size": 4347,
+          "sha256": "13623ea0e9300bdb597cb2da28770b7b385d6c0098d66e516083fb01b6bd5d96"
+        },
+        {
+          "url": "https://huggingface.co/csukuangfj/matcha-icefall-zh-baker/resolve/main/dict/pos_dict/prob_trans.utf8",
+          "target": "matcha-tts-cpu/model/matcha-icefall-zh-baker/dict/pos_dict/prob_trans.utf8",
+          "size": 124159,
+          "sha256": "f22363e2307408293d180c6f9f6b5cb75879d52f722f7764fa2d3d0ae2400236"
+        }
+      ]
+    },
+    {
+      "id": "sensevoice",
+      "capability": "audio_asr",
+      "component": "sensevoice-cpu",
+      "device": "CPU",
+      "service": "sensevoice",
+      "container": "houmo-sensevoice-cpu",
+      "directory": "sensevoice-cpu",
+      "compose": "compose.yaml",
+      "min_ram_gb": 2,
+      "files": [
+        {
+          "url": "https://huggingface.co/csukuangfj/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-2024-07-17/resolve/main/model.int8.onnx",
+          "target": "cix_telecom_projects/sensevoice/model/model.int8.onnx",
+          "size": 239233841,
+          "sha256": "c71f0ce00bec95b07744e116345e33d8cbbe08cef896382cf907bf4b51a2cd51"
+        },
+        {
+          "url": "https://huggingface.co/csukuangfj/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-2024-07-17/resolve/main/tokens.txt",
+          "target": "cix_telecom_projects/sensevoice/model/tokens.txt",
+          "size": 315894,
+          "sha256": "f449eb28dc567533d7fa59be34e2abca8784f771850c78a47fb731a31429a1dc"
+        },
+        {
+          "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/silero_vad.onnx",
+          "target": "cix_telecom_projects/sensevoice/model/silero_vad.onnx",
+          "size": 643854,
+          "sha256": "9e2449e1087496d8d4caba907f23e0bd3f78d91fa552479bb9c23ac09cbb1fd6"
+        },
+        {
+          "url": "https://huggingface.co/csukuangfj/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-2024-07-17/resolve/main/test_wavs/zh.wav",
+          "target": "cix_telecom_projects/sensevoice/model/test_wavs/zh.wav",
+          "size": 178988,
+          "sha256": "b77f1794fe374a0ba1ee1dc458bfaf9349496cbbfc32780c50ba3c5a7ad8e373"
+        }
+      ]
+    },
+    {
+      "id": "glm-ocr-0.9b",
+      "capability": "chat",
+      "component": "hliellama-glm-ocr",
+      "device": "LQ50",
+      "service": "glm-ocr",
+      "container": "houmo-glm-ocr-0.9b",
+      "directory": "houmo-docker-deployment",
+      "compose": "compose.yaml",
+      "min_ram_gb": 2,
+      "files": [
+        {
+          "url": "https://llmoss.houmoai.com/application_software/models/general/1.4.0/HiModel_xh2_glm-ocr_0.9b_256_8k_b1_1chip_2cores_v1.4.0_20260707.gguf",
+          "target": "cix_telecom_projects/glm-ocr-0.9b/HiModel_xh2_glm-ocr_0.9b_256_8k_b1_1chip_2cores_v1.4.0_20260707.gguf",
+          "size": 880710592,
+          "sha256": "ca40e8632ce0e81548c04c32deb3cdf9d5236cedf7a2357358ef6b04fb5f7349"
+        },
+        {
+          "url": "https://llmoss.houmoai.com/application_software/models/general/1.4.0/mmproj_xh2_glm-ocr_0.9b_2cores_v1.4.0_20260707.gguf",
+          "target": "cix_telecom_projects/glm-ocr-0.9b/mmproj_xh2_glm-ocr_0.9b_2cores_v1.4.0_20260707.gguf",
+          "size": 1686942304,
+          "sha256": "ee70d989c3baf175a54d2cc5f2977a87361d30e54cc088ab58905500687b72b6"
+        }
+      ]
+    }
+  ]
+}

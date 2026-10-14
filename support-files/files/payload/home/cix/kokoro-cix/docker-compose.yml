@@ -1,0 +1,19 @@
+services:
+  kokoro-tts:
+    image: kokoro-cix:0.2.0
+    container_name: houmo-kokoro-tts
+    restart: unless-stopped
+    volumes:
+    - ./model:/models:ro
+    devices:
+    - /dev/aipu:/dev/aipu
+    networks:
+    - houmo-ai_default
+    pull_policy: never
+    environment:
+      HF_HUB_OFFLINE: '1'
+      TRANSFORMERS_OFFLINE: '1'
+      PIP_NO_INDEX: '1'
+networks:
+  houmo-ai_default:
+    external: true

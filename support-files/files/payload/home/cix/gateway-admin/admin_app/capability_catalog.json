@@ -1,0 +1,1269 @@
+{
+  "schema_version": 1,
+  "reviewed_at": "2026-09-18",
+  "sources": {
+    "scope": {
+      "path": "docs/acceptance/S01_01_交付范围.md",
+      "date": "2026-09-04",
+      "title": "S01 交付范围评审稿",
+      "summary": "24 个候选模型范围与边界；仍是评审稿，不等于名单签认或正式验收通过。",
+      "sha256": "3954093a7d05820967415eb2a82be24cc2db2db165a263b0cbe46168f83b4c9a"
+    },
+    "cv": {
+      "path": "cv_deploy/VALIDATION.md",
+      "date": "2026-08-26",
+      "title": "CV 模型实机验证",
+      "summary": "13 个模型完成加载与真实 NPU forward；结构化输出有记录，完整跟踪、mask 重建和人脸组合流程仍未完成。",
+      "sha256": "8fa7788d1443d8ce33660cb72466c0083b55b9fb06e33feae884d16e32a71ada"
+    },
+    "recovery": {
+      "path": "docs/reports/设备故障恢复与加载对照测试_2026-09-04.md",
+      "date": "2026-09-04",
+      "title": "设备恢复与 CoPaw 推理验证",
+      "summary": "CoPaw 算术、城市问答和 SSE 通过；不代表其他模型输出质量或底层故障已经解决。",
+      "sha256": "802a2d1b971dbca27f7a85bf5b2ee7e6c1917ee26c717ed141de3e7cd5cc6e2f"
+    },
+    "review": {
+      "path": "docs/reports/项目Review与优化建议_2026-09-05.md",
+      "date": "2026-09-05",
+      "title": "项目 Review 与未闭环问题",
+      "summary": "记录重排分数异常、长上下文超时和正确性边界；健康成功不能覆盖这些问题。",
+      "sha256": "90d7bbba6941f60384b1d6ab34295fde3982ade4de51fbf34d687edb9da667ce"
+    },
+    "performance": {
+      "path": "docs/reports/模型网关并发性能测试报告_v1.3.md",
+      "date": "2026-09-02",
+      "title": "历史模型网关并发测试",
+      "summary": "短请求及并发调用的历史测试，不是当前版本全部输出质量验收，也不提供无条件 SLA。",
+      "sha256": "6193a01ca4a6f7b3b3b7622b0734c7e5532a77348b3238a622710bff7f1ba1ef"
+    },
+    "batch": {
+      "path": "docs/reports/OCR_ASR批量任务验收_2026-09-07.md",
+      "date": "2026-09-07",
+      "title": "OCR / ASR 批量任务验收",
+      "summary": "图片和两页 PDF 共 3 页 OCR 通过；WAV、MP3、M4A 经批量转码后 ASR 通过；未做满载或长时间压力测试。",
+      "sha256": "17b9745ef645840894e2e455818172717903c8124db61adf6ebe09c048896c2c"
+    },
+    "management": {
+      "path": "docs/reports/S07_S08_UI与用量核对_2026-09-04.md",
+      "date": "2026-09-04",
+      "title": "管理与用量实机核对",
+      "summary": "Matcha 中文探针返回有效 WAV；Kokoro 的管理重启和健康检查通过，不能替代其音质验收。",
+      "sha256": "1561ebc2d4499ec22df6c84cd63437a3ed1e01226997b9e2106254d3046dad2e"
+    },
+    "asr": {
+      "path": "sensevoice-cpu/README.md",
+      "date": "2026-09-07",
+      "title": "SenseVoice 协议说明（源码核对）",
+      "summary": "公共上传接口仅直接接受 PCM WAV；WebSocket 为 16 kHz mono PCM 的 VAD 分段识别，非模型原生逐 Token 实时识别。",
+      "sha256": "e2fccb65bbee2ca6242a1720501157eef577808c9efc3c38460dfbbe324f929c"
+    },
+    "cosyvoice": {
+      "path": "output/outputs/cosyvoice-vllm-deployment-20260916/192.168.133.1-CosyVoice3-vLLM部署与验收报告.md",
+      "date": "2026-09-16",
+      "title": "CosyVoice3 HLIEvLLM 实机部署与验收",
+      "summary": "指定 HLIEvLLM、Houmo 插件、vLLM-Omni 和 TCIM 1.4.0 组合完成两次中文真实合成、WAV 格式与非静音检查，并验证停止后 Qwen-VL 可恢复。",
+      "sha256": "4c0d0c813b9b427198e0d8ec5f775908d1ae6ccb440a7a8777b0e3c4959ba4f0"
+    },
+    "gateway": {
+      "path": "ai-model-gateway/app/main.py",
+      "date": "2026-09-15",
+      "title": "网关实际接口实现",
+      "summary": "核对公共路由、请求格式、错误处理、SSE、音频完整返回和鉴权逻辑。",
+      "sha256": "dffd90dcf1a253915a99b501a518247a9a2cb2114fc7c0bcce45c194388fb7dd"
+    },
+    "ballot_reader": {
+      "path": "output/ballot-reader/民主测评-20260918/验收摘要.md",
+      "date": "2026-09-18",
+      "title": "民主测评票 CPU 流水线实机验收",
+      "summary": "10 份单页 PDF 经常驻 CPU 容器和 17700 统一网关处理均成功；9 票自动通过，1 票因双重痕迹进入人工复核。",
+      "sha256": "8c5d57551cf63a6e90c7ca4c66af4090447a1893a6738783bbe2479f8590b20c"
+    }
+  },
+  "models": [
+    {
+      "id": "copaw-flash-9b",
+      "name": "CoPaw 文本对话",
+      "category": "文本对话",
+      "profile": "chat",
+      "implementation": "implemented",
+      "summary": "文本聊天与 SSE；长上下文能力存在待闭环问题。",
+      "baseline": {
+        "capability": "chat",
+        "backend": "openai",
+        "modes": [
+          "copaw"
+        ],
+        "metadata": {
+          "model_version": "v1.3.0-20260427",
+          "service_version": "2.1.1",
+          "type": "llm"
+        }
+      },
+      "inputs": [
+        "JSON：model 和非空 messages 数组；完整请求体受页面所列网关限制。",
+        "版本清单上下文 131,072 Token，槽位 2；这是配置基准，非实测可用上限。",
+        "示例显式设置 max_tokens、temperature、stream；实际生成预算须为输入、图片 Token 和输出共同留空间。"
+      ],
+      "outputs": [
+        "非流式 choices[].message.content；流式 choices[].delta；usage 以实际上游报告为准。"
+      ],
+      "streaming": [
+        "stream=false：完整 JSON；stream=true：SSE data 事件，结束标记 [DONE]。",
+        "SSE HTTP 200 后仍可能返回 error；必须检查流内错误和结束标记。"
+      ],
+      "boundaries": [
+        "正式交付范围和质量标准仍需单独签认；历史验收记录不随在线状态自动升级。",
+        "模型输入/输出共享上下文；配置的上下文和槽位不是已验收的长输入规模或吞吐承诺。",
+        "只说明文本对话；不把聊天路由等同于图片、视频或语音输入支持。",
+        "支持工具调用历史格式归一化，不包含工具执行器，也未据此宣称所有工具调用质量达标。"
+      ],
+      "verification": {
+        "status": "issues",
+        "scope": "CoPaw 短问答和 SSE 有实机样例通过；长稳严格判分并非全过。",
+        "sources": [
+          "recovery",
+          "review"
+        ]
+      },
+      "declared_context": 131072,
+      "declared_slots": 2
+    },
+    {
+      "id": "spark-x1-4b",
+      "name": "Spark X1 4B 文本对话",
+      "category": "文本对话",
+      "profile": "chat",
+      "implementation": "implemented",
+      "summary": "讯飞 Spark X1 4B 的 XH2 W4A8 本地制品，支持文本聊天与 SSE。",
+      "baseline": {
+        "capability": "chat",
+        "backend": "openai",
+        "modes": [
+          "spark-x1"
+        ],
+        "metadata": {
+          "model_version": "v1.5.0-20260904",
+          "service_version": "2.2.3-xunfei-spark",
+          "type": "llm"
+        }
+      },
+      "inputs": [
+        "JSON：model 和非空 messages 数组；完整请求体受页面所列网关限制。",
+        "制品内嵌上下文为 262,144 Token，服务配置 2 个逻辑槽位。",
+        "示例显式设置 max_tokens、temperature、stream；长输入仍需专项稳定性验证。"
+      ],
+      "outputs": [
+        "非流式 choices[].message.content；流式 choices[].delta；usage 以上游实际上报为准。"
+      ],
+      "streaming": [
+        "stream=false：完整 JSON；stream=true：SSE data 事件，结束标记 [DONE]。",
+        "两个槽位提供双请求交互公平性，不代表单颗 NPU 的总生成吞吐翻倍。"
+      ],
+      "boundaries": [
+        "这是 Spark X1 256K 的芯片编译版本，不是官方 Spark-X2.5 1M 原始权重。",
+        "短请求实机推理已通过；长上下文、双槽长稳和领域质量仍需单独验收。"
+      ],
+      "verification": {
+        "status": "sample_verified",
+        "scope": "2026-09-14：盒子独立容器完成算术短请求实机推理；模式接入后继续验证双槽。",
+        "sources": []
+      },
+      "declared_context": 262144,
+      "declared_slots": 2
+    },
+    {
+      "id": "qwen3-vl-8b",
+      "name": "Qwen-VL 图片理解",
+      "category": "图文对话",
+      "profile": "vision",
+      "implementation": "implemented",
+      "summary": "图片加文本问答；视频和任意多页文档未列为已交付能力。",
+      "baseline": {
+        "capability": "chat",
+        "backend": "openai",
+        "modes": [
+          "qwen-vl"
+        ],
+        "metadata": {
+          "model_version": "v1.3.0-20260615",
+          "service_version": "2.1.1",
+          "type": "vlm"
+        }
+      },
+      "inputs": [
+        "JSON：model 和非空 messages 数组；完整请求体受页面所列网关限制。",
+        "版本清单上下文 32,768 Token，槽位 1；这是配置基准，非实测可用上限。",
+        "示例显式设置 max_tokens、temperature、stream；实际生成预算须为输入、图片 Token 和输出共同留空间。",
+        "图片使用 messages[].content 中的 image_url，示例读取真实 PNG 并转为 data URI；Base64 膨胀也计入 JSON 体积。"
+      ],
+      "outputs": [
+        "非流式 choices[].message.content；流式 choices[].delta；usage 以实际上游报告为准。"
+      ],
+      "streaming": [
+        "stream=false：完整 JSON；stream=true：SSE data 事件，结束标记 [DONE]。",
+        "SSE HTTP 200 后仍可能返回 error；必须检查流内错误和结束标记。"
+      ],
+      "boundaries": [
+        "正式交付范围和质量标准仍需单独签认；历史验收记录不随在线状态自动升级。",
+        "模型输入/输出共享上下文；配置的上下文和槽位不是已验收的长输入规模或吞吐承诺。",
+        "示例覆盖单图；多图、视频、超大图片和极端尺寸边界尚未完整验收。"
+      ],
+      "verification": {
+        "status": "historical",
+        "scope": "有历史调用记录，当前完整质量与稳定性待回归。",
+        "sources": [
+          "scope",
+          "performance"
+        ]
+      },
+      "declared_context": 32768,
+      "declared_slots": 2
+    },
+    {
+      "id": "qwen3.8-27b",
+      "name": "Qwen3.8 27B 多模态",
+      "category": "文本对话",
+      "profile": "chat",
+      "implementation": "implemented",
+      "summary": "文本对话、静态图片理解及流式输出；安装时执行文本和图片验收。",
+      "baseline": {
+        "capability": "chat",
+        "backend": "openai",
+        "modes": [
+          "qwen38"
+        ],
+        "metadata": {
+          "model_version": "v1.5.0-20260911",
+          "service_version": "2.2.0",
+          "type": "vlm"
+        }
+      },
+      "inputs": [
+        "OpenAI 兼容 messages；图片使用 image_url 数据 URL。"
+      ],
+      "outputs": [
+        "JSON 或 SSE 流式响应；Token 统计以实际响应为准。"
+      ],
+      "streaming": [
+        "stream=true 使用 SSE，成功结束应收到 [DONE]。"
+      ],
+      "boundaries": [
+        "仅验收文本与静态图片；视频和音频输入未纳入验收。"
+      ],
+      "verification": {
+        "status": "installation-verification-required",
+        "scope": "每台新设备安装后执行真实文本与图片推理。",
+        "sources": [
+          "installer"
+        ]
+      },
+      "declared_context": 262144,
+      "declared_slots": 1
+    },
+    {
+      "id": "bge-m3",
+      "name": "BGE-M3 文本向量",
+      "category": "检索组件",
+      "profile": "embeddings",
+      "implementation": "implemented",
+      "summary": "文本编码为向量，用于检索组件。",
+      "baseline": {
+        "capability": "embeddings",
+        "backend": "openai",
+        "modes": [
+          "bge-m3"
+        ],
+        "metadata": {
+          "model_version": "v1.4.0-20260720",
+          "service_version": "2.1.1",
+          "type": "embedding"
+        }
+      },
+      "inputs": [
+        "JSON 文本；完整请求体受网关 JSON 限制。",
+        "版本清单上下文 512 Token、10 槽；实际批量上限、分词和截断行为需在业务输入上验证。",
+        "input 为文本或文本数组；示例使用单元素数组。"
+      ],
+      "outputs": [
+        "data[].embedding 浮点向量；维度须检查实际返回，未承诺稀疏向量 / 多向量输出。"
+      ],
+      "streaming": [
+        "完整 JSON 返回；未提供 SSE 或流式向量 / 重排。"
+      ],
+      "boundaries": [
+        "只提供模型端点，不包含知识库导入、文档切分、向量数据库或检索系统。",
+        "正式交付范围和质量标准仍需单独签认；历史验收记录不随在线状态自动升级。"
+      ],
+      "verification": {
+        "status": "historical",
+        "scope": "有历史调用记录，当前完整质量与稳定性待回归。",
+        "sources": [
+          "scope",
+          "performance"
+        ]
+      },
+      "declared_context": 512,
+      "declared_slots": 10
+    },
+    {
+      "id": "bge-reranker-v2-m3",
+      "name": "BGE 文档重排",
+      "category": "检索组件",
+      "profile": "rerank",
+      "implementation": "implemented",
+      "summary": "按查询对文档打分排序；历史分数异常尚未闭环。",
+      "baseline": {
+        "capability": "rerank",
+        "backend": "openai",
+        "modes": [
+          "reranker"
+        ],
+        "metadata": {
+          "model_version": "v1.4.0-20260720",
+          "service_version": "2.1.1",
+          "type": "reranker"
+        }
+      },
+      "inputs": [
+        "JSON 文本；完整请求体受网关 JSON 限制。",
+        "版本清单上下文 512 Token、10 槽；实际批量上限、分词和截断行为需在业务输入上验证。",
+        "query 为查询文本，documents 为文档字符串数组，top_n 为返回条数。"
+      ],
+      "outputs": [
+        "相关度分数与文档索引；按上游结果消费，不擅自把分数当成 0–1 概率。"
+      ],
+      "streaming": [
+        "完整 JSON 返回；未提供 SSE 或流式向量 / 重排。"
+      ],
+      "boundaries": [
+        "只提供模型端点，不包含知识库导入、文档切分、向量数据库或检索系统。",
+        "正式交付范围和质量标准仍需单独签认；历史验收记录不随在线状态自动升级。"
+      ],
+      "verification": {
+        "status": "issues",
+        "scope": "存在历史约 -3.28e17、-8.14e17 的异常大负分记录；需要核查排序、有限数值与重复稳定性，不能仅凭 HTTP 成功验收。",
+        "sources": [
+          "review",
+          "management"
+        ]
+      },
+      "declared_context": 512,
+      "declared_slots": 10
+    },
+    {
+      "id": "qwen3guard-stream-0.6b",
+      "name": "Qwen3Guard 文本审核",
+      "category": "内容审核",
+      "profile": "moderation",
+      "implementation": "implemented",
+      "summary": "独立文本审核与网关内部的聊天输出审核。",
+      "baseline": {
+        "capability": "moderation",
+        "backend": "openai",
+        "modes": [],
+        "metadata": {
+          "model_version": "0.6B",
+          "service_version": "0.1.0",
+          "type": "streaming_safety"
+        }
+      },
+      "inputs": [
+        "input 为非空文本字符串或非空字符串数组；完整 JSON 请求体受网关限制。",
+        "只审查受支持文本；不能视为图片、音频或涉密识别能力。"
+      ],
+      "outputs": [
+        "results 中的审核类别、严重度和 flagged；Safe / Controversial / Unsafe 按项目策略处理。"
+      ],
+      "streaming": [
+        "公共 /v1/moderations：完整 JSON，未提供公共审核 WebSocket。",
+        "聊天 SSE 审核由网关内部 Guard WebSocket 实现；不是客户直接调用 /v1/moderations/stream。"
+      ],
+      "boundaries": [
+        "全局 Guard 默认 off；独立审核请求不等于聊天自动开启审核。",
+        "聊天自动审核还依赖模型 guard 标记与全局 off/audit/block 配置；不承诺任何输入下都能检出。",
+        "正式交付范围和质量标准仍需单独签认；历史验收记录不随在线状态自动升级。"
+      ],
+      "verification": {
+        "status": "historical",
+        "scope": "有历史调用记录，当前完整质量与稳定性待回归。",
+        "sources": [
+          "scope",
+          "performance"
+        ]
+      },
+      "declared_context": 8192,
+      "declared_slots": 2
+    },
+    {
+      "id": "mobilenet_v2",
+      "name": "mobilenet_v2",
+      "category": "计算机视觉",
+      "profile": "cv_classify",
+      "implementation": "implemented",
+      "summary": "单张图片模型推理，返回对应结构化结果。",
+      "baseline": {
+        "capability": "cv_classify",
+        "backend": "cv",
+        "modes": [],
+        "metadata": {
+          "model_version": "cix-model-pack-current",
+          "service_version": "1.0.0",
+          "type": "classification"
+        }
+      },
+      "inputs": [
+        "原始 JPEG / PNG 字节作为请求体，model 放在查询参数中；不是 multipart 上传。",
+        "confidence、iou 范围 0–1；示例为 0.25 / 0.45。",
+        "图像按模型固定尺寸缩放或 letterbox；体积受网关 CV / JSON 请求体限制，像素及质量边界未统一验收。"
+      ],
+      "outputs": [
+        "top5：类别 ID 与分数；不默认包含中文类别名称。"
+      ],
+      "streaming": [
+        "单张图片请求返回完整 JSON；没有跨帧视频会话或视频流协议。"
+      ],
+      "boundaries": [
+        "正式交付范围和质量标准仍需单独签认；历史验收记录不随在线状态自动升级。"
+      ],
+      "verification": {
+        "status": "historical",
+        "scope": "2026-08-26：模型加载与真实 NPU forward 有逐模型记录；未完成当前业务场景的准确率、完整流程和稳定性签认。",
+        "sources": [
+          "cv",
+          "scope"
+        ]
+      },
+      "declared_context": null,
+      "declared_slots": null
+    },
+    {
+      "id": "inception_v3",
+      "name": "inception_v3",
+      "category": "计算机视觉",
+      "profile": "cv_classify",
+      "implementation": "implemented",
+      "summary": "单张图片模型推理，返回对应结构化结果。",
+      "baseline": {
+        "capability": "cv_classify",
+        "backend": "cv",
+        "modes": [],
+        "metadata": {
+          "model_version": "cix-model-pack-current",
+          "service_version": "1.0.0",
+          "type": "classification"
+        }
+      },
+      "inputs": [
+        "原始 JPEG / PNG 字节作为请求体，model 放在查询参数中；不是 multipart 上传。",
+        "confidence、iou 范围 0–1；示例为 0.25 / 0.45。",
+        "图像按模型固定尺寸缩放或 letterbox；体积受网关 CV / JSON 请求体限制，像素及质量边界未统一验收。"
+      ],
+      "outputs": [
+        "top5：类别 ID 与分数；不默认包含中文类别名称。"
+      ],
+      "streaming": [
+        "单张图片请求返回完整 JSON；没有跨帧视频会话或视频流协议。"
+      ],
+      "boundaries": [
+        "正式交付范围和质量标准仍需单独签认；历史验收记录不随在线状态自动升级。"
+      ],
+      "verification": {
+        "status": "historical",
+        "scope": "2026-08-26：模型加载与真实 NPU forward 有逐模型记录；未完成当前业务场景的准确率、完整流程和稳定性签认。",
+        "sources": [
+          "cv",
+          "scope"
+        ]
+      },
+      "declared_context": null,
+      "declared_slots": null
+    },
+    {
+      "id": "yolov11_l",
+      "name": "yolov11_l",
+      "category": "计算机视觉",
+      "profile": "cv_detect",
+      "implementation": "implemented",
+      "summary": "单张图片模型推理，返回对应结构化结果。",
+      "baseline": {
+        "capability": "cv_detect",
+        "backend": "cv",
+        "modes": [],
+        "metadata": {
+          "model_version": "cix-model-pack-current",
+          "service_version": "1.0.0",
+          "type": "detection"
+        }
+      },
+      "inputs": [
+        "原始 JPEG / PNG 字节作为请求体，model 放在查询参数中；不是 multipart 上传。",
+        "confidence、iou 范围 0–1；示例为 0.25 / 0.45。",
+        "图像按模型固定尺寸缩放或 letterbox；体积受网关 CV / JSON 请求体限制，像素及质量边界未统一验收。"
+      ],
+      "outputs": [
+        "detections：框、类别和置信度；count 为数量。"
+      ],
+      "streaming": [
+        "单张图片请求返回完整 JSON；没有跨帧视频会话或视频流协议。"
+      ],
+      "boundaries": [
+        "正式交付范围和质量标准仍需单独签认；历史验收记录不随在线状态自动升级。"
+      ],
+      "verification": {
+        "status": "historical",
+        "scope": "2026-08-26：模型加载与真实 NPU forward 有逐模型记录；未完成当前业务场景的准确率、完整流程和稳定性签认。",
+        "sources": [
+          "cv",
+          "scope"
+        ]
+      },
+      "declared_context": null,
+      "declared_slots": null
+    },
+    {
+      "id": "yolov11_n",
+      "name": "yolov11_n",
+      "category": "计算机视觉",
+      "profile": "cv_detect",
+      "implementation": "implemented",
+      "summary": "单张图片模型推理，返回对应结构化结果。",
+      "baseline": {
+        "capability": "cv_detect",
+        "backend": "cv",
+        "modes": [],
+        "metadata": {
+          "model_version": "cix-model-pack-current",
+          "service_version": "1.0.0",
+          "type": "detection"
+        }
+      },
+      "inputs": [
+        "原始 JPEG / PNG 字节作为请求体，model 放在查询参数中；不是 multipart 上传。",
+        "confidence、iou 范围 0–1；示例为 0.25 / 0.45。",
+        "图像按模型固定尺寸缩放或 letterbox；体积受网关 CV / JSON 请求体限制，像素及质量边界未统一验收。"
+      ],
+      "outputs": [
+        "detections：框、类别和置信度；count 为数量。"
+      ],
+      "streaming": [
+        "单张图片请求返回完整 JSON；没有跨帧视频会话或视频流协议。"
+      ],
+      "boundaries": [
+        "正式交付范围和质量标准仍需单独签认；历史验收记录不随在线状态自动升级。"
+      ],
+      "verification": {
+        "status": "historical",
+        "scope": "2026-08-26：模型加载与真实 NPU forward 有逐模型记录；未完成当前业务场景的准确率、完整流程和稳定性签认。",
+        "sources": [
+          "cv",
+          "scope"
+        ]
+      },
+      "declared_context": null,
+      "declared_slots": null
+    },
+    {
+      "id": "yolov11n_obb",
+      "name": "yolov11n_obb",
+      "category": "计算机视觉",
+      "profile": "cv_obb",
+      "implementation": "implemented",
+      "summary": "单张图片模型推理，返回对应结构化结果。",
+      "baseline": {
+        "capability": "cv_detect",
+        "backend": "cv",
+        "modes": [],
+        "metadata": {
+          "model_version": "cix-model-pack-current",
+          "service_version": "1.0.0",
+          "type": "oriented_detection"
+        }
+      },
+      "inputs": [
+        "原始 JPEG / PNG 字节作为请求体，model 放在查询参数中；不是 multipart 上传。",
+        "confidence、iou 范围 0–1；示例为 0.25 / 0.45。",
+        "图像按模型固定尺寸缩放或 letterbox；体积受网关 CV / JSON 请求体限制，像素及质量边界未统一验收。"
+      ],
+      "outputs": [
+        "目标框、角度等旋转检测元数据；按实际字段消费。"
+      ],
+      "streaming": [
+        "单张图片请求返回完整 JSON；没有跨帧视频会话或视频流协议。"
+      ],
+      "boundaries": [
+        "正式交付范围和质量标准仍需单独签认；历史验收记录不随在线状态自动升级。"
+      ],
+      "verification": {
+        "status": "historical",
+        "scope": "2026-08-26：模型加载与真实 NPU forward 有逐模型记录；未完成当前业务场景的准确率、完整流程和稳定性签认。",
+        "sources": [
+          "cv",
+          "scope"
+        ]
+      },
+      "declared_context": null,
+      "declared_slots": null
+    },
+    {
+      "id": "yolov12_s",
+      "name": "yolov12_s",
+      "category": "计算机视觉",
+      "profile": "cv_detect",
+      "implementation": "implemented",
+      "summary": "单张图片模型推理，返回对应结构化结果。",
+      "baseline": {
+        "capability": "cv_detect",
+        "backend": "cv",
+        "modes": [],
+        "metadata": {
+          "model_version": "cix-model-pack-current",
+          "service_version": "1.0.0",
+          "type": "detection"
+        }
+      },
+      "inputs": [
+        "原始 JPEG / PNG 字节作为请求体，model 放在查询参数中；不是 multipart 上传。",
+        "confidence、iou 范围 0–1；示例为 0.25 / 0.45。",
+        "图像按模型固定尺寸缩放或 letterbox；体积受网关 CV / JSON 请求体限制，像素及质量边界未统一验收。"
+      ],
+      "outputs": [
+        "detections：框、类别和置信度；count 为数量。"
+      ],
+      "streaming": [
+        "单张图片请求返回完整 JSON；没有跨帧视频会话或视频流协议。"
+      ],
+      "boundaries": [
+        "正式交付范围和质量标准仍需单独签认；历史验收记录不随在线状态自动升级。"
+      ],
+      "verification": {
+        "status": "historical",
+        "scope": "2026-08-26：模型加载与真实 NPU forward 有逐模型记录；未完成当前业务场景的准确率、完整流程和稳定性签认。",
+        "sources": [
+          "cv",
+          "scope"
+        ]
+      },
+      "declared_context": null,
+      "declared_slots": null
+    },
+    {
+      "id": "yolov12_m",
+      "name": "yolov12_m",
+      "category": "计算机视觉",
+      "profile": "cv_detect",
+      "implementation": "implemented",
+      "summary": "单张图片模型推理，返回对应结构化结果。",
+      "baseline": {
+        "capability": "cv_detect",
+        "backend": "cv",
+        "modes": [],
+        "metadata": {
+          "model_version": "cix-model-pack-current",
+          "service_version": "1.0.0",
+          "type": "detection"
+        }
+      },
+      "inputs": [
+        "原始 JPEG / PNG 字节作为请求体，model 放在查询参数中；不是 multipart 上传。",
+        "confidence、iou 范围 0–1；示例为 0.25 / 0.45。",
+        "图像按模型固定尺寸缩放或 letterbox；体积受网关 CV / JSON 请求体限制，像素及质量边界未统一验收。"
+      ],
+      "outputs": [
+        "detections：框、类别和置信度；count 为数量。"
+      ],
+      "streaming": [
+        "单张图片请求返回完整 JSON；没有跨帧视频会话或视频流协议。"
+      ],
+      "boundaries": [
+        "正式交付范围和质量标准仍需单独签认；历史验收记录不随在线状态自动升级。"
+      ],
+      "verification": {
+        "status": "historical",
+        "scope": "2026-08-26：模型加载与真实 NPU forward 有逐模型记录；未完成当前业务场景的准确率、完整流程和稳定性签认。",
+        "sources": [
+          "cv",
+          "scope"
+        ]
+      },
+      "declared_context": null,
+      "declared_slots": null
+    },
+    {
+      "id": "bytetrack_s",
+      "name": "bytetrack_s",
+      "category": "计算机视觉",
+      "profile": "cv_tracking",
+      "implementation": "partial",
+      "summary": "ByteTrack 当前仅提供逐帧检测，没有持续 track ID。",
+      "baseline": {
+        "capability": "cv_detect",
+        "backend": "cv",
+        "modes": [],
+        "metadata": {
+          "model_version": "cix-model-pack-current",
+          "service_version": "1.0.0",
+          "type": "tracking_detector"
+        }
+      },
+      "inputs": [
+        "原始 JPEG / PNG 字节作为请求体，model 放在查询参数中；不是 multipart 上传。",
+        "confidence、iou 范围 0–1；示例为 0.25 / 0.45。",
+        "图像按模型固定尺寸缩放或 letterbox；体积受网关 CV / JSON 请求体限制，像素及质量边界未统一验收。"
+      ],
+      "outputs": [
+        "单帧检测框及 tracking_note；不返回持续跟踪 ID。"
+      ],
+      "streaming": [
+        "单张图片请求返回完整 JSON；没有跨帧视频会话或视频流协议。"
+      ],
+      "boundaries": [
+        "正式交付范围和质量标准仍需单独签认；历史验收记录不随在线状态自动升级。",
+        "跨帧关联、轨迹维护、视频会话和持续 track ID 未实现。"
+      ],
+      "verification": {
+        "status": "historical",
+        "scope": "2026-08-26：模型加载与真实 NPU forward 有逐模型记录；未完成当前业务场景的准确率、完整流程和稳定性签认。",
+        "sources": [
+          "cv",
+          "scope"
+        ]
+      },
+      "declared_context": null,
+      "declared_slots": null
+    },
+    {
+      "id": "retinaface",
+      "name": "retinaface",
+      "category": "计算机视觉",
+      "profile": "cv_face",
+      "implementation": "implemented",
+      "summary": "单张图片模型推理，返回对应结构化结果。",
+      "baseline": {
+        "capability": "cv_face",
+        "backend": "cv",
+        "modes": [],
+        "metadata": {
+          "model_version": "cix-model-pack-current",
+          "service_version": "1.0.0",
+          "type": "face_detection"
+        }
+      },
+      "inputs": [
+        "原始 JPEG / PNG 字节作为请求体，model 放在查询参数中；不是 multipart 上传。",
+        "confidence、iou 范围 0–1；示例为 0.25 / 0.45。",
+        "图像按模型固定尺寸缩放或 letterbox；体积受网关 CV / JSON 请求体限制，像素及质量边界未统一验收。"
+      ],
+      "outputs": [
+        "人脸框、置信度及该模型支持的关键点。"
+      ],
+      "streaming": [
+        "单张图片请求返回完整 JSON；没有跨帧视频会话或视频流协议。"
+      ],
+      "boundaries": [
+        "正式交付范围和质量标准仍需单独签认；历史验收记录不随在线状态自动升级。",
+        "检测与 ArcFace 为分离端点；人脸对齐、图库管理、相似度阈值和最终身份决策不在组合交付内。"
+      ],
+      "verification": {
+        "status": "historical",
+        "scope": "2026-08-26：模型加载与真实 NPU forward 有逐模型记录；未完成当前业务场景的准确率、完整流程和稳定性签认。",
+        "sources": [
+          "cv",
+          "scope"
+        ]
+      },
+      "declared_context": null,
+      "declared_slots": null
+    },
+    {
+      "id": "yolov5s_face",
+      "name": "yolov5s_face",
+      "category": "计算机视觉",
+      "profile": "cv_face",
+      "implementation": "implemented",
+      "summary": "单张图片模型推理，返回对应结构化结果。",
+      "baseline": {
+        "capability": "cv_face",
+        "backend": "cv",
+        "modes": [],
+        "metadata": {
+          "model_version": "cix-model-pack-current",
+          "service_version": "1.0.0",
+          "type": "face_detection"
+        }
+      },
+      "inputs": [
+        "原始 JPEG / PNG 字节作为请求体，model 放在查询参数中；不是 multipart 上传。",
+        "confidence、iou 范围 0–1；示例为 0.25 / 0.45。",
+        "图像按模型固定尺寸缩放或 letterbox；体积受网关 CV / JSON 请求体限制，像素及质量边界未统一验收。"
+      ],
+      "outputs": [
+        "人脸框、置信度及该模型支持的关键点。"
+      ],
+      "streaming": [
+        "单张图片请求返回完整 JSON；没有跨帧视频会话或视频流协议。"
+      ],
+      "boundaries": [
+        "正式交付范围和质量标准仍需单独签认；历史验收记录不随在线状态自动升级。",
+        "检测与 ArcFace 为分离端点；人脸对齐、图库管理、相似度阈值和最终身份决策不在组合交付内。"
+      ],
+      "verification": {
+        "status": "historical",
+        "scope": "2026-08-26：模型加载与真实 NPU forward 有逐模型记录；未完成当前业务场景的准确率、完整流程和稳定性签认。",
+        "sources": [
+          "cv",
+          "scope"
+        ]
+      },
+      "declared_context": null,
+      "declared_slots": null
+    },
+    {
+      "id": "scrfd",
+      "name": "scrfd",
+      "category": "计算机视觉",
+      "profile": "cv_face",
+      "implementation": "implemented",
+      "summary": "单张图片模型推理，返回对应结构化结果。",
+      "baseline": {
+        "capability": "cv_face",
+        "backend": "cv",
+        "modes": [],
+        "metadata": {
+          "model_version": "cix-model-pack-current",
+          "service_version": "1.0.0",
+          "type": "face_detection"
+        }
+      },
+      "inputs": [
+        "原始 JPEG / PNG 字节作为请求体，model 放在查询参数中；不是 multipart 上传。",
+        "confidence、iou 范围 0–1；示例为 0.25 / 0.45。",
+        "图像按模型固定尺寸缩放或 letterbox；体积受网关 CV / JSON 请求体限制，像素及质量边界未统一验收。"
+      ],
+      "outputs": [
+        "人脸框、置信度及该模型支持的关键点。"
+      ],
+      "streaming": [
+        "单张图片请求返回完整 JSON；没有跨帧视频会话或视频流协议。"
+      ],
+      "boundaries": [
+        "正式交付范围和质量标准仍需单独签认；历史验收记录不随在线状态自动升级。",
+        "检测与 ArcFace 为分离端点；人脸对齐、图库管理、相似度阈值和最终身份决策不在组合交付内。"
+      ],
+      "verification": {
+        "status": "historical",
+        "scope": "2026-08-26：模型加载与真实 NPU forward 有逐模型记录；未完成当前业务场景的准确率、完整流程和稳定性签认。",
+        "sources": [
+          "cv",
+          "scope"
+        ]
+      },
+      "declared_context": null,
+      "declared_slots": null
+    },
+    {
+      "id": "arcface",
+      "name": "arcface",
+      "category": "计算机视觉",
+      "profile": "cv_embedding",
+      "implementation": "implemented",
+      "summary": "单张图片模型推理，返回对应结构化结果。",
+      "baseline": {
+        "capability": "cv_face",
+        "backend": "cv",
+        "modes": [],
+        "metadata": {
+          "model_version": "cix-model-pack-current",
+          "service_version": "1.0.0",
+          "type": "face_embedding"
+        }
+      },
+      "inputs": [
+        "原始 JPEG / PNG 字节作为请求体，model 放在查询参数中；不是 multipart 上传。",
+        "confidence、iou 范围 0–1；示例为 0.25 / 0.45。",
+        "图像按模型固定尺寸缩放或 letterbox；体积受网关 CV / JSON 请求体限制，像素及质量边界未统一验收。"
+      ],
+      "outputs": [
+        "dimension、l2_normalized、embedding；仅特征向量。"
+      ],
+      "streaming": [
+        "单张图片请求返回完整 JSON；没有跨帧视频会话或视频流协议。"
+      ],
+      "boundaries": [
+        "正式交付范围和质量标准仍需单独签认；历史验收记录不随在线状态自动升级。",
+        "检测与 ArcFace 为分离端点；人脸对齐、图库管理、相似度阈值和最终身份决策不在组合交付内。"
+      ],
+      "verification": {
+        "status": "historical",
+        "scope": "2026-08-26：模型加载与真实 NPU forward 有逐模型记录；未完成当前业务场景的准确率、完整流程和稳定性签认。",
+        "sources": [
+          "cv",
+          "scope"
+        ]
+      },
+      "declared_context": null,
+      "declared_slots": null
+    },
+    {
+      "id": "yolov8l_seg",
+      "name": "yolov8l_seg",
+      "category": "计算机视觉",
+      "profile": "cv_segment",
+      "implementation": "partial",
+      "summary": "分割模型只交付检测框与 mask 原型元数据，完整 mask 未实现。",
+      "baseline": {
+        "capability": "cv_segment",
+        "backend": "cv",
+        "modes": [],
+        "metadata": {
+          "model_version": "cix-model-pack-current",
+          "service_version": "1.0.0",
+          "type": "instance_segmentation"
+        }
+      },
+      "inputs": [
+        "原始 JPEG / PNG 字节作为请求体，model 放在查询参数中；不是 multipart 上传。",
+        "confidence、iou 范围 0–1；示例为 0.25 / 0.45。",
+        "图像按模型固定尺寸缩放或 letterbox；体积受网关 CV / JSON 请求体限制，像素及质量边界未统一验收。"
+      ],
+      "outputs": [
+        "检测框、mask_proto_shape 和说明；尚未重建完整实例 mask。"
+      ],
+      "streaming": [
+        "单张图片请求返回完整 JSON；没有跨帧视频会话或视频流协议。"
+      ],
+      "boundaries": [
+        "正式交付范围和质量标准仍需单独签认；历史验收记录不随在线状态自动升级。",
+        "完整实例 mask / 多边形重建仍待后处理，不按完整实例分割能力承诺。"
+      ],
+      "verification": {
+        "status": "historical",
+        "scope": "2026-08-26：模型加载与真实 NPU forward 有逐模型记录；未完成当前业务场景的准确率、完整流程和稳定性签认。",
+        "sources": [
+          "cv",
+          "scope"
+        ]
+      },
+      "declared_context": null,
+      "declared_slots": null
+    },
+    {
+      "id": "kokoro-82m",
+      "name": "Kokoro 中文固定声线",
+      "category": "语音合成",
+      "profile": "kokoro",
+      "implementation": "implemented",
+      "summary": "输入中文文本，生成完整 WAV；不提供客户端流式音频。",
+      "baseline": {
+        "capability": "audio_tts",
+        "backend": "openai",
+        "modes": [],
+        "metadata": {
+          "model_version": "82M-local-adaptation",
+          "service_version": "0.2.0",
+          "type": "tts"
+        }
+      },
+      "inputs": [
+        "input：1–2000 字符；speed：0.5–2.0；response_format 仅 wav。",
+        "当前安装 voice 仅 zf_xiaoyi；不能任意替换声线。",
+        "显式指定 model；网关省略 model 或使用 tts-1 时默认路由到 Kokoro。"
+      ],
+      "outputs": [
+        "完整 WAV，单声道，24000 Hz；X-Gateway-TTS-Model 标识实际路由模型。"
+      ],
+      "streaming": [
+        "整段生成完才返回 WAV；内部句子回调 / streaming_chunks 元数据不等于客户端流式输出。"
+      ],
+      "boundaries": [
+        "不支持声线克隆、任意 voice、MP3 输出或实时双向语音。",
+        "TTS 使用独立 CPU/CIX-NPU 服务，不随 LQ50 模型模式切换。",
+        "正式交付范围和质量标准仍需单独签认；历史验收记录不随在线状态自动升级。"
+      ],
+      "verification": {
+        "status": "pending",
+        "scope": "历史 0.1.0 管理重启与健康检查有证据；0.2.0 改为外置权重，完整推理、音质、时延和稳定性均待真机重新验收。",
+        "sources": [
+          "management",
+          "scope"
+        ]
+      },
+      "declared_context": null,
+      "declared_slots": null
+    },
+    {
+      "id": "matcha-zh",
+      "name": "Matcha 中文固定女声",
+      "category": "语音合成",
+      "profile": "matcha",
+      "implementation": "implemented",
+      "summary": "输入中文文本，生成完整 WAV；不提供客户端流式音频。",
+      "baseline": {
+        "capability": "audio_tts",
+        "backend": "openai",
+        "modes": [],
+        "metadata": {
+          "model_version": "matcha-icefall-zh-baker",
+          "service_version": "0.2.0",
+          "type": "tts"
+        }
+      },
+      "inputs": [
+        "input：1–2000 字符；speed：0.5–2.0；response_format 仅 wav。",
+        "当前安装 voice 仅 zh-baker-female；不能任意替换声线。",
+        "显式指定 model；网关省略 model 或使用 tts-1 时默认路由到 Kokoro。"
+      ],
+      "outputs": [
+        "完整 WAV，单声道，22050 Hz；X-Gateway-TTS-Model 标识实际路由模型。"
+      ],
+      "streaming": [
+        "整段生成完才返回 WAV；内部句子回调 / streaming_chunks 元数据不等于客户端流式输出。"
+      ],
+      "boundaries": [
+        "不支持声线克隆、任意 voice、MP3 输出或实时双向语音。",
+        "TTS 使用独立 CPU 服务，不随 LQ50 模型模式切换。",
+        "正式交付范围和质量标准仍需单独签认；历史验收记录不随在线状态自动升级。"
+      ],
+      "verification": {
+        "status": "pending",
+        "scope": "2026-09-04 的 0.1.0 单次中文探针返回有效 WAV；0.2.0 外置权重尚待真机重新验收，历史结果不代表当前版本通过。",
+        "sources": [
+          "management",
+          "scope"
+        ]
+      },
+      "declared_context": null,
+      "declared_slots": null
+    },
+    {
+      "id": "sensevoice",
+      "name": "SenseVoice WAV 与分段识别",
+      "category": "语音识别",
+      "profile": "asr",
+      "implementation": "implemented",
+      "summary": "PCM WAV 转写，以及 VAD 句段结束后的 WebSocket 识别。",
+      "baseline": {
+        "capability": "audio_asr",
+        "backend": "openai",
+        "modes": [],
+        "metadata": {
+          "model_version": "int8-2024-07-17",
+          "service_version": "0.1.0",
+          "type": "asr"
+        }
+      },
+      "inputs": [
+        "公共 HTTP：multipart，file 为未压缩 PCM WAV；8/16/24/32-bit，单声道或多声道，服务内转单声道。",
+        "response_format：json / verbose_json / text；language：auto / zh / en / ja / ko / yue。",
+        "WebSocket：首包 start JSON，随后 16 kHz / 单声道 / PCM S16LE 二进制帧，最后 stop。首包等待超时 15 秒。",
+        "原始上传和流时长限制见配置区域；批量任务另支持 MP3/M4A/FLAC/OGG/AAC，每文件 ≤50 MB / 30 分钟。"
+      ],
+      "outputs": [
+        "HTTP：完整 text 或 JSON；verbose_json 含 segments、language、duration 等。",
+        "WebSocket：ready → transcript（final=true 的句段）→ done，另有 error / pong。"
+      ],
+      "streaming": [
+        "VAD 模拟流式：一句话结束后识别该段；不保证逐字 partial 输出，也不是模型原生实时逐 Token 流。"
+      ],
+      "boundaries": [
+        "MP3/M4A 等格式支持来自管理员批量任务的转码；直接公共 ASR 接口仍只接收 PCM WAV。",
+        "不要把原始 WAV 文件头当 PCM 帧发送；Python WebSocket 示例会解析 WAV 后发送样本。",
+        "正式交付范围和质量标准仍需单独签认；历史验收记录不随在线状态自动升级。"
+      ],
+      "verification": {
+        "status": "sample_verified",
+        "scope": "2026-09-07 批量 WAV / MP3 / M4A 经转码后识别通过；不能据此把 WebSocket 或全部语言质量判为同轮通过。",
+        "sources": [
+          "batch",
+          "asr"
+        ]
+      },
+      "declared_context": null,
+      "declared_slots": 2
+    },
+    {
+      "id": "glm-ocr-0.9b",
+      "name": "GLM-OCR 图片文字识别",
+      "category": "OCR",
+      "profile": "ocr",
+      "implementation": "implemented",
+      "summary": "图片文字提取；PDF 通过独立批量任务逐页渲染后识别。",
+      "baseline": {
+        "capability": "chat",
+        "backend": "openai",
+        "modes": [
+          "glm-ocr"
+        ],
+        "metadata": {
+          "model_version": "v1.4.0-20260707",
+          "service_version": "2.1.1",
+          "type": "document_ocr"
+        }
+      },
+      "inputs": [
+        "JSON：model 和非空 messages 数组；完整请求体受页面所列网关限制。",
+        "版本清单上下文 8,192 Token，槽位 1；这是配置基准，非实测可用上限。",
+        "示例显式设置 max_tokens、temperature、stream；实际生成预算须为输入、图片 Token 和输出共同留空间。",
+        "图片使用 messages[].content 中的 image_url，示例读取真实 PNG 并转为 data URI；Base64 膨胀也计入 JSON 体积。",
+        "批量页面另支持 PDF：每份 ≤40 MB / 50 页，每批 ≤50 文件 / 250 MB / 200 页；图片 ≤10 MB / 2000 万像素。"
+      ],
+      "outputs": [
+        "非流式 choices[].message.content；流式 choices[].delta；usage 以实际上游报告为准。"
+      ],
+      "streaming": [
+        "stream=false：完整 JSON；stream=true：SSE data 事件，结束标记 [DONE]。",
+        "SSE HTTP 200 后仍可能返回 error；必须检查流内错误和结束标记。"
+      ],
+      "boundaries": [
+        "正式交付范围和质量标准仍需单独签认；历史验收记录不随在线状态自动升级。",
+        "模型输入/输出共享上下文；配置的上下文和槽位不是已验收的长输入规模或吞吐承诺。",
+        "示例覆盖单图；多图、视频、超大图片和极端尺寸边界尚未完整验收。",
+        "/v1/ocr/mineru 只是 GLM-OCR 兼容路径，stream=true 返回 400；不接收 PDF 上传，不提供完整 MinerU 版面解析。",
+        "批量任务 OCR 每页输出预算 2048 Token；达到上限会标记内容可能不完整。"
+      ],
+      "verification": {
+        "status": "sample_verified",
+        "scope": "2026-09-07：单图和两页 PDF 共 3 页识别、坏文件隔离和结果下载通过；未覆盖所有文档版式或长稳。",
+        "sources": [
+          "batch",
+          "gateway"
+        ]
+      },
+      "declared_context": 8192,
+      "declared_slots": 2
+    },
+    {
+      "id": "cosyvoice3-0.5b",
+      "name": "CosyVoice3 参考音色合成",
+      "category": "语音合成",
+      "profile": "cosyvoice",
+      "implementation": "partial",
+      "summary": "已在 LQ50 上通过两次真实中文语音合成；使用参考音频和对应文本生成完整 WAV。",
+      "baseline": {
+        "capability": "audio_tts",
+        "backend": "openai",
+        "modes": [
+          "cosyvoice"
+        ],
+        "metadata": {
+          "model_version": "v1.4.0-20260720",
+          "service_version": "0.21.0rc1+vLLM-Omni-0.20.1.dev3",
+          "type": "tts"
+        }
+      },
+      "inputs": [
+        "JSON：model、input、ref_audio 和 ref_text；ref_audio 使用 WAV 的 data URL，ref_text 必须与参考音频内容一致。",
+        "当前验收覆盖中文直输与单段参考音频；配置上下文 2048 是运行参数，不是可承诺的最大文字长度。",
+        "建议显式设置 response_format=wav；参考音频会增大 JSON 请求体，仍受网关请求体上限约束。"
+      ],
+      "outputs": [
+        "完整 PCM WAV：24 kHz、16 bit、单声道；当前验收不是客户端流式音频。"
+      ],
+      "streaming": [
+        "整段生成完成后返回 WAV；当前没有验证客户端分块音频流。"
+      ],
+      "boundaries": [
+        "当前 RTF 两次实测为 2.977 和 2.287，生成速度低于实时，不能按实时语音交互能力承诺。",
+        "CosyVoice 与其他 LQ50 模型互斥；已完成独立部署验收，ModelDeck 自动模式切换、开机验收和失败回滚仍在接入。",
+        "未安装可选 wetext；数字、日期、单位和复杂中英文混排仍需专项验收。",
+        "参考音色克隆只完成流程与可辨识度样例，不构成音色相似度或音质等级验收。"
+      ],
+      "verification": {
+        "status": "sample_verified",
+        "scope": "2026-09-16：两次中文真实合成返回有效非静音 24 kHz WAV；耗时 17.384/18.111 秒，RTF 2.977/2.287；停止后 Qwen-VL 恢复并通过真实推理。",
+        "sources": [
+          "cosyvoice"
+        ]
+      },
+      "declared_context": 2048,
+      "declared_slots": 1
+    },
+    {
+      "id": "democratic-eval-v1",
+      "name": "民主测评票结构化识别",
+      "category": "文档分析",
+      "profile": "ballot",
+      "implementation": "implemented",
+      "summary": "常驻 CPU 服务识别当前固定模板的民主测评票，输出 6 人 × 6 维度的等级、置信度和人工复核项。",
+      "baseline": {
+        "capability": "document_analysis",
+        "backend": "custom",
+        "modes": [],
+        "metadata": {
+          "model_version": "template-v1",
+          "service_version": "0.1.0",
+          "type": "structured_ballot"
+        }
+      },
+      "inputs": [
+        "通过 POST /v1/documents/analyze?model=democratic-eval-v1 上传 PDF、PNG 或 JPEG 原始字节；推荐 Content-Type: application/pdf。",
+        "支持单页或多页 PDF；请求体受网关 max_body_mb 限制，示例文件名为 ballot.pdf。",
+        "当前模板固定为 6 人、6 个维度、每个维度 4 个等级；服务会自动处理扫描方向与轻微倾斜。"
+      ],
+      "outputs": [
+        "JSON：文档级 status、page_count、review_count，以及逐页 selections、reviews 和 diagnostics。",
+        "每个正常页面应输出 36 条选择；每条含 person、dimension、grade、confidence 和 review_required。",
+        "accepted 表示结构检查通过；review 表示至少存在多选、漏选、低区分度或异常笔迹数，必须人工确认。"
+      ],
+      "streaming": [
+        "非流式：整份 PDF 或图片完成识别后一次返回 JSON。"
+      ],
+      "boundaries": [
+        "这是固定模板规则识别，不是通用 OCR 或任意表格理解模型；模板人员、维度、行列或等级布局变化时必须重新标定。",
+        "status=review 或 review_count>0 的结果不能直接计票；系统刻意保留歧义，不会把双选或弱痕迹强行归为正常。",
+        "当前验收覆盖 10 份单页 PDF；多页、大角度透视、严重污损和不同扫描设备仍需专项验证。",
+        "服务使用 2 CPU / 1 GiB 上限并常驻运行，不占用 LQ50/NPU，也不触发大模型模式切换。"
+      ],
+      "verification": {
+        "status": "sample_verified",
+        "scope": "2026-09-18：10/10 份单页 PDF 经容器和统一网关成功处理，输出 360 项；9 票 accepted，1 票正确标记双重痕迹并进入 review；网关端到端总耗时 15.266 秒。",
+        "sources": [
+          "ballot_reader"
+        ]
+      },
+      "declared_context": null,
+      "declared_slots": 2
+    },
+    {
+      "id": "qwen3.6-35b-a3b",
+      "name": "Qwen3.6 35B A3B 双卡多模态",
+      "category": "文本对话",
+      "profile": "chat",
+      "implementation": "implemented",
+      "summary": "双卡 MoE 文本与图片推理，声明上下文 256K；运行时为 HLIEvLLM。",
+      "baseline": {
+        "capability": "chat",
+        "backend": "openai",
+        "modes": [
+          "qwen36"
+        ],
+        "metadata": {
+          "model_version": "v1.4.0-20260716",
+          "service_version": "HLIEvLLM-1.4.0-0825hsc",
+          "type": "vlm"
+        }
+      },
+      "inputs": [
+        "OpenAI 兼容 messages；图片使用 image_url 数据 URL。"
+      ],
+      "outputs": [
+        "JSON 或 SSE 流式响应；Token 统计以实际响应为准。"
+      ],
+      "streaming": [
+        "stream=true 使用 SSE，成功结束应收到 [DONE]。"
+      ],
+      "boundaries": [
+        "仅验收文本与静态图片；视频和音频输入未纳入验收。"
+      ],
+      "verification": {
+        "status": "installation-verification-required",
+        "scope": "每台新设备安装后执行真实文本与图片推理。",
+        "sources": [
+          "installer"
+        ]
+      },
+      "declared_context": 262144,
+      "declared_slots": 1
+    }
+  ]
+}

@@ -1,0 +1,734 @@
+[
+  {
+    "path": "ai-model-gateway/.dockerignore",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ai-model-gateway/Dockerfile",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ai-model-gateway/MODEL_PARAMETERS.md",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ai-model-gateway/README.md",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ai-model-gateway/STAGE3_ACCEPTANCE.md",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ai-model-gateway/VALIDATION.md",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ai-model-gateway/app/__init__.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ai-model-gateway/app/access.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ai-model-gateway/app/access_store.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ai-model-gateway/app/chat.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ai-model-gateway/app/config.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ai-model-gateway/app/defaults.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ai-model-gateway/app/errors.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ai-model-gateway/app/guard.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ai-model-gateway/app/main.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ai-model-gateway/app/request_content.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ai-model-gateway/app/request_diagnostics.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ai-model-gateway/app/runtime_safety.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ai-model-gateway/app/streaming.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ai-model-gateway/app/upstream.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ai-model-gateway/app/usage.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ai-model-gateway/app/usage_quality.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ai-model-gateway/compose.yaml",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ai-model-gateway/config/models.json",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ai-model-gateway/requirements.txt",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ai-model-gateway/systemd/ai-model-gateway.service",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ai-model-gateway/tests/integration_acceptance.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ai-model-gateway/tests/live_multikey_acceptance.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ai-model-gateway/tests/resilience_acceptance.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ai-model-gateway/tests/test_access_control.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ai-model-gateway/tests/test_active_requests.py",
+    "origin": "workspace-source"
+  },
+  {
+    "path": "ai-model-gateway/tests/test_core.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ai-model-gateway/tests/test_model_installation_state.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ai-model-gateway/tests/test_request_cancellation.py",
+    "origin": "workspace-source"
+  },
+  {
+    "path": "ai-model-gateway/tests/test_request_diagnostics.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ai-model-gateway/tests/test_runtime_safety.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ai-model-gateway/tests/test_usage_reconciliation.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "cv_deploy/README.md",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "cv_deploy/VALIDATION.md",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "cv_deploy/app/main.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "cv_deploy/compose.debug.yaml",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "cv_deploy/compose.yaml",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "cv_deploy/docker/Dockerfile",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "cv_deploy/smoke/README.md",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "cv_deploy/smoke/test.jpg",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "cv_deploy/smoke/test_mobilenet.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "cv_deploy/test.jpg",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "cv_deploy/test_api.ps1",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/.dockerignore",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/.env.example",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/BATCH_TASKS.md",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/Dockerfile",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/Dockerfile.agent",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/README.md",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/admin_app/__init__.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/admin_app/api_reference.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/admin_app/audit.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/admin_app/batch_api.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/admin_app/batch_engine.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/admin_app/batch_media.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/admin_app/batch_store.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/admin_app/capabilities.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/admin_app/capability_catalog.json",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/admin_app/capability_examples.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/admin_app/diagnostics.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/admin_app/evaluation_api.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/admin_app/experience_api.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/admin_app/main.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/admin_app/model_install_api.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/agent/__init__.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/agent/configuration.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/agent/device_recovery.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/agent/diagnostics.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/agent/evaluation_api.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/agent/evaluation_cases.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/agent/evaluation_engine.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/agent/evaluation_runtime.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/agent/evaluation_store.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/agent/faults.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/agent/main.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/agent/model_api.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/agent/model_catalog.json",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/agent/model_install.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/agent/model_runtime.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/agent/model_store.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/agent/runtime_baseline.json",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/agent/runtime_probes.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/agent/runtime_safety.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/compose.yaml",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/hash_password.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/provision_env.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/requirements-batch.txt",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/requirements.txt",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/runtime_config_acceptance.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/smoke_test.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/startup_verify.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/systemd/gateway-admin.service",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/systemd/modeldeck-startup-verify.service",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/tests/diagnostics_fixture.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/tests/evaluation_fixture.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/tests/experience_fixture.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/tests/live_key_access_acceptance.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/tests/live_s07_s08_acceptance.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/tests/model_install_fixture.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/tests/serve_audit_fixture.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/tests/test_admin.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/tests/test_api_reference.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/tests/test_audit.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/tests/test_audit_process.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/tests/test_batches.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/tests/test_capabilities.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/tests/test_device_recovery.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/tests/test_diagnostics.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/tests/test_evaluation_agent_api.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/tests/test_evaluation_api.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/tests/test_evaluation_engine.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/tests/test_evaluation_runtime.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/tests/test_experience_api.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/tests/test_mode_switch.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/tests/test_model_install.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/tests/test_request_monitor.py",
+    "origin": "workspace-source"
+  },
+  {
+    "path": "gateway-admin/tests/test_runtime_safety.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/tests/test_service_readiness.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "gateway-admin/tests/test_startup_verify.py",
+    "origin": "workspace-source"
+  },
+  {
+    "path": "houmo-docker-deployment/.env.example",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "houmo-docker-deployment/README.md",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "houmo-docker-deployment/benchmark-concurrent.sh",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "houmo-docker-deployment/build-glm-ocr-runtime-image.sh",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "houmo-docker-deployment/build-runtime-image.sh",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "houmo-docker-deployment/compose.debug.yaml",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "houmo-docker-deployment/compose.remote.current.yaml",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "houmo-docker-deployment/compose.remote.yaml",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "houmo-docker-deployment/compose.yaml",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "houmo-docker-deployment/copaw-monitored-soak.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "houmo-docker-deployment/copaw-tool-compat.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "houmo-docker-deployment/houmo-ai-modelctl.conf",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "houmo-docker-deployment/houmo-ai-qwen38-mode.conf",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "houmo-docker-deployment/houmo-ai.service",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "houmo-docker-deployment/llm-benchmark.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "houmo-docker-deployment/modelctl",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "houmo-docker-deployment/npu_soak_monitor.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "houmo-docker-deployment/qwen38-long-context-test.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "houmo-docker-deployment/smoke-test.sh",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "houmo-docker-deployment/soak-test.sh",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "houmo-docker-deployment/soak_report.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "kokoro-cix/Dockerfile",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "kokoro-cix/app.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "kokoro-cix/docker-compose.yml",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "kokoro-cix/requirements.txt",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "kokoro-cix/runtime/kokoro/__init__.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "kokoro-cix/runtime/kokoro/kokoro.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "kokoro-cix/runtime/kokoro/pipeline.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "kokoro-cix/runtime/npu_config.json",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "kokoro-cix/sample_request.json",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "matcha-tts-cpu/Dockerfile",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "matcha-tts-cpu/README.md",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "matcha-tts-cpu/app.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "matcha-tts-cpu/docker-compose.yml",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "matcha-tts-cpu/sample_request.json",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "qwen3guard-stream-cpu/Dockerfile",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "qwen3guard-stream-cpu/README.md",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "qwen3guard-stream-cpu/requirements.txt",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "qwen3guard-stream-cpu/stream_guard/__init__.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "qwen3guard-stream-cpu/stream_guard/main.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "sensevoice-cpu/.dockerignore",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "sensevoice-cpu/Dockerfile",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "sensevoice-cpu/README.md",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "sensevoice-cpu/app/__init__.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "sensevoice-cpu/app/main.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "sensevoice-cpu/compose.yaml",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "sensevoice-cpu/requirements.txt",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "sensevoice-cpu/tests/ws_smoke.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ballot-reader/.dockerignore",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ballot-reader/compose.yaml",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ballot-reader/Dockerfile",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ballot-reader/gateway_extension.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ballot-reader/README.md",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ballot-reader/requirements.txt",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ballot-reader/app/batch.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ballot-reader/app/main.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ballot-reader/app/reader.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ballot-reader/app/__init__.py",
+    "origin": "deployed-box"
+  },
+  {
+    "path": "ballot-reader/tests/test_reader.py",
+    "origin": "deployed-box"
+  }
+]

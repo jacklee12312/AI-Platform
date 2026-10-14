@@ -1,0 +1,7 @@
+downloads
+model
+__pycache__
+*.pyc
+*.tar
+*.tar.gz
+*.tar.bz2

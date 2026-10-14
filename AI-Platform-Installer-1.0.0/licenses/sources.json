@@ -1,0 +1,27 @@
+[
+  {
+    "file": "LGPL-3.0-only.txt",
+    "url": "https://raw.githubusercontent.com/qt/qtbase/v6.7.3/LICENSES/LGPL-3.0-only.txt",
+    "sha256": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768"
+  },
+  {
+    "file": "GPL-3.0-only.txt",
+    "url": "https://raw.githubusercontent.com/qt/qtbase/v6.7.3/LICENSES/GPL-3.0-only.txt",
+    "sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903"
+  },
+  {
+    "file": "Qt-GPL-exception-1.0.txt",
+    "url": "https://raw.githubusercontent.com/qt/qtbase/v6.7.3/LICENSES/Qt-GPL-exception-1.0.txt",
+    "sha256": "40678d338ce53cd93f8b22b281a2ecbcaa3ee65ce60b25ffb0c462b0530846b2"
+  },
+  {
+    "file": "PySide6_Essentials-6.7.3-cp39-abi3-manylinux_2_31_aarch64.whl.METADATA.txt",
+    "source": "PySide6_Essentials-6.7.3-cp39-abi3-manylinux_2_31_aarch64.whl!PySide6_Essentials-6.7.3.dist-info/METADATA",
+    "sha256": "ecc71bde785c3285ea0bbb722f981b2a8ee5b39925dadde06868adff5a2e7d5c"
+  },
+  {
+    "file": "shiboken6-6.7.3-cp39-abi3-manylinux_2_31_aarch64.whl.METADATA.txt",
+    "source": "shiboken6-6.7.3-cp39-abi3-manylinux_2_31_aarch64.whl!shiboken6-6.7.3.dist-info/METADATA",
+    "sha256": "0e5c85c283cecdc791a626d2bf739b4820acea09b94545fb13758732e3422d65"
+  }
+]

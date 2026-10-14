@@ -1,0 +1,53 @@
+{
+  "date": "2026-09-24 16:12:09",
+  "environment": "QEMU Debian 12 ARM64 Python 3.11 / Qt 6.7.3; preview only",
+  "tests": 18,
+  "test_exit_code": 0,
+  "test_log": "test_check_result_is_its_own_step (test_ui.WizardTests.test_check_result_is_its_own_step) ... ok\ntest_default_online_and_all_selected (test_ui.WizardTests.test_default_online_and_all_selected) ... ok\ntest_empty_selection_blocks_next (test_ui.WizardTests.test_empty_selection_blocks_next) ... ok\ntest_failed_check_blocks_next (test_ui.WizardTests.test_failed_check_blocks_next) ... ok\ntest_local_import_requires_folder (test_ui.WizardTests.test_local_import_requires_folder) ... ok\ntest_model_checkbox_is_clickable (test_ui.WizardTests.test_model_checkbox_is_clickable) ... ok\ntest_model_table_checkbox_changes_selection (test_ui.WizardTests.test_model_table_checkbox_changes_selection) ... ok\ntest_online_dispatch_preserves_bundled_source_marker (test_ui.WizardTests.test_online_dispatch_preserves_bundled_source_marker) ... ok\ntest_only_installed_state_shows_finish (test_ui.WizardTests.test_only_installed_state_shows_finish) ... ok\ntest_password_match_proceeds (test_ui.WizardTests.test_password_match_proceeds) ... ok\ntest_password_mismatch_blocks_progress (test_ui.WizardTests.test_password_mismatch_blocks_progress) ... ok\ntest_preview_install_disabled_even_with_consent (test_ui.WizardTests.test_preview_install_disabled_even_with_consent) ... ok\ntest_preview_never_dispatches (test_ui.WizardTests.test_preview_never_dispatches) ... ok\ntest_progress_page_shows_current_download_speed (test_ui.WizardTests.test_progress_page_shows_current_download_speed) ... ok\ntest_real_install_requires_consent (test_ui.WizardTests.test_real_install_requires_consent) ... ok\ntest_resume_cannot_change_selected_models (test_ui.WizardTests.test_resume_cannot_change_selected_models) ... ok\ntest_source_change_invalidates_check (test_ui.WizardTests.test_source_change_invalidates_check) ... ok\ntest_stale_task_can_resume (test_ui.WizardTests.test_stale_task_can_resume) ... ok\n\n----------------------------------------------------------------------\nRan 18 tests in 4.845s\n\nOK\n",
+  "screens": [
+    {
+      "page": 0,
+      "exit_code": 0,
+      "path": "arm64-select-023-preview-0.png",
+      "error": ""
+    },
+    {
+      "page": 1,
+      "exit_code": 0,
+      "path": "arm64-select-023-preview-1.png",
+      "error": ""
+    },
+    {
+      "page": 2,
+      "exit_code": 0,
+      "path": "arm64-select-023-preview-2.png",
+      "error": ""
+    },
+    {
+      "page": 3,
+      "exit_code": 0,
+      "path": "arm64-select-023-preview-3.png",
+      "error": ""
+    },
+    {
+      "page": 4,
+      "exit_code": 0,
+      "path": "arm64-select-023-preview-4.png",
+      "error": ""
+    },
+    {
+      "page": 5,
+      "exit_code": 0,
+      "path": "arm64-select-023-preview-5.png",
+      "error": ""
+    },
+    {
+      "page": 6,
+      "exit_code": 0,
+      "path": "arm64-select-023-preview-6.png",
+      "error": ""
+    }
+  ],
+  "physical_install": false,
+  "passed": true
+}

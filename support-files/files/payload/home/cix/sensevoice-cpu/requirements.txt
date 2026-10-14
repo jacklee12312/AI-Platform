@@ -1,0 +1,6 @@
+fastapi==0.116.1
+numpy==2.2.6
+python-multipart==0.0.20
+sherpa-onnx==1.13.6
+uvicorn==0.35.0
+websockets==15.0.1

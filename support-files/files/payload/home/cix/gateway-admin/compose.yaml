@@ -1,0 +1,142 @@
+name: gateway-admin
+services:
+  admin:
+    image: gateway-admin:0.7.0
+    container_name: gateway-admin
+    restart: unless-stopped
+    init: true
+    read_only: true
+    user: 65534:65534
+    cpus: 0.5
+    mem_limit: 256m
+    ports:
+    - 0.0.0.0:17780:17780
+    env_file:
+    - /home/cix/houmo-docker-deployment/.env
+    - ./.env
+    environment:
+      GATEWAY_URL: http://ai-model-gateway:17700
+      ADMIN_AGENT_URL: http://gateway-admin-agent:17781
+      ADMIN_DATA_DIR: /data
+      ADMIN_STATIC_DIR: /app/static
+      ADMIN_COOKIE_SECURE: 'false'
+      TZ: Asia/Shanghai
+      HF_HUB_OFFLINE: '1'
+      TRANSFORMERS_OFFLINE: '1'
+      PIP_NO_INDEX: '1'
+    volumes:
+    - admin-data:/data
+    - /home/cix/gateway-admin/admin_app/capability_catalog.json:/app/admin_app/capability_catalog.json:ro
+    - /home/cix/gateway-admin/admin_app/main.py:/app/admin_app/main.py:ro
+    - /home/cix/gateway-admin/frontend/dist:/app/static:ro
+    tmpfs:
+    - /tmp:size=32m,mode=1777
+    networks:
+    - admin
+    - houmo
+    depends_on:
+      agent:
+        condition: service_healthy
+    healthcheck:
+      test:
+      - CMD
+      - python
+      - -c
+      - import json,urllib.request; assert json.load(urllib.request.urlopen('http://127.0.0.1:17780/health/live',
+        timeout=3))['ok']
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 10s
+    logging:
+      driver: json-file
+      options:
+        max-size: 20m
+        max-file: '3'
+    pull_policy: never
+  agent:
+    image: gateway-admin-agent:0.5.0
+    container_name: gateway-admin-agent
+    restart: unless-stopped
+    init: true
+    read_only: true
+    cpus: 0.5
+    mem_limit: 192m
+    env_file:
+    - ./.env
+    environment:
+      DOCKER_BIN: /usr/bin/docker
+      MODELCTL_PATH: /home/cix/houmo-docker-deployment/modelctl
+      HOUMO_DEPLOY_DIR: /home/cix/houmo-docker-deployment
+      HOUMO_COMPOSE_FILE: /home/cix/houmo-docker-deployment/compose.yaml
+      HOUMO_STATE_DIR: /home/cix/houmo-docker-deployment/state
+      RUNTIME_SAFETY_ENABLED: 'true'
+      GATEWAY_HOST_DIR: /home/cix/ai-model-gateway
+      GATEWAY_LIVE_URL: http://ai-model-gateway:17700/health/live
+      SENSEVOICE_HOST_DIR: /home/cix/sensevoice-cpu
+      MODELDECK_HOME: /home/cix
+      MODELDECK_STORE_ROOT: /home/cix/modeldeck-models
+      MODELDECK_HOST_DEV: /host-dev
+      MODELDECK_HOST_USR_LOCAL: /host-usr-local
+      TZ: Asia/Shanghai
+      HF_HUB_OFFLINE: '1'
+      TRANSFORMERS_OFFLINE: '1'
+      PIP_NO_INDEX: '1'
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    - /usr/bin/docker:/usr/bin/docker:ro
+    - /usr/libexec/docker/cli-plugins/docker-compose:/usr/libexec/docker/cli-plugins/docker-compose:ro
+    - /home/cix/houmo-docker-deployment:/home/cix/houmo-docker-deployment
+    - /home/cix/ai-model-gateway:/home/cix/ai-model-gateway
+    - /home/cix/sensevoice-cpu:/home/cix/sensevoice-cpu
+    - /home/cix/modeldeck-models:/home/cix/modeldeck-models
+    - /home/cix/cix_telecom_projects:/home/cix/cix_telecom_projects
+    - /home/cix/cv_deploy:/home/cix/cv_deploy
+    - /home/cix/gateway-admin/agent/runtime_probes.py:/app/agent/runtime_probes.py:ro
+    - /home/cix/gateway-admin/agent/device_recovery.py:/app/agent/device_recovery.py:ro
+    - /home/cix/gateway-admin/agent/model_catalog.json:/app/agent/model_catalog.json:ro
+    - /home/cix/gateway-admin/agent/runtime_baseline.json:/app/agent/runtime_baseline.json:ro
+    - /home/cix/matcha-tts-cpu:/home/cix/matcha-tts-cpu
+    - /home/cix/kokoro-cix:/home/cix/kokoro-cix
+    - /dev:/host-dev:ro
+    - /usr/local:/host-usr-local:ro
+    - /home/cix/gateway-admin/agent/main.py:/app/agent/main.py:ro
+    - /home/cix/gateway-admin/agent/diagnostics.py:/app/agent/diagnostics.py:ro
+    - /home/cix/gateway-admin/agent/evaluation_runtime.py:/app/agent/evaluation_runtime.py:ro
+    - /home/cix/gateway-admin/agent/model_runtime.py:/app/agent/model_runtime.py:ro
+    - /home/cix/gateway-admin/agent/model_store.py:/app/agent/model_store.py:ro
+    - /home/cix/gateway-admin/agent/registry.py:/app/agent/registry.py:ro
+    tmpfs:
+    - /tmp:size=32m,mode=1777
+    networks:
+    - admin
+    - houmo
+    - cv
+    healthcheck:
+      test:
+      - CMD
+      - python
+      - -c
+      - import json,urllib.request; assert json.load(urllib.request.urlopen('http://127.0.0.1:17781/health/live',
+        timeout=3))['ok']
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 5s
+    logging:
+      driver: json-file
+      options:
+        max-size: 20m
+        max-file: '3'
+    pull_policy: never
+volumes:
+  admin-data: null
+networks:
+  cv:
+    external: true
+    name: cv_deploy_default
+  admin:
+    internal: true
+  houmo:
+    external: true
+    name: houmo-ai_default

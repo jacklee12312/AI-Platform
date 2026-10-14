@@ -1,0 +1,495 @@
+{
+  "schema": 1,
+  "mode": "prefer-local",
+  "model_source": "online",
+  "local_roots": [
+    "@bundle/support-files",
+    "../support-files",
+    "../AI-Platform-Model-Library",
+    "../../AI-Platform-Model-Library"
+  ],
+  "base_urls": {
+    "platform": [],
+    "docker": [],
+    "runtime": [],
+    "images": [],
+    "models": []
+  },
+  "file_urls": {
+    "payload/home/cix/cix_telecom_projects/HiModel_xh2_bge-0.5b_0.5k_b10_1chip_2cores_v1.4.0_20260720.gguf": [],
+    "payload/home/cix/cix_telecom_projects/HiModel_xh2_bge-reranker-v2-m3-0.5b_0.5k_b10_1chip_2cores_v1.4.0_20260720.gguf": [],
+    "payload/home/cix/cix_telecom_projects/cosyvoice3/HiModel_xh2_cosyvoice3-0.5b-2512_256_2k_b1_1chip_2cores_v1.4.0_20260720.gguf": [],
+    "payload/home/cix/cix_telecom_projects/glm-ocr-0.9b/HiModel_xh2_glm-ocr_0.9b_256_8k_b1_1chip_2cores_v1.4.0_20260707.gguf": [],
+    "payload/home/cix/cix_telecom_projects/glm-ocr-0.9b/mmproj_xh2_glm-ocr_0.9b_2cores_v1.4.0_20260707.gguf": [],
+    "payload/home/cix/cix_telecom_projects/houmo-HLIELLama-xh2/models/copaw_flash_9b_w4a8_128k_b1_1chip_2cores_v1.3.0/HiModel-Copaw-flash-9b-p256-128K-b1-2core-1d-xh2-v1.3.0-20260427015847.gguf": [],
+    "payload/home/cix/cix_telecom_projects/qwen3-vl-8b/HiModel_xh2_qwen3-vl_8b_256_32k_b1_1chip_2cores_v1.3.0_20260615.gguf": [],
+    "payload/home/cix/cix_telecom_projects/qwen3-vl-8b/mmproj_xh2_qwen3-vl_8b_2cores_vit_448x448_v1.3.0_20260615.gguf": [],
+    "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/LICENSE": [],
+    "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/README.md": [],
+    "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/config.json": [],
+    "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/configuration_qwen3.py": [],
+    "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/generation_config.json": [],
+    "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/merges.txt": [],
+    "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/model.safetensors": [],
+    "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/modeling_qwen3_guard.py": [],
+    "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/tokenizer.json": [],
+    "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/tokenizer_config.json": [],
+    "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/vocab.json": [],
+    "payload/home/cix/cix_telecom_projects/sensevoice/model/model.int8.onnx": [],
+    "payload/home/cix/cix_telecom_projects/sensevoice/model/silero_vad.onnx": [],
+    "payload/home/cix/cix_telecom_projects/sensevoice/model/test_wavs/zh.wav": [],
+    "payload/home/cix/cix_telecom_projects/sensevoice/model/tokens.txt": [],
+    "payload/home/cix/cix_telecom_projects/xunfei-spark/HiModel_xh2_Spark_x1-4b-w4a8-256K-b1-2core-1d-xh2-v1.5.0-20260904.gguf": [],
+    "payload/home/cix/cv_deploy/models/arcface/model.cix": [],
+    "payload/home/cix/cv_deploy/models/bytetrack_s/model.cix": [],
+    "payload/home/cix/cv_deploy/models/inception_v3/model.cix": [],
+    "payload/home/cix/cv_deploy/models/mobilenet_v2/model.cix": [],
+    "payload/home/cix/cv_deploy/models/retinaface/model.cix": [],
+    "payload/home/cix/cv_deploy/models/scrfd/model.cix": [],
+    "payload/home/cix/cv_deploy/models/yolov11_l/model.cix": [],
+    "payload/home/cix/cv_deploy/models/yolov11_n/model.cix": [],
+    "payload/home/cix/cv_deploy/models/yolov11n_obb/model.cix": [],
+    "payload/home/cix/cv_deploy/models/yolov12_m/model.cix": [],
+    "payload/home/cix/cv_deploy/models/yolov12_s/model.cix": [],
+    "payload/home/cix/cv_deploy/models/yolov5s_face/model.cix": [],
+    "payload/home/cix/cv_deploy/models/yolov8l_seg/model.cix": [],
+    "payload/home/cix/kokoro-cix/model/bert2.cix": [],
+    "payload/home/cix/kokoro-cix/model/decoder00.cix": [],
+    "payload/home/cix/kokoro-cix/model/decoder01.cix": [],
+    "payload/home/cix/kokoro-cix/model/model/decoder1.onnx": [],
+    "payload/home/cix/kokoro-cix/model/predictor.cix": [],
+    "payload/home/cix/kokoro-cix/model/text_encoder.cix": [],
+    "payload/home/cix/kokoro-cix/model/voices/af_heart.pt": [],
+    "payload/home/cix/kokoro-cix/model/voices/zf_xiaoyi.pt": [],
+    "payload/home/cix/matcha-tts-cpu/model/matcha-icefall-zh-baker/README.md": [],
+    "payload/home/cix/matcha-tts-cpu/model/matcha-icefall-zh-baker/date.fst": [],
+    "payload/home/cix/matcha-tts-cpu/model/matcha-icefall-zh-baker/dict/README.md": [],
+    "payload/home/cix/matcha-tts-cpu/model/matcha-icefall-zh-baker/dict/hmm_model.utf8": [],
+    "payload/home/cix/matcha-tts-cpu/model/matcha-icefall-zh-baker/dict/idf.utf8": [],
+    "payload/home/cix/matcha-tts-cpu/model/matcha-icefall-zh-baker/dict/jieba.dict.utf8": [],
+    "payload/home/cix/matcha-tts-cpu/model/matcha-icefall-zh-baker/dict/pos_dict/char_state_tab.utf8": [],
+    "payload/home/cix/matcha-tts-cpu/model/matcha-icefall-zh-baker/dict/pos_dict/prob_emit.utf8": [],
+    "payload/home/cix/matcha-tts-cpu/model/matcha-icefall-zh-baker/dict/pos_dict/prob_start.utf8": [],
+    "payload/home/cix/matcha-tts-cpu/model/matcha-icefall-zh-baker/dict/pos_dict/prob_trans.utf8": [],
+    "payload/home/cix/matcha-tts-cpu/model/matcha-icefall-zh-baker/dict/stop_words.utf8": [],
+    "payload/home/cix/matcha-tts-cpu/model/matcha-icefall-zh-baker/dict/user.dict.utf8": [],
+    "payload/home/cix/matcha-tts-cpu/model/matcha-icefall-zh-baker/lexicon.txt": [],
+    "payload/home/cix/matcha-tts-cpu/model/matcha-icefall-zh-baker/model-steps-3.onnx": [],
+    "payload/home/cix/matcha-tts-cpu/model/matcha-icefall-zh-baker/number.fst": [],
+    "payload/home/cix/matcha-tts-cpu/model/matcha-icefall-zh-baker/phone.fst": [],
+    "payload/home/cix/matcha-tts-cpu/model/matcha-icefall-zh-baker/tokens.txt": [],
+    "payload/home/cix/matcha-tts-cpu/model/vocos-22khz-univ.onnx": []
+  },
+  "allow_http": true,
+  "timeout_seconds": 45,
+  "retries": 3,
+  "oci_artifacts": {
+    "mobilenet_v2": {
+      "registry": "http://36.111.34.121:15436",
+      "repository": "aistore/mobilenet_v2.cix",
+      "reference": "v2",
+      "manifest_digest": "sha256:a87cde92555694c6a545654d7c2ba49ff54836fae4f1aa65757cb1cfdb0d621e",
+      "blob_digest": "sha256:22b70733472c08b6437c0caeb5eb0885b1dfcc343b6b58b66c02129c8197266c",
+      "blob_size": 4481728,
+      "format": "blob",
+      "files": {
+        "payload/home/cix/cv_deploy/models/mobilenet_v2/model.cix": null
+      }
+    },
+    "inception_v3": {
+      "registry": "http://36.111.34.121:15436",
+      "repository": "aistore/inception_v3.cix",
+      "reference": "v3",
+      "manifest_digest": "sha256:01f58072cfb63d68ac6121409a23ac6ab4f865274f10617f748a92080e3aa2dc",
+      "blob_digest": "sha256:77b489efb0c65a3ebdff6d2d097735756f36974e47b5a90b2df2388615002a47",
+      "blob_size": 18200268,
+      "format": "blob",
+      "files": {
+        "payload/home/cix/cv_deploy/models/inception_v3/model.cix": null
+      }
+    },
+    "yolov11_l": {
+      "registry": "http://36.111.34.121:15436",
+      "repository": "aistore/yolov11_l.cix",
+      "reference": "v1",
+      "manifest_digest": "sha256:700e440f0c4b49b2cf93059ff8286b9a59b3a8a3e5b07b97e45a5b224857b929",
+      "blob_digest": "sha256:499a72658c7e77d701bbb97d1dcc71d55dac94723ef1d86c04b4d84215da7568",
+      "blob_size": 29294544,
+      "format": "blob",
+      "files": {
+        "payload/home/cix/cv_deploy/models/yolov11_l/model.cix": null
+      }
+    },
+    "yolov11_n": {
+      "registry": "http://36.111.34.121:15436",
+      "repository": "aistore/yolov11_n.cix",
+      "reference": "v1",
+      "manifest_digest": "sha256:1b639bb0acb1ab54ef97058888ef62c4bd5bcde55b9bf4718f579b65f41dd820",
+      "blob_digest": "sha256:b2cc7dae87cc29f6779e8260181168b9d97b6a90eab24a450ac0186e057761bc",
+      "blob_size": 4433596,
+      "format": "blob",
+      "files": {
+        "payload/home/cix/cv_deploy/models/yolov11_n/model.cix": null
+      }
+    },
+    "yolov11n_obb": {
+      "registry": "http://36.111.34.121:15436",
+      "repository": "aistore/yolov11n-obb.cix",
+      "reference": "v1",
+      "manifest_digest": "sha256:5ec434bce4a4a0d758967fa58ca5a6c5233dc0548b64ac0c1e2dea47f8b9bcb0",
+      "blob_digest": "sha256:f2a38e896cbffd740448d61a28152869b12201acf1548b247f50a835423e08b8",
+      "blob_size": 5157552,
+      "format": "blob",
+      "files": {
+        "payload/home/cix/cv_deploy/models/yolov11n_obb/model.cix": null
+      }
+    },
+    "yolov12_s": {
+      "registry": "http://36.111.34.121:15436",
+      "repository": "aistore/yolov12_s.cix",
+      "reference": "v1",
+      "manifest_digest": "sha256:e223af633a7b4e93e6cd196d4e27018f0cd2d4171bb567b63bce990f3721647d",
+      "blob_digest": "sha256:2167313b411b95da140717ee997100fc300e293fade049e446dc1014d58f7831",
+      "blob_size": 12479948,
+      "format": "blob",
+      "files": {
+        "payload/home/cix/cv_deploy/models/yolov12_s/model.cix": null
+      }
+    },
+    "yolov12_m": {
+      "registry": "http://36.111.34.121:15436",
+      "repository": "aistore/yolov12_m.cix",
+      "reference": "v1",
+      "manifest_digest": "sha256:3bbceceb10130668968d4b48923e21bf4303d4c34ef0d20fd8f2fbb04c28c9ae",
+      "blob_digest": "sha256:070560fd388854bc473f3a9c8088405e92d2fa0c14163b576c838d836647a400",
+      "blob_size": 18468280,
+      "format": "blob",
+      "files": {
+        "payload/home/cix/cv_deploy/models/yolov12_m/model.cix": null
+      }
+    },
+    "bytetrack_s": {
+      "registry": "http://36.111.34.121:15436",
+      "repository": "aistore/bytetrack_s.cix",
+      "reference": "v1",
+      "manifest_digest": "sha256:da95d73b1a31d81078579e64a3cf880f4620a82fa59bee0b32c91c0c517a0fbd",
+      "blob_digest": "sha256:2d7fd29daba8996bbe08f47ddc4ac0f17e45d74f983366e2121c33697f7e011a",
+      "blob_size": 9786332,
+      "format": "blob",
+      "files": {
+        "payload/home/cix/cv_deploy/models/bytetrack_s/model.cix": null
+      }
+    },
+    "retinaface": {
+      "registry": "http://36.111.34.121:15436",
+      "repository": "aistore/retinaface.cix",
+      "reference": "v1",
+      "manifest_digest": "sha256:412baae80057cf002442b48091c9f6bcbf4cf112d21d3b97c9aee4c0ad5dab9e",
+      "blob_digest": "sha256:3e3ba5da338a47824ffa4c12048dce98b79ce5e01a4dd5049f0d91be6e397d13",
+      "blob_size": 1323540,
+      "format": "blob",
+      "files": {
+        "payload/home/cix/cv_deploy/models/retinaface/model.cix": null
+      }
+    },
+    "yolov5s_face": {
+      "registry": "http://36.111.34.121:15436",
+      "repository": "aistore/yolov5s-face.cix",
+      "reference": "v1",
+      "manifest_digest": "sha256:059869adde16fe0670d84f5a121f4a49a471446b5a13bf6c2cc982d7accb189f",
+      "blob_digest": "sha256:6316e8b7f0ccf093cb21ddc389f6bda35c3bb8b488ece5d0d4962e1a6757b34f",
+      "blob_size": 11122788,
+      "format": "blob",
+      "files": {
+        "payload/home/cix/cv_deploy/models/yolov5s_face/model.cix": null
+      }
+    },
+    "scrfd": {
+      "registry": "http://36.111.34.121:15436",
+      "repository": "aistore/scrfd.cix",
+      "reference": "v1",
+      "manifest_digest": "sha256:7448b9f850a3ea7d3c3d24eef59caf84036bfacae3a22a40d8d8bb17e7963e42",
+      "blob_digest": "sha256:64d833c68d1b44e11857ef02c4138651bba3b6b791660d6b3bc32c9b1912ad95",
+      "blob_size": 4882836,
+      "format": "blob",
+      "files": {
+        "payload/home/cix/cv_deploy/models/scrfd/model.cix": null
+      }
+    },
+    "arcface": {
+      "registry": "http://36.111.34.121:15436",
+      "repository": "aistore/arcface.cix",
+      "reference": "v1",
+      "manifest_digest": "sha256:fe9844d1fc12a28ae5d719efb63a32c24dfcd90f5168ed47a0411c4d9e0b6f51",
+      "blob_digest": "sha256:51fe26169e82c608a9d5fec9e5f0e283b075e3428cc86c6e3e22d57126baed16",
+      "blob_size": 31710904,
+      "format": "blob",
+      "files": {
+        "payload/home/cix/cv_deploy/models/arcface/model.cix": null
+      }
+    },
+    "yolov8l_seg": {
+      "registry": "http://36.111.34.121:15436",
+      "repository": "aistore/yolov8l_seg.cix",
+      "reference": "v1",
+      "manifest_digest": "sha256:45d542376950947175b5a81b48c1285b84538100bd367973960b2ea5d376978c",
+      "blob_digest": "sha256:33f827cebd2589af0d401fce85b2d81e771d8fd2ba942f901145f38a255069d5",
+      "blob_size": 58021536,
+      "format": "blob",
+      "files": {
+        "payload/home/cix/cv_deploy/models/yolov8l_seg/model.cix": null
+      }
+    },
+    "copaw-flash-9b": {
+      "registry": "http://36.111.34.121:15436",
+      "repository": "aistore/copaw-flash-9b.cix",
+      "reference": "v1",
+      "manifest_digest": "sha256:24b0676cd6ffc96092d5b70e313843b328c12874421d38b553f119db5d45aa4e",
+      "blob_digest": "sha256:ce4c05f65c283744f979e306f746607c3bdc0d966a50834cb1c38ae7644f68e0",
+      "blob_size": 7253323328,
+      "format": "blob",
+      "files": {
+        "payload/home/cix/cix_telecom_projects/houmo-HLIELLama-xh2/models/copaw_flash_9b_w4a8_128k_b1_1chip_2cores_v1.3.0/HiModel-Copaw-flash-9b-p256-128K-b1-2core-1d-xh2-v1.3.0-20260427015847.gguf": null
+      }
+    },
+    "qwen3-vl-8b": {
+      "registry": "http://36.111.34.121:15436",
+      "repository": "aistore/qwen3-vl-8b",
+      "reference": "v1",
+      "manifest_digest": "sha256:da59406ffc87677d67ca349769253cca9a233723b5ffad97b86e274908ca3c48",
+      "blob_digest": "sha256:e908f8e396d19b6e450ffd297e21a6ecfccd66593b55a12263c44464c94349fe",
+      "blob_size": 5517289568,
+      "format": "tar+gzip",
+      "files": {
+        "payload/home/cix/cix_telecom_projects/qwen3-vl-8b/HiModel_xh2_qwen3-vl_8b_256_32k_b1_1chip_2cores_v1.3.0_20260615.gguf": "qwen3-vl-8b/HiModel_xh2_qwen3-vl_8b_256_32k_b1_1chip_2cores_v1.3.0_20260615.gguf",
+        "payload/home/cix/cix_telecom_projects/qwen3-vl-8b/mmproj_xh2_qwen3-vl_8b_2cores_vit_448x448_v1.3.0_20260615.gguf": "qwen3-vl-8b/mmproj_xh2_qwen3-vl_8b_2cores_vit_448x448_v1.3.0_20260615.gguf"
+      }
+    },
+    "glm-ocr-0.9b": {
+      "registry": "http://36.111.34.121:15436",
+      "repository": "aistore/glm-ocr-0.9b",
+      "reference": "v1",
+      "manifest_digest": "sha256:a4a4e17debdac0f9a0b90c75a804d9a185884af224c27db2a8541e4192385af0",
+      "blob_digest": "sha256:f95cd980ed3c7ae8d29c31f41a996b2eebca51680d8c8f3d16819927354c4ec3",
+      "blob_size": 1230777983,
+      "format": "tar+gzip",
+      "files": {
+        "payload/home/cix/cix_telecom_projects/glm-ocr-0.9b/HiModel_xh2_glm-ocr_0.9b_256_8k_b1_1chip_2cores_v1.4.0_20260707.gguf": "glm-ocr-0.9b/HiModel_xh2_glm-ocr_0.9b_256_8k_b1_1chip_2cores_v1.4.0_20260707.gguf",
+        "payload/home/cix/cix_telecom_projects/glm-ocr-0.9b/mmproj_xh2_glm-ocr_0.9b_2cores_v1.4.0_20260707.gguf": "glm-ocr-0.9b/mmproj_xh2_glm-ocr_0.9b_2cores_v1.4.0_20260707.gguf"
+      }
+    },
+    "bge-m3": {
+      "registry": "http://36.111.34.121:15436",
+      "repository": "aistore/bge-m3.gguf",
+      "reference": "v1",
+      "manifest_digest": "sha256:90f4d8a075a38c2fdd9fd4092c9603092c382a2541e1411fe02087e4b0eaac62",
+      "blob_digest": "sha256:fab0b86a16eb2d0910e1f124546408b459774e937e702f47870686e90cc75f42",
+      "blob_size": 1006033536,
+      "format": "blob",
+      "files": {
+        "payload/home/cix/cix_telecom_projects/HiModel_xh2_bge-0.5b_0.5k_b10_1chip_2cores_v1.4.0_20260720.gguf": null
+      }
+    },
+    "bge-reranker-v2-m3": {
+      "registry": "http://36.111.34.121:15436",
+      "repository": "aistore/bge-reranker-v2-m3.gguf",
+      "reference": "v1",
+      "manifest_digest": "sha256:40c1dc290229ff040f0eb6a0ff497ca9af0dbf5db0386d3ccf2f12c1f1a5d613",
+      "blob_digest": "sha256:1d5208b3003df9fe324245efc2727d694cc859e3ce5c2a713ef0ac02d4ba3d2a",
+      "blob_size": 1006261440,
+      "format": "blob",
+      "files": {
+        "payload/home/cix/cix_telecom_projects/HiModel_xh2_bge-reranker-v2-m3-0.5b_0.5k_b10_1chip_2cores_v1.4.0_20260720.gguf": null
+      }
+    },
+    "qwen3guard-stream-0.6b": {
+      "registry": "http://36.111.34.121:15436",
+      "repository": "aistore/qwen3guard-stream-0.6b",
+      "reference": "v1",
+      "manifest_digest": "sha256:f21474f9efab8877a20fdda063c75fc938415b57300c725663c416b5ffbc3dda",
+      "blob_digest": "sha256:7486e8411212b9fd4da57f43d18c7bd2ae884d77520842bb6cd595f3c934fe84",
+      "blob_size": 942326840,
+      "format": "tar+gzip",
+      "files": {
+        "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/config.json": "qwen3guard-stream-0.6b/config.json",
+        "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/configuration_qwen3.py": "qwen3guard-stream-0.6b/configuration_qwen3.py",
+        "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/merges.txt": "qwen3guard-stream-0.6b/merges.txt",
+        "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/model.safetensors": "qwen3guard-stream-0.6b/model.safetensors",
+        "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/modeling_qwen3_guard.py": "qwen3guard-stream-0.6b/modeling_qwen3_guard.py",
+        "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/tokenizer.json": "qwen3guard-stream-0.6b/tokenizer.json",
+        "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/tokenizer_config.json": "qwen3guard-stream-0.6b/tokenizer_config.json",
+        "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/vocab.json": "qwen3guard-stream-0.6b/vocab.json"
+      }
+    },
+    "sensevoice": {
+      "registry": "http://36.111.34.121:15436",
+      "repository": "aistore/sensevoice",
+      "reference": "v1",
+      "manifest_digest": "sha256:a5c73e8d1d85bd3ac59ce510e7417265fd834ff3e8ee180e9ad97dfc02bb2728",
+      "blob_digest": "sha256:ad9278bb0e4deb0bbc81c6c7f9bd945f7015f54c27c354c25eca5899ea7643dd",
+      "blob_size": 154574871,
+      "format": "tar+gzip",
+      "files": {
+        "payload/home/cix/cix_telecom_projects/sensevoice/model/model.int8.onnx": "sensevoice/model.int8.onnx",
+        "payload/home/cix/cix_telecom_projects/sensevoice/model/silero_vad.onnx": "sensevoice/silero_vad.onnx",
+        "payload/home/cix/cix_telecom_projects/sensevoice/model/tokens.txt": "sensevoice/tokens.txt"
+      }
+    },
+    "matcha-zh": {
+      "registry": "http://36.111.34.121:15436",
+      "repository": "aistore/matcha-zh",
+      "reference": "v1",
+      "manifest_digest": "sha256:53a2d5fa48926b5edb36c6fb3236cbe54256e5eefc6f7b563b829ca79d201aec",
+      "blob_digest": "sha256:313528eed11f9cbb1b2f372dd0fc52f517994a4bc7d1d52ed4779f78151f3460",
+      "blob_size": 125133848,
+      "format": "tar+gzip",
+      "files": {
+        "payload/home/cix/matcha-tts-cpu/model/matcha-icefall-zh-baker/README.md": "matcha-zh/matcha-icefall-zh-baker/README.md",
+        "payload/home/cix/matcha-tts-cpu/model/matcha-icefall-zh-baker/date.fst": "matcha-zh/matcha-icefall-zh-baker/date.fst",
+        "payload/home/cix/matcha-tts-cpu/model/matcha-icefall-zh-baker/dict/README.md": "matcha-zh/matcha-icefall-zh-baker/dict/README.md",
+        "payload/home/cix/matcha-tts-cpu/model/matcha-icefall-zh-baker/dict/hmm_model.utf8": "matcha-zh/matcha-icefall-zh-baker/dict/hmm_model.utf8",
+        "payload/home/cix/matcha-tts-cpu/model/matcha-icefall-zh-baker/dict/idf.utf8": "matcha-zh/matcha-icefall-zh-baker/dict/idf.utf8",
+        "payload/home/cix/matcha-tts-cpu/model/matcha-icefall-zh-baker/dict/jieba.dict.utf8": "matcha-zh/matcha-icefall-zh-baker/dict/jieba.dict.utf8",
+        "payload/home/cix/matcha-tts-cpu/model/matcha-icefall-zh-baker/dict/pos_dict/char_state_tab.utf8": "matcha-zh/matcha-icefall-zh-baker/dict/pos_dict/char_state_tab.utf8",
+        "payload/home/cix/matcha-tts-cpu/model/matcha-icefall-zh-baker/dict/pos_dict/prob_emit.utf8": "matcha-zh/matcha-icefall-zh-baker/dict/pos_dict/prob_emit.utf8",
+        "payload/home/cix/matcha-tts-cpu/model/matcha-icefall-zh-baker/dict/pos_dict/prob_start.utf8": "matcha-zh/matcha-icefall-zh-baker/dict/pos_dict/prob_start.utf8",
+        "payload/home/cix/matcha-tts-cpu/model/matcha-icefall-zh-baker/dict/pos_dict/prob_trans.utf8": "matcha-zh/matcha-icefall-zh-baker/dict/pos_dict/prob_trans.utf8",
+        "payload/home/cix/matcha-tts-cpu/model/matcha-icefall-zh-baker/dict/stop_words.utf8": "matcha-zh/matcha-icefall-zh-baker/dict/stop_words.utf8",
+        "payload/home/cix/matcha-tts-cpu/model/matcha-icefall-zh-baker/dict/user.dict.utf8": "matcha-zh/matcha-icefall-zh-baker/dict/user.dict.utf8",
+        "payload/home/cix/matcha-tts-cpu/model/matcha-icefall-zh-baker/lexicon.txt": "matcha-zh/matcha-icefall-zh-baker/lexicon.txt",
+        "payload/home/cix/matcha-tts-cpu/model/matcha-icefall-zh-baker/number.fst": "matcha-zh/matcha-icefall-zh-baker/number.fst",
+        "payload/home/cix/matcha-tts-cpu/model/matcha-icefall-zh-baker/phone.fst": "matcha-zh/matcha-icefall-zh-baker/phone.fst",
+        "payload/home/cix/matcha-tts-cpu/model/matcha-icefall-zh-baker/tokens.txt": "matcha-zh/matcha-icefall-zh-baker/tokens.txt",
+        "payload/home/cix/matcha-tts-cpu/model/matcha-icefall-zh-baker/model-steps-3.onnx": "matcha-zh/model-steps-3.onnx",
+        "payload/home/cix/matcha-tts-cpu/model/vocos-22khz-univ.onnx": "matcha-zh/vocos-22khz-univ.onnx"
+      }
+    },
+    "kokoro-82m": {
+      "registry": "http://36.111.34.121:15436",
+      "repository": "aistore/kokoro-82m",
+      "reference": "v1",
+      "manifest_digest": "sha256:31a04beae39f6d75afdd43675e61e017c8455ef33c7ac851f2e92c8fe0d05bd7",
+      "blob_digest": "sha256:b295d69532cb33f7b1943f200f66cbbd0472a549f29c6b8c5282492febce544c",
+      "blob_size": 181851799,
+      "format": "tar+gzip",
+      "files": {
+        "payload/home/cix/kokoro-cix/model/bert2.cix": "kokoro-82m/bert2.cix",
+        "payload/home/cix/kokoro-cix/model/decoder00.cix": "kokoro-82m/decoder00.cix",
+        "payload/home/cix/kokoro-cix/model/decoder01.cix": "kokoro-82m/decoder01.cix",
+        "payload/home/cix/kokoro-cix/model/model/decoder1.onnx": "kokoro-82m/model/decoder1.onnx",
+        "payload/home/cix/kokoro-cix/model/predictor.cix": "kokoro-82m/predictor.cix",
+        "payload/home/cix/kokoro-cix/model/text_encoder.cix": "kokoro-82m/text_encoder.cix",
+        "payload/home/cix/kokoro-cix/model/voices/af_heart.pt": "kokoro-82m/voices/af_heart.pt",
+        "payload/home/cix/kokoro-cix/model/voices/zf_xiaoyi.pt": "kokoro-82m/voices/zf_xiaoyi.pt"
+      }
+    },
+    "cosyvoice3-0.5b": {
+      "registry": "http://36.111.34.121:15436",
+      "repository": "aistore/cosyvoice3",
+      "reference": "v1",
+      "manifest_digest": "sha256:7ed9028f8c75ce4fa1b61da4c4b27cf9b06eeddd92cddfcfd2028c5e420e7a66",
+      "blob_digest": "sha256:3938b8a410ba88147d45cb860c903e2ee011351615f42d7f12bbc14005f17207",
+      "blob_size": 2522755840,
+      "format": "blob",
+      "files": {
+        "payload/home/cix/cix_telecom_projects/cosyvoice3/HiModel_xh2_cosyvoice3-0.5b-2512_256_2k_b1_1chip_2cores_v1.4.0_20260720.gguf": null
+      }
+    },
+    "spark-x1-4b": {
+      "registry": "http://36.111.34.121:15436",
+      "repository": "aistore/xunfei-spark",
+      "reference": "v1",
+      "manifest_digest": "sha256:98b7ce7b5949c0af7d0715081dc429bcb00abb15543b3686d7574e1dba772f0d",
+      "blob_digest": "sha256:b1a45870e7a09989ee36c3c63649ef03303b71967a6dd1a8a68b5867162ec4b8",
+      "blob_size": 8266037056,
+      "format": "blob",
+      "files": {
+        "payload/home/cix/cix_telecom_projects/xunfei-spark/HiModel_xh2_Spark_x1-4b-w4a8-256K-b1-2core-1d-xh2-v1.5.0-20260904.gguf": null
+      }
+    },
+    "qwen38-1-model": {
+      "registry": "http://36.111.34.121:15436",
+      "repository": "aistore/qwen3-8-27b",
+      "reference": "v1",
+      "resolve_tag": true,
+      "manifest_digest": null,
+      "blob_digest": "sha256:9c2deaee0582274f02e0bf06e9fda18d7eaf61f73ccf449146e2c89b7b832345",
+      "blob_size": 20695534688,
+      "format": "blob",
+      "files": {
+        "payload/home/cix/cix_telecom_projects/qwen3.8-27b/HiModel-Qwen3.8-27b-mtp-w4a8-p256-128K-b1-2core-1d-xh2-v1.5.0-20260911181708.gguf": null
+      },
+      "device_count": 1
+    },
+    "qwen38-1-mmproj": {
+      "registry": "http://36.111.34.121:15436",
+      "repository": "aistore/qwen3-8-27b",
+      "reference": "v1",
+      "resolve_tag": true,
+      "manifest_digest": null,
+      "blob_digest": "sha256:830c502df06021faaa4df112dd1bf1597c775345b28f7229ec1a639552d0c71d",
+      "blob_size": 3007966880,
+      "format": "blob",
+      "files": {
+        "payload/home/cix/cix_telecom_projects/qwen3.8-27b/mmproj-Qwen3.8-27b-mtp-w4a8-vit-dynamic-m96-m196-m384-m704-m1536-xh2-v1.5.0-20260911181222.gguf": null
+      },
+      "device_count": 1
+    },
+    "qwen38-2-model": {
+      "registry": "http://36.111.34.121:15436",
+      "repository": "aistore/qwen3-8-27b-2",
+      "reference": "v1",
+      "resolve_tag": true,
+      "manifest_digest": null,
+      "blob_digest": "sha256:7fcedfd624f0396df381398e38ad1db41b6742c348631cf392143e9274bacd1c",
+      "blob_size": 21104414720,
+      "format": "blob",
+      "files": {
+        "payload/home/cix/cix_telecom_projects/qwen3.8-27b/HiModel-Qwen3.8-27b-mtp-w4a8-p256-256K-b1-2core-2d-xh2-v1.5.0-20260911181607.gguf": null
+      },
+      "device_count": 2
+    },
+    "qwen38-2-mmproj": {
+      "registry": "http://36.111.34.121:15436",
+      "repository": "aistore/qwen3-8-27b-2",
+      "reference": "v1",
+      "resolve_tag": true,
+      "manifest_digest": null,
+      "blob_digest": "sha256:830c502df06021faaa4df112dd1bf1597c775345b28f7229ec1a639552d0c71d",
+      "blob_size": 3007966880,
+      "format": "blob",
+      "files": {
+        "payload/home/cix/cix_telecom_projects/qwen3.8-27b/mmproj-Qwen3.8-27b-mtp-w4a8-vit-dynamic-m96-m196-m384-m704-m1536-xh2-v1.5.0-20260911181222.gguf": null
+      },
+      "device_count": 2
+    },
+    "qwen36-2-model": {
+      "registry": "http://36.111.34.121:15436",
+      "repository": "aistore/qwen3.6-35b-a3b-2",
+      "reference": "v1",
+      "resolve_tag": true,
+      "manifest_digest": null,
+      "blob_digest": "sha256:142b1e0b910687b903f31058da749113797bfd2e0f81f216fe3b36f8cd906708",
+      "blob_size": 27106465664,
+      "format": "blob",
+      "files": {
+        "payload/home/cix/cix_telecom_projects/dual-core/qwen36_35B/HiModel_xh2_qwen3.6-35b-a3b_w5a8_256_256k_b1_2chips_2cores_v1.4.0_20260716.gguf": null
+      },
+      "device_count": 2
+    },
+    "qwen36-2-mmproj": {
+      "registry": "http://36.111.34.121:15436",
+      "repository": "aistore/qwen3.6-35b-a3b-2",
+      "reference": "v1",
+      "resolve_tag": true,
+      "manifest_digest": null,
+      "blob_digest": "sha256:84f977c30083e80293d258e35c55c31e49e5b029c4ea982af837ca7112a55c4b",
+      "blob_size": 4326159264,
+      "format": "blob",
+      "files": {
+        "payload/home/cix/cix_telecom_projects/dual-core/qwen36_35B/mmproj_xh2_qwen3.6-35b-a3b_w4a8_2cores_vit_dynamic_m96-m196-m384-m704-m1536_v1.5.0_20260824.gguf": null
+      },
+      "device_count": 2
+    }
+  }
+}

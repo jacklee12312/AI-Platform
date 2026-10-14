@@ -1,0 +1,54 @@
+name: sensevoice-cpu
+services:
+  sensevoice:
+    image: sensevoice-cpu:0.1.0
+    container_name: houmo-sensevoice-cpu
+    restart: unless-stopped
+    init: true
+    read_only: true
+    cpus: 4.0
+    mem_limit: 2g
+    env_file:
+    - /home/cix/houmo-docker-deployment/.env
+    environment:
+      SENSEVOICE_NUM_THREADS: '4'
+      SENSEVOICE_MAX_CONCURRENCY: '2'
+      SENSEVOICE_MAX_FILE_BYTES: '104857600'
+      SENSEVOICE_MAX_AUDIO_SECONDS: '3600'
+      SENSEVOICE_STREAM_MAX_SECONDS: '3600'
+      TZ: Asia/Shanghai
+      HF_HUB_OFFLINE: '1'
+      TRANSFORMERS_OFFLINE: '1'
+      PIP_NO_INDEX: '1'
+    volumes:
+    - type: bind
+      source: /home/cix/cix_telecom_projects/sensevoice/model
+      target: /models
+      read_only: true
+    tmpfs:
+    - /tmp:size=128m,mode=1777
+    networks:
+      houmo:
+        aliases:
+        - sensevoice
+    healthcheck:
+      test:
+      - CMD
+      - python
+      - -c
+      - import json,os,urllib.request; r=urllib.request.Request('http://127.0.0.1:17708/health',headers={'Authorization':'Bearer
+        '+os.environ['HOUMO_API_KEY']}); assert json.load(urllib.request.urlopen(r,timeout=5))['ok']
+      interval: 10s
+      timeout: 6s
+      retries: 12
+      start_period: 60s
+    logging:
+      driver: json-file
+      options:
+        max-size: 50m
+        max-file: '3'
+    pull_policy: never
+networks:
+  houmo:
+    external: true
+    name: houmo-ai_default

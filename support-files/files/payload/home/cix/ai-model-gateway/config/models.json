@@ -1,0 +1,481 @@
+{
+  "services": {
+    "gateway_version": "0.9.0",
+    "guard_mode_default": "off"
+  },
+  "models": [
+    {
+      "id": "copaw-flash-9b",
+      "capability": "chat",
+      "backend": "openai",
+      "base_url": "http://copaw:17701",
+      "upstream_model": "copaw-flash-9b",
+      "enabled": true,
+      "guard": true,
+      "modes": [
+        "copaw"
+      ],
+      "metadata": {
+        "device": "LQ50",
+        "type": "llm",
+        "model_version": "v1.3.0-20260427",
+        "service_version": "2.1.1",
+        "service_port": 17701
+      }
+    },
+    {
+      "id": "spark-x1-4b",
+      "capability": "chat",
+      "backend": "openai",
+      "base_url": "http://spark-x1:17711",
+      "upstream_model": "spark-x1-4b",
+      "enabled": true,
+      "guard": true,
+      "modes": [
+        "spark-x1"
+      ],
+      "metadata": {
+        "device": "LQ50",
+        "type": "llm",
+        "context_length": 262144,
+        "model_version": "v1.5.0-20260904",
+        "service_version": "2.2.3-xunfei-spark",
+        "service_port": 17711
+      }
+    },
+    {
+      "id": "qwen3-vl-8b",
+      "capability": "chat",
+      "backend": "openai",
+      "base_url": "http://qwen-vl:17705",
+      "upstream_model": "qwen3-vl-8b",
+      "enabled": true,
+      "guard": true,
+      "modes": [
+        "qwen-vl"
+      ],
+      "metadata": {
+        "device": "LQ50",
+        "type": "vlm",
+        "model_version": "v1.3.0-20260615",
+        "service_version": "2.1.1",
+        "service_port": 17705
+      }
+    },
+    {
+      "id": "qwen3.8-27b",
+      "capability": "chat",
+      "backend": "openai",
+      "base_url": "http://qwen38:17707",
+      "upstream_model": "qwen3.8-27b",
+      "enabled": true,
+      "guard": true,
+      "modes": [
+        "qwen38"
+      ],
+      "metadata": {
+        "device": "LQ50",
+        "type": "vlm",
+        "model_version": "v1.5.0-20260911",
+        "service_version": "2.2.0",
+        "service_port": 17707,
+        "context_length": 262144
+      }
+    },
+    {
+      "id": "bge-m3",
+      "capability": "embeddings",
+      "backend": "openai",
+      "base_url": "http://bge-m3:17702",
+      "upstream_model": "bge-m3",
+      "enabled": true,
+      "guard": false,
+      "modes": [
+        "bge-m3"
+      ],
+      "metadata": {
+        "device": "LQ50",
+        "type": "embedding",
+        "model_version": "v1.4.0-20260720",
+        "service_version": "2.1.1",
+        "service_port": 17702
+      }
+    },
+    {
+      "id": "bge-reranker-v2-m3",
+      "capability": "rerank",
+      "backend": "openai",
+      "base_url": "http://reranker:17703",
+      "upstream_model": "bge-reranker-v2-m3",
+      "enabled": true,
+      "guard": false,
+      "modes": [
+        "reranker"
+      ],
+      "metadata": {
+        "device": "LQ50",
+        "type": "reranker",
+        "model_version": "v1.4.0-20260720",
+        "service_version": "2.1.1",
+        "service_port": 17703
+      }
+    },
+    {
+      "id": "qwen3guard-stream-0.6b",
+      "capability": "moderation",
+      "backend": "openai",
+      "base_url": "http://qwen3guard:17706",
+      "upstream_model": "qwen3guard-stream-0.6b",
+      "enabled": true,
+      "guard": false,
+      "metadata": {
+        "device": "CPU",
+        "type": "streaming_safety",
+        "streaming": "token_level",
+        "model_version": "0.6B",
+        "service_version": "0.1.0",
+        "service_port": 17706
+      }
+    },
+    {
+      "id": "mobilenet_v2",
+      "capability": "cv_classify",
+      "backend": "cv",
+      "base_url": "http://cix-cv:17710",
+      "enabled": true,
+      "guard": false,
+      "metadata": {
+        "device": "CIX-NPU",
+        "type": "classification",
+        "model_version": "cix-model-pack-current",
+        "service_version": "1.0.0",
+        "service_port": 17710
+      }
+    },
+    {
+      "id": "inception_v3",
+      "capability": "cv_classify",
+      "backend": "cv",
+      "base_url": "http://cix-cv:17710",
+      "enabled": true,
+      "guard": false,
+      "metadata": {
+        "device": "CIX-NPU",
+        "type": "classification",
+        "model_version": "cix-model-pack-current",
+        "service_version": "1.0.0",
+        "service_port": 17710
+      }
+    },
+    {
+      "id": "yolov11_l",
+      "capability": "cv_detect",
+      "backend": "cv",
+      "base_url": "http://cix-cv:17710",
+      "enabled": true,
+      "guard": false,
+      "metadata": {
+        "device": "CIX-NPU",
+        "type": "detection",
+        "model_version": "cix-model-pack-current",
+        "service_version": "1.0.0",
+        "service_port": 17710
+      }
+    },
+    {
+      "id": "yolov11_n",
+      "capability": "cv_detect",
+      "backend": "cv",
+      "base_url": "http://cix-cv:17710",
+      "enabled": true,
+      "guard": false,
+      "metadata": {
+        "device": "CIX-NPU",
+        "type": "detection",
+        "model_version": "cix-model-pack-current",
+        "service_version": "1.0.0",
+        "service_port": 17710
+      }
+    },
+    {
+      "id": "yolov11n_obb",
+      "capability": "cv_detect",
+      "backend": "cv",
+      "base_url": "http://cix-cv:17710",
+      "enabled": true,
+      "guard": false,
+      "metadata": {
+        "device": "CIX-NPU",
+        "type": "oriented_detection",
+        "model_version": "cix-model-pack-current",
+        "service_version": "1.0.0",
+        "service_port": 17710
+      }
+    },
+    {
+      "id": "yolov12_s",
+      "capability": "cv_detect",
+      "backend": "cv",
+      "base_url": "http://cix-cv:17710",
+      "enabled": true,
+      "guard": false,
+      "metadata": {
+        "device": "CIX-NPU",
+        "type": "detection",
+        "model_version": "cix-model-pack-current",
+        "service_version": "1.0.0",
+        "service_port": 17710
+      }
+    },
+    {
+      "id": "yolov12_m",
+      "capability": "cv_detect",
+      "backend": "cv",
+      "base_url": "http://cix-cv:17710",
+      "enabled": true,
+      "guard": false,
+      "metadata": {
+        "device": "CIX-NPU",
+        "type": "detection",
+        "model_version": "cix-model-pack-current",
+        "service_version": "1.0.0",
+        "service_port": 17710
+      }
+    },
+    {
+      "id": "bytetrack_s",
+      "capability": "cv_detect",
+      "backend": "cv",
+      "base_url": "http://cix-cv:17710",
+      "enabled": true,
+      "guard": false,
+      "metadata": {
+        "device": "CIX-NPU",
+        "type": "tracking_detector",
+        "model_version": "cix-model-pack-current",
+        "service_version": "1.0.0",
+        "service_port": 17710
+      }
+    },
+    {
+      "id": "retinaface",
+      "capability": "cv_face",
+      "backend": "cv",
+      "base_url": "http://cix-cv:17710",
+      "enabled": true,
+      "guard": false,
+      "metadata": {
+        "device": "CIX-NPU",
+        "type": "face_detection",
+        "model_version": "cix-model-pack-current",
+        "service_version": "1.0.0",
+        "service_port": 17710
+      }
+    },
+    {
+      "id": "yolov5s_face",
+      "capability": "cv_face",
+      "backend": "cv",
+      "base_url": "http://cix-cv:17710",
+      "enabled": true,
+      "guard": false,
+      "metadata": {
+        "device": "CIX-NPU",
+        "type": "face_detection",
+        "model_version": "cix-model-pack-current",
+        "service_version": "1.0.0",
+        "service_port": 17710
+      }
+    },
+    {
+      "id": "scrfd",
+      "capability": "cv_face",
+      "backend": "cv",
+      "base_url": "http://cix-cv:17710",
+      "enabled": true,
+      "guard": false,
+      "metadata": {
+        "device": "CIX-NPU",
+        "type": "face_detection",
+        "model_version": "cix-model-pack-current",
+        "service_version": "1.0.0",
+        "service_port": 17710
+      }
+    },
+    {
+      "id": "arcface",
+      "capability": "cv_face",
+      "backend": "cv",
+      "base_url": "http://cix-cv:17710",
+      "enabled": true,
+      "guard": false,
+      "metadata": {
+        "device": "CIX-NPU",
+        "type": "face_embedding",
+        "model_version": "cix-model-pack-current",
+        "service_version": "1.0.0",
+        "service_port": 17710
+      }
+    },
+    {
+      "id": "yolov8l_seg",
+      "capability": "cv_segment",
+      "backend": "cv",
+      "base_url": "http://cix-cv:17710",
+      "enabled": true,
+      "guard": false,
+      "metadata": {
+        "device": "CIX-NPU",
+        "type": "instance_segmentation",
+        "model_version": "cix-model-pack-current",
+        "service_version": "1.0.0",
+        "service_port": 17710
+      }
+    },
+    {
+      "id": "cosyvoice3-0.5b",
+      "capability": "audio_tts",
+      "backend": "openai",
+      "base_url": "http://houmo-cosyvoice3:8091",
+      "upstream_model": "cosyvoice3",
+      "enabled": true,
+      "guard": false,
+      "modes": [
+        "cosyvoice"
+      ],
+      "metadata": {
+        "device": "LQ50",
+        "type": "tts",
+        "language": "zh",
+        "voice": "reference_audio",
+        "sample_rate": 24000,
+        "context_length": 2048,
+        "model_version": "v1.4.0-20260720",
+        "service_version": "0.21.0rc1+vLLM-Omni-0.20.1.dev3",
+        "tcim_version": "1.4.0",
+        "service_port": 8091
+      }
+    },
+    {
+      "id": "kokoro-82m",
+      "capability": "audio_tts",
+      "backend": "openai",
+      "base_url": "http://kokoro-tts:17722",
+      "upstream_model": "kokoro-82m",
+      "enabled": true,
+      "guard": false,
+      "metadata": {
+        "device": "CIX-NPU+CPU",
+        "type": "tts",
+        "language": "zh",
+        "voice": "zf_xiaoyi",
+        "sample_rate": 24000,
+        "model_version": "82M-local-adaptation",
+        "service_version": "0.2.0",
+        "service_port": 17722
+      }
+    },
+    {
+      "id": "matcha-zh",
+      "capability": "audio_tts",
+      "backend": "openai",
+      "base_url": "http://matcha-tts:17723",
+      "upstream_model": "matcha-zh",
+      "enabled": true,
+      "guard": false,
+      "metadata": {
+        "device": "CPU",
+        "type": "tts",
+        "language": "zh",
+        "voice": "zh-baker-female",
+        "sample_rate": 22050,
+        "runtime": "sherpa-onnx",
+        "streaming_chunks": "sentence",
+        "model_version": "matcha-icefall-zh-baker",
+        "service_version": "0.2.0",
+        "service_port": 17723
+      }
+    },
+    {
+      "id": "sensevoice",
+      "capability": "audio_asr",
+      "backend": "openai",
+      "base_url": "http://sensevoice:17708",
+      "upstream_model": "sensevoice",
+      "enabled": true,
+      "guard": false,
+      "metadata": {
+        "device": "CPU",
+        "type": "asr",
+        "streaming": "vad_simulated",
+        "runtime": "sherpa-onnx",
+        "model_version": "int8-2024-07-17",
+        "service_version": "0.1.0",
+        "service_port": 17708
+      }
+    },
+    {
+      "id": "glm-ocr-0.9b",
+      "capability": "chat",
+      "backend": "openai",
+      "base_url": "http://glm-ocr:17709",
+      "upstream_model": "glm-ocr-0.9b",
+      "enabled": true,
+      "guard": false,
+      "modes": [
+        "glm-ocr"
+      ],
+      "metadata": {
+        "device": "LQ50",
+        "type": "document_ocr",
+        "vision": true,
+        "replaces": "mineru2.5",
+        "context_length": 8192,
+        "model_version": "v1.4.0-20260707",
+        "service_version": "2.1.1",
+        "service_port": 17709
+      }
+    },
+    {
+      "id": "democratic-eval-v1",
+      "capability": "document_analysis",
+      "backend": "custom",
+      "base_url": "http://ballot-reader:17724",
+      "upstream_model": "democratic-eval-v1",
+      "enabled": true,
+      "guard": false,
+      "metadata": {
+        "device": "CPU",
+        "type": "structured_ballot",
+        "template": "democratic-evaluation-v1",
+        "multipart_field": "image",
+        "upstream_path": "/predict",
+        "health_path": "/health",
+        "model_version": "template-v1",
+        "service_version": "0.1.0",
+        "service_port": 17724
+      }
+    },
+    {
+      "id": "qwen3.6-35b-a3b",
+      "capability": "chat",
+      "backend": "openai",
+      "base_url": "http://qwen36:17712",
+      "upstream_model": "qwen3.6-35b-a3b",
+      "enabled": true,
+      "guard": true,
+      "modes": [
+        "qwen36"
+      ],
+      "metadata": {
+        "device": "LQ50",
+        "type": "vlm",
+        "model_version": "v1.4.0-20260716",
+        "service_version": "HLIEvLLM-1.4.0-0825hsc",
+        "service_port": 17712,
+        "context_length": 262144,
+        "hardware_variant": "dual"
+      }
+    }
+  ]
+}

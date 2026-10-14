@@ -1,0 +1,325 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+export COMPOSE_PROGRESS="${COMPOSE_PROGRESS:-plain}"
+
+DEPLOY_DIR="${HOUMO_DEPLOY_DIR:-/home/cix/houmo-docker-deployment}"
+COMPOSE_FILE="${HOUMO_COMPOSE_FILE:-${DEPLOY_DIR}/compose.yaml}"
+STATE_DIR="${HOUMO_STATE_DIR:-${DEPLOY_DIR}/state}"
+MODE_FILE="${STATE_DIR}/active-mode"
+LOCK_FILE="${STATE_DIR}/modelctl.lock"
+LOG_FILE="${STATE_DIR}/modelctl.log"
+START_TIMEOUT="${HOUMO_START_TIMEOUT:-360}"
+STOP_TIMEOUT="${HOUMO_STOP_TIMEOUT:-30}"
+DEFAULT_MODE="${HOUMO_DEFAULT_MODE:-copaw}"
+START_DEADLINE=0
+
+MODES=(copaw spark-x1 qwen38 qwen36 qwen-vl glm-ocr bge-m3 reranker cosyvoice)
+ACCELERATOR_SERVICES=(copaw spark-x1 qwen38 qwen36 qwen-vl glm-ocr bge-m3 reranker cosyvoice)
+
+mkdir -p "${STATE_DIR}"
+
+dc() {
+    docker compose --project-directory "${DEPLOY_DIR}" -f "${COMPOSE_FILE}" "$@"
+}
+
+dc_all_profiles() {
+    dc --profile copaw --profile spark-x1 --profile qwen38 --profile qwen36 --profile qwen-vl \
+        --profile glm-ocr --profile bge-m3 --profile reranker --profile cosyvoice "$@"
+}
+
+timestamp() { date --iso-8601=seconds; }
+
+log() {
+    local message="$*"
+    printf '%s %s\n' "$(timestamp)" "${message}" | tee -a "${LOG_FILE}"
+}
+
+valid_mode() {
+    local candidate="${1:-}" mode
+    for mode in "${MODES[@]}"; do
+        [[ "${candidate}" == "${mode}" ]] && return 0
+    done
+    return 1
+}
+
+read_mode() {
+    local mode=""
+    if [[ -r "${MODE_FILE}" ]]; then
+        mode="$(tr -d '[:space:]' < "${MODE_FILE}")"
+    fi
+    # One-time compatibility for devices upgraded from the former grouped mode.
+    [[ "${mode}" == "multi-model" ]] && mode="copaw"
+    if valid_mode "${mode}"; then printf '%s\n' "${mode}"; else printf '%s\n' "${DEFAULT_MODE}"; fi
+}
+
+write_mode() {
+    local mode="$1" next="${MODE_FILE}.next.$$"
+    printf '%s\n' "${mode}" > "${next}"
+    chmod 0644 "${next}"
+    mv -f "${next}" "${MODE_FILE}"
+}
+
+container_name() {
+    case "$1" in
+        copaw) printf '%s\n' houmo-copaw ;;
+        spark-x1) printf '%s\n' houmo-spark-x1 ;;
+        bge-m3) printf '%s\n' houmo-bge-m3 ;;
+        reranker) printf '%s\n' houmo-reranker ;;
+        qwen-vl) printf '%s\n' houmo-qwen3-vl-8b ;;
+        glm-ocr) printf '%s\n' houmo-glm-ocr-0.9b ;;
+        qwen38) printf '%s\n' houmo-qwen38-27b ;;
+        qwen36) printf '%s\n' houmo-qwen36-35b-a3b ;;
+        qwen3guard) printf '%s\n' houmo-qwen3guard-stream-0.6b ;;
+        cosyvoice) printf '%s\n' houmo-cosyvoice3 ;;
+        *) return 1 ;;
+    esac
+}
+
+container_state() {
+    local container="$1" value normalized
+    if value="$(timeout 10 docker inspect --format '{{.State.Status}}/{{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}}' "${container}" 2>&1)"; then
+        printf '%s\n' "${value}"
+    else
+        normalized="${value,,}"
+        if [[ "${normalized}" == *"no such object"* || "${normalized}" == *"no such container"* ]]; then
+        printf '%s\n' absent
+        else
+            printf '%s\n' unknown
+        fi
+    fi
+}
+
+inventory_readable() {
+    local service state
+    for service in "${ACCELERATOR_SERVICES[@]}" qwen3guard; do
+        state="$(container_state "$(container_name "${service}")")"
+        if [[ "${state}" == unknown ]]; then
+            log "cannot inspect ${service}; no lifecycle changes were submitted"
+            return 1
+        fi
+    done
+}
+
+container_is_healthy() { [[ "$(container_state "$1")" == "running/healthy" ]]; }
+
+service_is_running() {
+    local name
+    name="$(container_name "$1")"
+    [[ "$(container_state "${name}")" == running/* ]]
+}
+
+detected_mode() {
+    local service found="" count=0
+    for service in "${ACCELERATOR_SERVICES[@]}"; do
+        if service_is_running "${service}"; then found="${service}"; count=$((count + 1)); fi
+    done
+    if (( count == 0 )); then
+        printf '%s\n' none
+    elif (( count == 1 )) && valid_mode "${found}"; then
+        printf '%s\n' "${found}"
+    else
+        printf '%s\n' conflict
+    fi
+}
+
+expected_services() {
+    local mode="$1"
+    valid_mode "${mode}" || return 1
+    if [[ -e "${STATE_DIR}/model-installations.json" ]]; then
+        python3 - "${STATE_DIR}/model-installations.json" "${mode}" <<'PY'
+import json,sys
+try:
+    data=json.load(open(sys.argv[1]))
+    assert data['schema_version']==1 and isinstance(data['models'],dict)
+    assert all(isinstance(row,dict) and isinstance(row.get('enabled',False),bool) and isinstance(row.get('installed',False),bool) for row in data['models'].values())
+    mapping={'copaw-flash-9b':'copaw','spark-x1-4b':'spark-x1','bge-m3':'bge-m3','bge-reranker-v2-m3':'reranker','qwen3-vl-8b':'qwen-vl','glm-ocr-0.9b':'glm-ocr','qwen3.8-27b':'qwen38','qwen3.6-35b-a3b':'qwen36','cosyvoice3-0.5b':'cosyvoice','qwen3guard-stream-0.6b':'qwen3guard'}
+    mode=sys.argv[2]
+    assert mode in set(mapping.values())-{'qwen3guard'}
+    # CosyVoice is delivered as one pinned HLIEvLLM runtime bundle rather than
+    # by the GGUF-only downloader, so its compose preflight is authoritative.
+    if mode == 'cosyvoice':
+        print('cosyvoice')
+    for model,service in mapping.items():
+        row=data['models'].get(model,{})
+        if service != 'cosyvoice' and row.get('installed') and row.get('enabled') and service in {mode,'qwen3guard'}:
+            print(service)
+except (OSError,ValueError,KeyError,TypeError,AssertionError):
+    print('Invalid model installation state; refusing lifecycle changes.',file=sys.stderr)
+    sys.exit(1)
+PY
+        return $?
+    fi
+    printf '%s\n' "${mode}" qwen3guard
+}
+
+verify_mode() {
+    local mode="$1" service name services failed=0
+    services="$(expected_services "${mode}")" || return 1
+    while IFS= read -r service; do
+        [[ -n "${service}" ]] || continue
+        name="$(container_name "${service}")"
+        if ! container_is_healthy "${name}"; then
+            log "health check failed: service=${service} container=${name} state=$(container_state "${name}")"
+            failed=1
+        fi
+    done <<< "${services}"
+    for service in "${ACCELERATOR_SERVICES[@]}"; do
+        if [[ "${service}" != "${mode}" ]] && service_is_running "${service}"; then
+            log "exclusivity check failed: ${service} is still running"
+            failed=1
+        fi
+    done
+    return "${failed}"
+}
+
+stop_accelerator_services() {
+    dc_all_profiles stop --timeout "${STOP_TIMEOUT}" "${ACCELERATOR_SERVICES[@]}"
+    local service state
+    for service in "${ACCELERATOR_SERVICES[@]}"; do
+        state="$(container_state "$(container_name "${service}")")"
+        if [[ "${state}" != exited/* && "${state}" != created/* && "${state}" != absent ]]; then
+            log "stop verification failed: ${service}; no further load is permitted"
+            return 1
+        fi
+    done
+}
+
+check_quarantine() {
+    [[ -e "${STATE_DIR}/runtime-safety.json" ]] || return 0
+    python3 - "${STATE_DIR}/runtime-safety.json" <<'PY'
+import json,sys
+try:
+    data=json.load(open(sys.argv[1])); blocked=data.get('incident') or data.get('maintenance')
+except (OSError,ValueError,TypeError): blocked=True
+if blocked:
+    print('NPU is isolated or recovering; use explicit device recovery before loading.',file=sys.stderr); sys.exit(1)
+PY
+}
+
+conflicting_running() {
+    local mode="$1" service
+    for service in "${ACCELERATOR_SERVICES[@]}"; do
+        if [[ "${service}" != "${mode}" ]] && service_is_running "${service}"; then return 0; fi
+    done
+    return 1
+}
+
+wait_existing() {
+    local name="$1" state
+    while (( SECONDS < START_DEADLINE )); do
+        check_quarantine || return 1
+        state="$(container_state "${name}")"
+        case "${state}" in
+            running/healthy) return 0 ;;
+            running/starting|running/unhealthy) sleep 1 ;;
+            *) log "existing instance is not ready: ${name} ${state}; no automatic restart"; return 1 ;;
+        esac
+    done
+    log "startup deadline reached while waiting for ${name}; loading was not interrupted by another start"
+    return 1
+}
+
+start_mode() {
+    local mode="$1" service name state remaining services
+    services="$(expected_services "${mode}")" || return 1
+    while IFS= read -r service; do
+        [[ -n "${service}" ]] || continue
+        check_quarantine || return 1
+        name="$(container_name "${service}")"; state="$(container_state "${name}")"
+        if [[ "${state}" == running/* ]]; then
+            log "adopt existing instance: service=${service} state=${state}"
+            wait_existing "${name}" || return 1
+        elif [[ "${state}" == restarting/* || "${state}" == paused/* || "${state}" == removing/* ]]; then
+            log "unstable instance: ${service} ${state}; refusing another load"; return 1
+        else
+            remaining=$((START_DEADLINE - SECONDS))
+            (( remaining > 0 )) || { log "startup deadline reached before ${service}"; return 1; }
+            log "start one service: ${service}; remaining=${remaining}s"
+            dc_all_profiles up -d --no-recreate --wait --wait-timeout "${remaining}" "${service}" || return 1
+            wait_existing "${name}" || return 1
+        fi
+    done <<< "${services}"
+}
+
+boot_mode() {
+    local target="$1"
+    inventory_readable || return 1; check_quarantine || return 1
+    if conflicting_running "${target}"; then
+        log "boot conflict: target=${target}; another accelerator model is running; explicit switch required"; return 1
+    fi
+    local budget="${START_TIMEOUT}"
+    if [[ "${target}" == qwen36 && -z "${HOUMO_START_TIMEOUT:-}" ]]; then budget=600; fi
+    START_DEADLINE=$((SECONDS + budget)); log "boot reconcile begin: target=${target}"
+    if start_mode "${target}" && verify_mode "${target}"; then
+        write_mode "${target}"; log "boot reconcile complete: active=${target}; gateway admission still requires runtime verification"; return 0
+    fi
+    log "boot reconcile failed; no reload or automatic rollback was attempted"; return 1
+}
+
+switch_mode() {
+    local target="$1" previous detected
+    if ! valid_mode "${target}"; then
+        printf 'Unknown mode: %s (expected one of: %s)\n' "${target}" "${MODES[*]}" >&2; return 2
+    fi
+    check_quarantine || return 1; inventory_readable || return 1
+    if ! conflicting_running "${target}"; then boot_mode "${target}"; return $?; fi
+    previous="$(read_mode)"; detected="$(detected_mode)"
+    if valid_mode "${detected}"; then previous="${detected}"; fi
+    log "switch begin: previous=${previous} target=${target}"
+    stop_accelerator_services || return 1
+    local budget="${START_TIMEOUT}"
+    if [[ "${target}" == qwen36 && -z "${HOUMO_START_TIMEOUT:-}" ]]; then budget=600; fi
+    START_DEADLINE=$((SECONDS + budget))
+    if start_mode "${target}" && verify_mode "${target}"; then
+        write_mode "${target}"; log "switch complete: active=${target}"; return 0
+    fi
+    log "switch failed: target=${target}; stopping device services; no automatic reload or rollback"
+    stop_accelerator_services || true; return 1
+}
+
+show_status() {
+    local configured detected service name state failed=0 expected has_target=0
+    configured="$(read_mode)"; detected="$(detected_mode)"
+    printf 'configured_mode=%s\n' "${configured}"; printf 'detected_mode=%s\n' "${detected}"
+    for service in "${MODES[@]}" qwen3guard; do
+        name="$(container_name "${service}")"; state="$(container_state "${name}")"
+        printf '%-12s %s\n' "${service}" "${state}"
+    done
+    expected="$(expected_services "${configured}")" || return 1
+    while IFS= read -r service; do [[ "${service}" == "${configured}" ]] && has_target=1; done <<< "${expected}"
+    if (( has_target )) && [[ "${configured}" != "${detected}" ]]; then failed=1
+    elif (( ! has_target )) && [[ "${detected}" != none ]]; then failed=1; fi
+    verify_mode "${configured}" || failed=1
+    return "${failed}"
+}
+
+stop_all() { dc_all_profiles stop --timeout "${STOP_TIMEOUT}" "${ACCELERATOR_SERVICES[@]}" qwen3guard; }
+
+usage() {
+    cat <<EOF
+Usage:
+  modelctl switch <mode>
+  modes: ${MODES[*]}
+  modelctl status
+  modelctl boot
+  modelctl stop
+EOF
+}
+
+main() {
+    local command="${1:-}"
+    if [[ "${command}" == status && $# -eq 1 ]]; then show_status; return $?; fi
+    exec 9>"${LOCK_FILE}"
+    if ! flock -n 9; then printf 'Another modelctl operation is already running.\n' >&2; return 75; fi
+    if [[ "${command}" == boot || "${command}" == switch ]]; then expected_services "$(read_mode)" >/dev/null || return 1; fi
+    case "${command}" in
+        switch) [[ $# -eq 2 ]] || { usage >&2; return 2; }; switch_mode "$2"; show_status ;;
+        status) [[ $# -eq 1 ]] || { usage >&2; return 2; }; show_status ;;
+        boot) [[ $# -eq 1 ]] || { usage >&2; return 2; }; boot_mode "$(read_mode)" ;;
+        stop) [[ $# -eq 1 ]] || { usage >&2; return 2; }; log "stopping all Houmo model services"; stop_all ;;
+        *) usage >&2; return 2 ;;
+    esac
+}
+
+main "$@"

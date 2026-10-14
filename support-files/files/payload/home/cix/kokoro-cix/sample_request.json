@@ -1,0 +1,7 @@
+{
+  "model": "kokoro-82m",
+  "input": "你好，欢迎体验此芯科技盒子上的中文语音合成。这是一段由 Kokoro 模型生成的测试语音。",
+  "voice": "zf_xiaoyi",
+  "speed": 1.0,
+  "response_format": "wav"
+}

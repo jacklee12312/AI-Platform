@@ -1,0 +1,21 @@
+[Unit]
+Description=Houmo M50 AI model services
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+PartOf=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+User=cix
+Group=cix
+SupplementaryGroups=docker
+WorkingDirectory=/home/cix/houmo-docker-deployment
+ExecStart=/usr/local/bin/modelctl boot
+ExecStop=/usr/local/bin/modelctl stop
+TimeoutStartSec=720
+TimeoutStopSec=120
+
+[Install]
+WantedBy=multi-user.target

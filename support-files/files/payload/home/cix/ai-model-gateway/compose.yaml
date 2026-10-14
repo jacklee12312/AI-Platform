@@ -1,0 +1,91 @@
+name: ai-model-gateway
+services:
+  gateway:
+    image: ai-model-gateway:0.9.0
+    container_name: ai-model-gateway
+    restart: unless-stopped
+    init: true
+    read_only: true
+    cpus: 2.0
+    mem_limit: 512m
+    ports:
+    - 0.0.0.0:17700:17700
+    env_file:
+    - /home/cix/houmo-docker-deployment/.env
+    environment:
+      MODEL_MODE_FILE: /app/state/active-mode
+      RUNTIME_SAFETY_REQUIRED: 'true'
+      RUNTIME_SAFETY_FILE: /app/state/runtime-safety.json
+      GATEWAY_USAGE_DB: /app/data/gateway-usage.db
+      MODEL_MODE_DEFAULT: copaw
+      GUARD_MODE: 'off'
+      GUARD_FAIL_CLOSED: 'true'
+      GUARD_MODEL_ID: qwen3guard-stream-0.6b
+      RATE_LIMIT_PER_MINUTE: '120'
+      MAX_BODY_BYTES: '26214400'
+      CHAT_TIMEOUT_SECONDS: '300'
+      GUARD_TIMEOUT_SECONDS: '90'
+      STREAM_GUARD_TIMEOUT_SECONDS: '30'
+      STREAM_GUARD_BATCH_CHUNKS: '8'
+      CV_TIMEOUT_SECONDS: '180'
+      AUDIO_TIMEOUT_SECONDS: '600'
+      AUDIO_MAX_BODY_BYTES: '104857600'
+      GENERATION_DEFAULTS_ENABLED: 'false'
+      DEFAULT_MAX_TOKENS: '1024'
+      DEFAULT_TEMPERATURE: '0.2'
+      DEFAULT_TOP_P: '0.9'
+      CV_DEFAULT_CONFIDENCE: '0.25'
+      CV_DEFAULT_IOU: '0.45'
+      TZ: Asia/Shanghai
+      HF_HUB_OFFLINE: '1'
+      TRANSFORMERS_OFFLINE: '1'
+      PIP_NO_INDEX: '1'
+    volumes:
+    - ./config/models.json:/app/config/models.json:ro
+    - /home/cix/ballot-reader/gateway_extension.py:/app/gateway_extension.py:ro
+    - /home/cix/houmo-docker-deployment/state:/app/state:ro
+    - /home/cix/ai-model-gateway/data:/app/data
+    - /home/cix/ai-model-gateway/app/runtime_safety.py:/app/app/runtime_safety.py:ro
+    command:
+    - python
+    - -m
+    - uvicorn
+    - gateway_extension:app
+    - --host
+    - 0.0.0.0
+    - --port
+    - '17700'
+    - --workers
+    - '1'
+    - --no-access-log
+    tmpfs:
+    - /tmp:size=64m,mode=1777
+    networks:
+    - houmo
+    - cv
+    extra_hosts:
+    - host.docker.internal:host-gateway
+    healthcheck:
+      test:
+      - CMD
+      - python
+      - -c
+      - import json,urllib.request; assert json.load(urllib.request.urlopen('http://127.0.0.1:17700/health/live',
+        timeout=3))['ok']
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 10s
+    logging:
+      driver: json-file
+      options:
+        max-size: 50m
+        max-file: '3'
+    pull_policy: never
+networks:
+  houmo:
+    external: true
+    name: houmo-ai_default
+  cv:
+    external: true
+    name: cv_deploy_default

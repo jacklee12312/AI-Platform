@@ -1,0 +1,9 @@
+{
+  "resources": 277,
+  "model_files": 64,
+  "model_bytes": 52901283581,
+  "separate_platform_store_bytes": 3453533253,
+  "model_urls_blank": true,
+  "source_model_hashes": "locked catalog metadata; not rehashed at build; installer verifies bytes before deployment",
+  "component_files_copied_and_hashed": true
+}

@@ -1,0 +1,56 @@
+name: ballot-reader
+services:
+  ballot-reader:
+    image: ballot-reader:0.1.0
+    container_name: ballot-reader
+    restart: unless-stopped
+    init: true
+    read_only: true
+    user: 65534:65534
+    cpus: 2.0
+    mem_limit: 1g
+    environment:
+      BALLOT_MAX_FILE_BYTES: '26214400'
+      BALLOT_MAX_PAGES: '20'
+      BALLOT_RENDER_LONG_EDGE: '3000'
+      BALLOT_EXPECTED_ROWS: '6'
+      BALLOT_EXPECTED_DIMENSIONS: '6'
+      BALLOT_GRADES_PER_DIMENSION: '4'
+      TZ: Asia/Shanghai
+      HF_HUB_OFFLINE: '1'
+      TRANSFORMERS_OFFLINE: '1'
+      PIP_NO_INDEX: '1'
+    volumes:
+    - ./app:/srv/ballot-reader/app:ro
+    - ./work:/work
+    working_dir: /srv/ballot-reader
+    command:
+    - python
+    - -m
+    - app.main
+    tmpfs:
+    - /tmp:size=128m,mode=1777
+    networks:
+      houmo:
+        aliases:
+        - ballot-reader
+    healthcheck:
+      test:
+      - CMD
+      - python
+      - -c
+      - import json,urllib.request; assert json.load(urllib.request.urlopen('http://127.0.0.1:17724/health', timeout=3))['ok']
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 20s
+    logging:
+      driver: json-file
+      options:
+        max-size: 20m
+        max-file: '3'
+    pull_policy: never
+networks:
+  houmo:
+    external: true
+    name: houmo-ai_default

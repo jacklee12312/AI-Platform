@@ -1,0 +1,21 @@
+[Unit]
+Description=Unified AI model gateway
+Requires=docker.service
+After=docker.service network-online.target houmo-ai.service
+Wants=network-online.target houmo-ai.service
+PartOf=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+User=cix
+Group=cix
+SupplementaryGroups=docker
+WorkingDirectory=/home/cix/ai-model-gateway
+ExecStart=/usr/bin/docker compose up --no-build --pull never -d --force-recreate --wait --wait-timeout 120 gateway
+ExecStop=/usr/bin/docker compose stop --timeout 30 gateway
+TimeoutStartSec=180
+TimeoutStopSec=60
+
+[Install]
+WantedBy=multi-user.target

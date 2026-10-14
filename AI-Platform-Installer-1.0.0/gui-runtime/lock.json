@@ -1,0 +1,20 @@
+[
+  {
+    "project": "PySide6-Essentials",
+    "version": "6.7.3",
+    "kind": "linux-arm64",
+    "filename": "PySide6_Essentials-6.7.3-cp39-abi3-manylinux_2_31_aarch64.whl",
+    "bytes": 87264397,
+    "sha256": "acdde06b74f26e7d26b4ae1461081b32a6cb17fcaa2a580050b5e0f0f12236c9",
+    "url": "https://files.pythonhosted.org/packages/5c/4d/00a5716e56c35c5621368c89abb360f6e953e2be639cd5f11e8075894e41/PySide6_Essentials-6.7.3-cp39-abi3-manylinux_2_31_aarch64.whl"
+  },
+  {
+    "project": "shiboken6",
+    "version": "6.7.3",
+    "kind": "linux-arm64",
+    "filename": "shiboken6-6.7.3-cp39-abi3-manylinux_2_31_aarch64.whl",
+    "bytes": 178147,
+    "sha256": "f0dd635178e64a45be2f84c9f33dd79ac30328da87f834f21a0baf69ae210e6e",
+    "url": "https://files.pythonhosted.org/packages/ef/3c/bb524437df11ae79845b230d682b162935c7226b1fb7be2544dceca01e0f/shiboken6-6.7.3-cp39-abi3-manylinux_2_31_aarch64.whl"
+  }
+]

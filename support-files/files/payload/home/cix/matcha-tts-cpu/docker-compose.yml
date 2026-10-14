@@ -1,0 +1,22 @@
+services:
+  matcha-tts:
+    image: matcha-tts-cpu:0.2.0
+    container_name: houmo-matcha-tts
+    restart: unless-stopped
+    environment:
+      MATCHA_NUM_THREADS: '4'
+      OMP_NUM_THREADS: '4'
+      HF_HUB_OFFLINE: '1'
+      TRANSFORMERS_OFFLINE: '1'
+      PIP_NO_INDEX: '1'
+    cpus: 6.0
+    mem_limit: 2g
+    volumes:
+    - ./model:/models/matcha:ro
+    networks:
+    - houmo-ai
+    pull_policy: never
+networks:
+  houmo-ai:
+    name: houmo-ai_default
+    external: true

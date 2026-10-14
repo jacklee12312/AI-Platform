@@ -1,0 +1,2 @@
+# The box-local weknora/ocr:arm64 base image already contains aiohttp,
+# OpenCV, NumPy, and pypdfium2. Keep this file for future additive pins.

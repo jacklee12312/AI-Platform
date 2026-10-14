@@ -1,0 +1,21 @@
+[Unit]
+Description=ModelDeck model gateway administration console
+Requires=docker.service
+After=docker.service network-online.target houmo-ai.service ai-model-gateway.service
+Wants=network-online.target houmo-ai.service ai-model-gateway.service
+PartOf=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+User=cix
+Group=cix
+SupplementaryGroups=docker
+WorkingDirectory=/home/cix/gateway-admin
+ExecStart=/usr/bin/docker compose up --no-build --pull never -d --force-recreate --wait --wait-timeout 120
+ExecStop=/usr/bin/docker compose stop --timeout 30
+TimeoutStartSec=180
+TimeoutStopSec=90
+
+[Install]
+WantedBy=multi-user.target

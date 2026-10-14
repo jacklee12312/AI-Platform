@@ -1,0 +1,13 @@
+{
+  "date": "2026-09-21 11:12:58",
+  "platform_resources_hashed": 213,
+  "platform_resource_bytes": 3453533253,
+  "model_files": 64,
+  "model_bytes": 52901283581,
+  "all_277_resources_have_local_source": true,
+  "model_weights_duplicated_into_new_delivery": false,
+  "production_urls_configured": false,
+  "model_bytes_rehashed_in_this_check": false,
+  "signature_verification": "see linux-tests.json; actual OpenSSL verification",
+  "real_box_installation": "not_run"
+}

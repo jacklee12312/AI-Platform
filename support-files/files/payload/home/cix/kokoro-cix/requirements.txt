@@ -1,0 +1,3 @@
+onnxruntime==1.23.2
+misaki[zh]==0.7.4
+loguru==0.7.3

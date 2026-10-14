@@ -1,0 +1,20 @@
+{
+  "checks": [
+    "installer-python-syntax",
+    "26-model-registry-and-catalog-closure",
+    "offline-compose:houmo-docker-deployment",
+    "offline-compose:ai-model-gateway",
+    "offline-compose:gateway-admin",
+    "offline-compose:cv_deploy",
+    "offline-compose:sensevoice-cpu",
+    "offline-compose:kokoro-cix",
+    "offline-compose:matcha-tts-cpu",
+    "offline-compose:ballot-reader",
+    "linux-bash-syntax",
+    "installer-path-root-and-architecture-tests",
+    "cosyvoice-runtime-symlink-closure"
+  ],
+  "passed": true,
+  "clean_device_install": "not_run",
+  "reboot": "not_run"
+}

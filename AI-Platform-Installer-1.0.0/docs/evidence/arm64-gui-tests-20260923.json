@@ -1,0 +1,41 @@
+{
+  "date": "2026-09-23 11:10:42",
+  "environment": "QEMU Debian 12 ARM64 Python 3.11 / Qt 6.7.3; preview only",
+  "tests": 14,
+  "test_exit_code": 0,
+  "test_log": "test_early_start_failure_returns_to_settings (test_ui.WizardTests.test_early_start_failure_returns_to_settings) ... ok\ntest_failed_check_blocks_next (test_ui.WizardTests.test_failed_check_blocks_next) ... ok\ntest_failed_job_allows_edit_without_poll_stealing_page (test_ui.WizardTests.test_failed_job_allows_edit_without_poll_stealing_page) ... ok\ntest_model_urls_are_unconfigured (test_ui.WizardTests.test_model_urls_are_unconfigured) ... ok\ntest_old_check_result_cannot_enable_changed_source (test_ui.WizardTests.test_old_check_result_cannot_enable_changed_source) ... ok\ntest_only_installed_state_shows_finish (test_ui.WizardTests.test_only_installed_state_shows_finish) ... ok\ntest_password_match_proceeds (test_ui.WizardTests.test_password_match_proceeds) ... ok\ntest_password_mismatch_blocks_progress (test_ui.WizardTests.test_password_mismatch_blocks_progress) ... ok\ntest_preview_install_disabled_even_with_consent (test_ui.WizardTests.test_preview_install_disabled_even_with_consent) ... ok\ntest_preview_never_dispatches (test_ui.WizardTests.test_preview_never_dispatches) ... ok\ntest_real_install_requires_consent (test_ui.WizardTests.test_real_install_requires_consent) ... ok\ntest_source_edit_invalidates_previous_check (test_ui.WizardTests.test_source_edit_invalidates_previous_check) ... ok\ntest_source_form_never_overlaps_at_minimum_size (test_ui.WizardTests.test_source_form_never_overlaps_at_minimum_size) ... ok\ntest_stale_task_can_resume (test_ui.WizardTests.test_stale_task_can_resume) ... ok\n\n----------------------------------------------------------------------\nRan 14 tests in 2.472s\n\nOK\n",
+  "screens": [
+    {
+      "page": 0,
+      "exit_code": 0,
+      "path": "arm64-harbor-022-preview-0.png",
+      "error": ""
+    },
+    {
+      "page": 1,
+      "exit_code": 0,
+      "path": "arm64-harbor-022-preview-1.png",
+      "error": ""
+    },
+    {
+      "page": 3,
+      "exit_code": 0,
+      "path": "arm64-harbor-022-preview-3.png",
+      "error": ""
+    },
+    {
+      "page": 4,
+      "exit_code": 0,
+      "path": "arm64-harbor-022-preview-4.png",
+      "error": ""
+    },
+    {
+      "page": 5,
+      "exit_code": 0,
+      "path": "arm64-harbor-022-preview-5.png",
+      "error": ""
+    }
+  ],
+  "physical_install": false,
+  "passed": true
+}

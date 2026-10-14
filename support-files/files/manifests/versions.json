@@ -1,0 +1,389 @@
+{
+  "schema_version": 1,
+  "format_note": "This file uses the JSON subset of YAML 1.2 so validation needs only Python's standard library.",
+  "product": {
+    "name": "houmo-ai-cluster",
+    "current_version": "1.4.0-dev.1",
+    "based_on_release": "1.3.0",
+    "suite_version": "0.9.0-dev.1",
+    "release_state": "development",
+    "platform": "Debian 12 arm64",
+    "default_mode": "copaw",
+    "guard_mode_default": "off"
+  },
+  "ports": {
+    "model_gateway": 17700,
+    "modeldeck": 17780,
+    "modeldeck_agent": 17781
+  },
+  "bind_addresses": {
+    "model_gateway": "0.0.0.0",
+    "modeldeck": "0.0.0.0"
+  },
+  "components": {
+    "ai-model-gateway": {
+      "version": "0.9.0",
+      "image": "ai-model-gateway:0.9.0"
+    },
+    "modeldeck": {
+      "version": "0.7.0",
+      "image": "gateway-admin:0.7.0"
+    },
+    "modeldeck-agent": {
+      "version": "0.5.0",
+      "image": "gateway-admin-agent:0.5.0"
+    },
+    "hliellama-default": {
+      "version": "2.1.1",
+      "image": "houmo-hliellama-xh2:2.1.1",
+      "driver": "XH2 v1.4.0"
+    },
+    "hliellama-glm-ocr": {
+      "version": "2.1.1",
+      "image": "houmo-hliellama-xh2:2.1.1",
+      "driver": "XH2 v1.4.0"
+    },
+    "hliellama-spark": {
+      "version": "2.2.3-xunfei-spark",
+      "image": "houmo-hliellama-xh2:2.2.3-xunfei-spark",
+      "driver": "XH2 v1.4.0"
+    },
+      "hlievllm-cosyvoice": {
+        "version": "0.21.0rc1+vLLM-Omni-0.20.1.dev3",
+        "image": "houmo-hlievllm-cosyvoice:1.4.0",
+      "runtime": "TCIM 1.4.0 / Houmo plugin 1.4.0-0820yl",
+      "driver": "XH2 v1.4.0"
+    },
+    "qwen3guard-stream-cpu": {
+      "version": "0.1.0",
+      "image": "qwen3guard-stream-cpu:0.1.0"
+    },
+    "cix-cv": {
+      "version": "1.0.0",
+      "image": "cix-cv-noe:1.0.0",
+      "runtime": "CIX NOE 2.0.0"
+    },
+    "sensevoice-cpu": {
+      "version": "0.1.0",
+      "image": "sensevoice-cpu:0.1.0"
+    },
+    "kokoro-cix": {
+      "version": "0.2.0",
+      "image": "kokoro-cix:0.2.0"
+    },
+    "matcha-tts-cpu": {
+      "version": "0.2.0",
+      "image": "matcha-tts-cpu:0.2.0"
+    },
+    "ballot-reader": {
+      "version": "0.1.0",
+      "image": "ballot-reader:0.1.0"
+    }
+  },
+  "models": {
+    "copaw-flash-9b": {
+      "model_version": "v1.3.0-20260427",
+      "service_component": "hliellama-default",
+      "compose_service": "copaw",
+      "gateway_service": "copaw",
+      "port": 17701,
+      "context_size": 131072,
+      "compose_context": null,
+      "concurrency": 2,
+      "modes": ["copaw"],
+      "device": "LQ50",
+      "gateway_enabled": true
+    },
+    "spark-x1-4b": {
+      "model_version": "v1.5.0-20260904",
+      "service_component": "hliellama-spark",
+      "compose_service": "spark-x1",
+      "gateway_service": "spark-x1",
+      "port": 17711,
+      "context_size": 262144,
+      "compose_context": 262144,
+      "concurrency": 2,
+      "modes": ["spark-x1"],
+      "device": "LQ50",
+      "gateway_enabled": true
+    },
+    "bge-m3": {
+      "model_version": "v1.4.0-20260720",
+      "service_component": "hliellama-default",
+      "compose_service": "bge-m3",
+      "gateway_service": "bge-m3",
+      "port": 17702,
+      "context_size": 512,
+      "compose_context": null,
+      "concurrency": 10,
+      "modes": ["bge-m3"],
+      "device": "LQ50",
+      "gateway_enabled": true
+    },
+    "bge-reranker-v2-m3": {
+      "model_version": "v1.4.0-20260720",
+      "service_component": "hliellama-default",
+      "compose_service": "reranker",
+      "gateway_service": "reranker",
+      "port": 17703,
+      "context_size": 512,
+      "compose_context": null,
+      "concurrency": 10,
+      "modes": ["reranker"],
+      "device": "LQ50",
+      "gateway_enabled": true
+    },
+    "cosyvoice3-0.5b": {
+      "model_version": "v1.4.0-20260720",
+      "service_component": "hlievllm-cosyvoice",
+        "compose_service": "cosyvoice",
+        "gateway_service": "houmo-cosyvoice3",
+      "port": 8091,
+      "context_size": 2048,
+      "compose_context": 2048,
+      "concurrency": 1,
+      "modes": ["cosyvoice"],
+      "device": "LQ50",
+      "gateway_enabled": true
+    },
+    "qwen3-vl-8b": {
+      "model_version": "v1.3.0-20260615",
+      "service_component": "hliellama-default",
+      "compose_service": "qwen-vl",
+      "gateway_service": "qwen-vl",
+      "port": 17705,
+      "context_size": 32768,
+      "compose_context": 32768,
+      "concurrency": 2,
+      "modes": ["qwen-vl"],
+      "device": "LQ50",
+      "gateway_enabled": true
+    },
+    "qwen3guard-stream-0.6b": {
+      "model_version": "0.6B",
+      "service_component": "qwen3guard-stream-cpu",
+      "compose_service": "qwen3guard",
+      "gateway_service": "qwen3guard",
+      "port": 17706,
+      "context_size": 8192,
+      "compose_context": null,
+      "concurrency": 2,
+      "modes": [],
+      "device": "CPU",
+      "gateway_enabled": true
+    },
+    "qwen3.8-27b": {
+      "model_version": "v1.5.0-20260821",
+      "service_component": "hliellama-default",
+      "compose_service": "qwen38",
+      "gateway_service": "qwen38",
+      "port": 17707,
+      "context_size": 131072,
+      "compose_context": 131072,
+      "concurrency": 1,
+      "modes": ["qwen38"],
+      "device": "LQ50",
+      "gateway_enabled": true
+    },
+    "sensevoice": {
+      "model_version": "int8-2024-07-17",
+      "service_component": "sensevoice-cpu",
+      "compose_service": "sensevoice",
+      "gateway_service": "sensevoice",
+      "port": 17708,
+      "context_size": null,
+      "compose_context": null,
+      "concurrency": 2,
+      "modes": [],
+      "device": "CPU",
+      "gateway_enabled": true
+    },
+    "glm-ocr-0.9b": {
+      "model_version": "v1.4.0-20260707",
+      "service_component": "hliellama-glm-ocr",
+      "compose_service": "glm-ocr",
+      "gateway_service": "glm-ocr",
+      "port": 17709,
+      "context_size": 8192,
+      "compose_context": 8192,
+      "concurrency": 2,
+      "modes": ["glm-ocr"],
+      "device": "LQ50",
+      "gateway_enabled": true
+    },
+    "mobilenet_v2": {
+      "model_version": "cix-model-pack-current",
+      "service_component": "cix-cv",
+      "gateway_service": "cix-cv",
+      "port": 17710,
+      "modes": [],
+      "device": "CIX-NPU",
+      "gateway_enabled": true
+    },
+    "inception_v3": {
+      "model_version": "cix-model-pack-current",
+      "service_component": "cix-cv",
+      "gateway_service": "cix-cv",
+      "port": 17710,
+      "modes": [],
+      "device": "CIX-NPU",
+      "gateway_enabled": true
+    },
+    "yolov11_l": {
+      "model_version": "cix-model-pack-current",
+      "service_component": "cix-cv",
+      "gateway_service": "cix-cv",
+      "port": 17710,
+      "modes": [],
+      "device": "CIX-NPU",
+      "gateway_enabled": true
+    },
+    "yolov11_n": {
+      "model_version": "cix-model-pack-current",
+      "service_component": "cix-cv",
+      "gateway_service": "cix-cv",
+      "port": 17710,
+      "modes": [],
+      "device": "CIX-NPU",
+      "gateway_enabled": true
+    },
+    "yolov11n_obb": {
+      "model_version": "cix-model-pack-current",
+      "service_component": "cix-cv",
+      "gateway_service": "cix-cv",
+      "port": 17710,
+      "modes": [],
+      "device": "CIX-NPU",
+      "gateway_enabled": true
+    },
+    "yolov12_s": {
+      "model_version": "cix-model-pack-current",
+      "service_component": "cix-cv",
+      "gateway_service": "cix-cv",
+      "port": 17710,
+      "modes": [],
+      "device": "CIX-NPU",
+      "gateway_enabled": true
+    },
+    "yolov12_m": {
+      "model_version": "cix-model-pack-current",
+      "service_component": "cix-cv",
+      "gateway_service": "cix-cv",
+      "port": 17710,
+      "modes": [],
+      "device": "CIX-NPU",
+      "gateway_enabled": true
+    },
+    "bytetrack_s": {
+      "model_version": "cix-model-pack-current",
+      "service_component": "cix-cv",
+      "gateway_service": "cix-cv",
+      "port": 17710,
+      "modes": [],
+      "device": "CIX-NPU",
+      "gateway_enabled": true
+    },
+    "retinaface": {
+      "model_version": "cix-model-pack-current",
+      "service_component": "cix-cv",
+      "gateway_service": "cix-cv",
+      "port": 17710,
+      "modes": [],
+      "device": "CIX-NPU",
+      "gateway_enabled": true
+    },
+    "yolov5s_face": {
+      "model_version": "cix-model-pack-current",
+      "service_component": "cix-cv",
+      "gateway_service": "cix-cv",
+      "port": 17710,
+      "modes": [],
+      "device": "CIX-NPU",
+      "gateway_enabled": true
+    },
+    "scrfd": {
+      "model_version": "cix-model-pack-current",
+      "service_component": "cix-cv",
+      "gateway_service": "cix-cv",
+      "port": 17710,
+      "modes": [],
+      "device": "CIX-NPU",
+      "gateway_enabled": true
+    },
+    "arcface": {
+      "model_version": "cix-model-pack-current",
+      "service_component": "cix-cv",
+      "gateway_service": "cix-cv",
+      "port": 17710,
+      "modes": [],
+      "device": "CIX-NPU",
+      "gateway_enabled": true
+    },
+    "yolov8l_seg": {
+      "model_version": "cix-model-pack-current",
+      "service_component": "cix-cv",
+      "gateway_service": "cix-cv",
+      "port": 17710,
+      "modes": [],
+      "device": "CIX-NPU",
+      "gateway_enabled": true
+    },
+    "kokoro-82m": {
+      "model_version": "82M-local-adaptation",
+      "service_component": "kokoro-cix",
+      "gateway_service": "kokoro-tts",
+      "port": 17722,
+      "modes": [],
+      "device": "CIX-NPU+CPU",
+      "gateway_enabled": true
+    },
+    "matcha-zh": {
+      "model_version": "matcha-icefall-zh-baker",
+      "service_component": "matcha-tts-cpu",
+      "gateway_service": "matcha-tts",
+      "port": 17723,
+      "modes": [],
+      "device": "CPU",
+      "gateway_enabled": true
+    },
+    "democratic-eval-v1": {
+      "model_version": "template-v1",
+      "service_component": "ballot-reader",
+      "compose_service": "ballot-reader",
+      "gateway_service": "ballot-reader",
+      "port": 17724,
+      "context_size": null,
+      "compose_context": null,
+      "concurrency": 1,
+      "modes": [],
+      "device": "CPU",
+      "gateway_enabled": true
+    }
+  },
+  "published_releases": {
+    "1.2.0": {
+      "path": "release/history/1.2.0",
+      "suite_version": "0.7.0",
+      "components": {
+        "ai-model-gateway": "0.5.0",
+        "modeldeck": "0.3.0",
+        "modeldeck-agent": "0.2.0",
+        "qwen3guard-stream-cpu": "0.1.0",
+        "cix-cv": "1.0.0",
+        "sensevoice-cpu": "0.1.0"
+      }
+    },
+    "1.3.0": {
+      "path": "release/history/1.3.0",
+      "suite_version": "0.8.0",
+      "components": {
+        "ai-model-gateway": "0.6.0",
+        "modeldeck": "0.3.0",
+        "modeldeck-agent": "0.2.0",
+        "qwen3guard-stream-cpu": "0.1.0",
+        "cix-cv": "1.0.0",
+        "sensevoice-cpu": "0.1.0"
+      }
+    }
+  }
+}

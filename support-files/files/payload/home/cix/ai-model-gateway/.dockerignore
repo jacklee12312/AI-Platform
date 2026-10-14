@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+tests/
+systemd/
+README.md
+config/backups/
+data/

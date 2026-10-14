@@ -1,0 +1,17 @@
+{
+  "date": "2026-09-22 18:32:33",
+  "packaged_installer": "0.2.1",
+  "registry": "36.111.34.121:15436",
+  "models": [
+    "retinaface",
+    "matcha-zh"
+  ],
+  "verified_model_files": 19,
+  "anonymous_bearer_pull": true,
+  "full_blob_sha256": true,
+  "archive_member_sha256": true,
+  "archive_download_started_from_partial_bytes": 65536,
+  "elapsed_seconds": 428.3,
+  "model_deployment_started": false,
+  "passed": true
+}

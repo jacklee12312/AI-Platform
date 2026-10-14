@@ -1,0 +1,7 @@
+{
+  "model": "matcha-zh",
+  "input": "你好，欢迎体验此芯科技盒子上的中文语音合成。这是一段由轻量级语音模型生成的测试语音。",
+  "voice": "zh-baker-female",
+  "speed": 1.0,
+  "response_format": "wav"
+}

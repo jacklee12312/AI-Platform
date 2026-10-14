@@ -1,0 +1,207 @@
+{
+  "model_repositories": 23,
+  "remote_model_files": 58,
+  "bundled_auxiliary_files": [
+    {
+      "path": "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/LICENSE",
+      "size": 11343,
+      "sha256": "832dd9e00a68dd83b3c3fb9f5588dad7dcf337a0db50f7d9483f310cd292e92e"
+    },
+    {
+      "path": "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/README.md",
+      "size": 14638,
+      "sha256": "2ca500382dcdbba770cfb4c98ff4ae09f7c671a561b572a83b68e54e26bde9ce"
+    },
+    {
+      "path": "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/generation_config.json",
+      "size": 161,
+      "sha256": "52a5a5dd9227794548c6de5e0a1c8bc795a662912bdae6a3a7e4226c542e835c"
+    },
+    {
+      "path": "payload/home/cix/cix_telecom_projects/sensevoice/model/test_wavs/zh.wav",
+      "size": 178988,
+      "sha256": "b77f1794fe374a0ba1ee1dc458bfaf9349496cbbfc32780c50ba3c5a7ad8e373"
+    }
+  ],
+  "local_only_model_files": [
+    {
+      "path": "payload/home/cix/cix_telecom_projects/cosyvoice3/HiModel_xh2_cosyvoice3-0.5b-2512_256_2k_b1_1chip_2cores_v1.4.0_20260720.gguf",
+      "models": [
+        "cosyvoice3-0.5b"
+      ],
+      "bytes": 2522755840
+    },
+    {
+      "path": "payload/home/cix/cix_telecom_projects/xunfei-spark/HiModel_xh2_Spark_x1-4b-w4a8-256K-b1-2core-1d-xh2-v1.5.0-20260904.gguf",
+      "models": [
+        "spark-x1-4b"
+      ],
+      "bytes": 8266037056
+    }
+  ],
+  "coverage": [
+    {
+      "model": "mobilenet_v2",
+      "reference": "36.111.34.121:15436/aistore/mobilenet_v2.cix:v2",
+      "remote_files": 1,
+      "bundled_auxiliary_files": 0,
+      "verification": "registry_digest_and_size_match"
+    },
+    {
+      "model": "inception_v3",
+      "reference": "36.111.34.121:15436/aistore/inception_v3.cix:v3",
+      "remote_files": 1,
+      "bundled_auxiliary_files": 0,
+      "verification": "registry_digest_and_size_match"
+    },
+    {
+      "model": "yolov11_l",
+      "reference": "36.111.34.121:15436/aistore/yolov11_l.cix:v1",
+      "remote_files": 1,
+      "bundled_auxiliary_files": 0,
+      "verification": "registry_digest_and_size_match"
+    },
+    {
+      "model": "yolov11_n",
+      "reference": "36.111.34.121:15436/aistore/yolov11_n.cix:v1",
+      "remote_files": 1,
+      "bundled_auxiliary_files": 0,
+      "verification": "registry_digest_and_size_match"
+    },
+    {
+      "model": "yolov11n_obb",
+      "reference": "36.111.34.121:15436/aistore/yolov11n-obb.cix:v1",
+      "remote_files": 1,
+      "bundled_auxiliary_files": 0,
+      "verification": "registry_digest_and_size_match"
+    },
+    {
+      "model": "yolov12_s",
+      "reference": "36.111.34.121:15436/aistore/yolov12_s.cix:v1",
+      "remote_files": 1,
+      "bundled_auxiliary_files": 0,
+      "verification": "registry_digest_and_size_match"
+    },
+    {
+      "model": "yolov12_m",
+      "reference": "36.111.34.121:15436/aistore/yolov12_m.cix:v1",
+      "remote_files": 1,
+      "bundled_auxiliary_files": 0,
+      "verification": "registry_digest_and_size_match"
+    },
+    {
+      "model": "bytetrack_s",
+      "reference": "36.111.34.121:15436/aistore/bytetrack_s.cix:v1",
+      "remote_files": 1,
+      "bundled_auxiliary_files": 0,
+      "verification": "registry_digest_and_size_match"
+    },
+    {
+      "model": "retinaface",
+      "reference": "36.111.34.121:15436/aistore/retinaface.cix:v1",
+      "remote_files": 1,
+      "bundled_auxiliary_files": 0,
+      "verification": "registry_digest_and_size_match"
+    },
+    {
+      "model": "yolov5s_face",
+      "reference": "36.111.34.121:15436/aistore/yolov5s-face.cix:v1",
+      "remote_files": 1,
+      "bundled_auxiliary_files": 0,
+      "verification": "registry_digest_and_size_match"
+    },
+    {
+      "model": "scrfd",
+      "reference": "36.111.34.121:15436/aistore/scrfd.cix:v1",
+      "remote_files": 1,
+      "bundled_auxiliary_files": 0,
+      "verification": "registry_digest_and_size_match"
+    },
+    {
+      "model": "arcface",
+      "reference": "36.111.34.121:15436/aistore/arcface.cix:v1",
+      "remote_files": 1,
+      "bundled_auxiliary_files": 0,
+      "verification": "registry_digest_and_size_match"
+    },
+    {
+      "model": "yolov8l_seg",
+      "reference": "36.111.34.121:15436/aistore/yolov8l_seg.cix:v1",
+      "remote_files": 1,
+      "bundled_auxiliary_files": 0,
+      "verification": "registry_digest_and_size_match"
+    },
+    {
+      "model": "copaw-flash-9b",
+      "reference": "36.111.34.121:15436/aistore/copaw-flash-9b.cix:v1",
+      "remote_files": 1,
+      "bundled_auxiliary_files": 0,
+      "verification": "registry_digest_and_size_match"
+    },
+    {
+      "model": "qwen3.8-27b",
+      "reference": "36.111.34.121:15436/aistore/qwen3.8-27b.gguf:v1",
+      "remote_files": 1,
+      "bundled_auxiliary_files": 0,
+      "verification": "registry_digest_and_size_match"
+    },
+    {
+      "model": "qwen3-vl-8b",
+      "reference": "36.111.34.121:15436/aistore/qwen3-vl-8b:v1",
+      "remote_files": 2,
+      "bundled_auxiliary_files": 0,
+      "verification": "full_archive_and_inner_file_sha256"
+    },
+    {
+      "model": "glm-ocr-0.9b",
+      "reference": "36.111.34.121:15436/aistore/glm-ocr-0.9b:v1",
+      "remote_files": 2,
+      "bundled_auxiliary_files": 0,
+      "verification": "full_archive_and_inner_file_sha256"
+    },
+    {
+      "model": "bge-m3",
+      "reference": "36.111.34.121:15436/aistore/bge-m3.gguf:v1",
+      "remote_files": 1,
+      "bundled_auxiliary_files": 0,
+      "verification": "registry_digest_and_size_match"
+    },
+    {
+      "model": "bge-reranker-v2-m3",
+      "reference": "36.111.34.121:15436/aistore/bge-reranker-v2-m3.gguf:v1",
+      "remote_files": 1,
+      "bundled_auxiliary_files": 0,
+      "verification": "registry_digest_and_size_match"
+    },
+    {
+      "model": "qwen3guard-stream-0.6b",
+      "reference": "36.111.34.121:15436/aistore/qwen3guard-stream-0.6b:v1",
+      "remote_files": 8,
+      "bundled_auxiliary_files": 3,
+      "verification": "full_archive_and_inner_file_sha256"
+    },
+    {
+      "model": "sensevoice",
+      "reference": "36.111.34.121:15436/aistore/sensevoice:v1",
+      "remote_files": 3,
+      "bundled_auxiliary_files": 1,
+      "verification": "full_archive_and_inner_file_sha256"
+    },
+    {
+      "model": "matcha-zh",
+      "reference": "36.111.34.121:15436/aistore/matcha-zh:v1",
+      "remote_files": 18,
+      "bundled_auxiliary_files": 0,
+      "verification": "full_archive_and_inner_file_sha256"
+    },
+    {
+      "model": "kokoro-82m",
+      "reference": "36.111.34.121:15436/aistore/kokoro-82m:v1",
+      "remote_files": 8,
+      "bundled_auxiliary_files": 0,
+      "verification": "full_archive_and_inner_file_sha256"
+    }
+  ],
+  "unchanged_signed_resource_catalog": true,
+  "source_transport": "HTTP with anonymous bearer tokens; all model file hashes remain enforced"
+}

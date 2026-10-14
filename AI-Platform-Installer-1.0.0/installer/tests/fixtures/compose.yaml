@@ -1,0 +1,661 @@
+name: houmo-ai
+x-runtime-common:
+  image: houmo-hliellama-xh2:2.1.1
+  init: true
+  read_only: true
+  restart: 'no'
+  environment: &id001
+    TZ: Asia/Shanghai
+    HOUMO_API_KEY: ${HOUMO_API_KEY}
+    HF_HUB_OFFLINE: '1'
+    TRANSFORMERS_OFFLINE: '1'
+    PIP_NO_INDEX: '1'
+  tmpfs: &id002
+  - /tmp:size=256m,mode=1777
+  logging: &id003
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: '3'
+  stop_grace_period: 30s
+x-device-mappings: &id004
+- /dev/xh2a_ctl0:/dev/xh2a_ctl0
+- /dev/xh2a_fast_memory_device0:/dev/xh2a_fast_memory_device0
+- /dev/xh2a_i2c_device0:/dev/xh2a_i2c_device0
+- /dev/xh2a_ipu0:/dev/xh2a_ipu0
+- /dev/xh2a_memory_allocator_device0_ddr:/dev/xh2a_memory_allocator_device0_ddr
+- /dev/xh2a_memory_allocator_device0_spm0:/dev/xh2a_memory_allocator_device0_spm0
+- /dev/xh2a_memory_allocator_device0_spm1:/dev/xh2a_memory_allocator_device0_spm1
+- /dev/xh2a_memory_transfer_device0:/dev/xh2a_memory_transfer_device0
+- /dev/xh2a_qspi_device0:/dev/xh2a_qspi_device0
+- /dev/xh2a_rpmsg_device0_0:/dev/xh2a_rpmsg_device0_0
+- /dev/xh2a_system_device0:/dev/xh2a_system_device0
+x-lib-volume: &id005
+  type: bind
+  source: /lib
+  target: /lib
+  read_only: true
+x-arch-lib-volume: &id006
+  type: bind
+  source: /usr/lib/aarch64-linux-gnu
+  target: /usr/lib/aarch64-linux-gnu
+  read_only: true
+x-sdk-volume: &id007
+  type: bind
+  source: /usr/local/houmo-drv-xh2_v1.4.0
+  target: /usr/local/houmo-sdk
+  read_only: true
+x-localtime-volume: &id008
+  type: bind
+  source: /etc/localtime
+  target: /etc/localtime
+  read_only: true
+services:
+  copaw:
+    image: houmo-hliellama-xh2:2.1.1
+    init: true
+    read_only: true
+    restart: 'no'
+    environment: *id001
+    tmpfs: *id002
+    logging: *id003
+    stop_grace_period: 30s
+    profiles:
+    - copaw
+    container_name: houmo-copaw
+    shm_size: 1g
+    devices: *id004
+    volumes:
+    - *id005
+    - *id006
+    - *id007
+    - *id008
+    - type: bind
+      source: /home/cix/cix_telecom_projects/houmo-HLIELLama-xh2/models/copaw_flash_9b_w4a8_128k_b1_1chip_2cores_v1.3.0/HiModel-Copaw-flash-9b-p256-128K-b1-2core-1d-xh2-v1.3.0-20260427015847.gguf
+      target: /models/copaw.gguf
+      read_only: true
+    command:
+    - -m
+    - /models/copaw.gguf
+    - --host
+    - 0.0.0.0
+    - --port
+    - '17701'
+    - -np
+    - '2'
+    - --alias
+    - copaw-flash-9b
+    - --api-key
+    - ${HOUMO_API_KEY}
+    - --reasoning
+    - 'off'
+    - --jinja
+    - --log-prefix
+    - --log-timestamps
+    - -lv
+    - '4'
+    healthcheck:
+      test:
+      - CMD
+      - /usr/bin/curl
+      - --fail
+      - --silent
+      - --show-error
+      - --max-time
+      - '5'
+      - --header
+      - 'Authorization: Bearer ${HOUMO_API_KEY}'
+      - http://127.0.0.1:17701/health
+      interval: 10s
+      timeout: 6s
+      retries: 12
+      start_period: 120s
+    pull_policy: never
+  bge-m3:
+    image: houmo-hliellama-xh2:2.1.1
+    init: true
+    read_only: true
+    restart: 'no'
+    environment: *id001
+    tmpfs: *id002
+    logging: *id003
+    stop_grace_period: 30s
+    profiles:
+    - bge-m3
+    container_name: houmo-bge-m3
+    shm_size: 512m
+    devices: *id004
+    volumes:
+    - *id005
+    - *id006
+    - *id007
+    - *id008
+    - type: bind
+      source: /home/cix/cix_telecom_projects/HiModel_xh2_bge-0.5b_0.5k_b10_1chip_2cores_v1.4.0_20260720.gguf
+      target: /models/bge-m3.gguf
+      read_only: true
+    command:
+    - -m
+    - /models/bge-m3.gguf
+    - --embedding
+    - --pooling
+    - last
+    - -b
+    - '8096'
+    - -ub
+    - '8096'
+    - --host
+    - 0.0.0.0
+    - --port
+    - '17702'
+    - -np
+    - '8'
+    - --alias
+    - bge-m3
+    - --api-key
+    - ${HOUMO_API_KEY}
+    - --log-prefix
+    - --log-timestamps
+    - -lv
+    - '4'
+    healthcheck:
+      test:
+      - CMD
+      - /usr/bin/curl
+      - --fail
+      - --silent
+      - --show-error
+      - --max-time
+      - '5'
+      - --header
+      - 'Authorization: Bearer ${HOUMO_API_KEY}'
+      - http://127.0.0.1:17702/health
+      interval: 10s
+      timeout: 6s
+      retries: 12
+      start_period: 60s
+    pull_policy: never
+  reranker:
+    image: houmo-hliellama-xh2:2.1.1
+    init: true
+    read_only: true
+    restart: 'no'
+    environment: *id001
+    tmpfs: *id002
+    logging: *id003
+    stop_grace_period: 30s
+    profiles:
+    - reranker
+    container_name: houmo-reranker
+    shm_size: 512m
+    devices: *id004
+    volumes:
+    - *id005
+    - *id006
+    - *id007
+    - *id008
+    - type: bind
+      source: /home/cix/cix_telecom_projects/HiModel_xh2_bge-reranker-v2-m3-0.5b_0.5k_b10_1chip_2cores_v1.4.0_20260720.gguf
+      target: /models/reranker.gguf
+      read_only: true
+    command:
+    - -m
+    - /models/reranker.gguf
+    - --rerank
+    - --host
+    - 0.0.0.0
+    - --port
+    - '17703'
+    - -np
+    - '8'
+    - --alias
+    - bge-reranker-v2-m3
+    - --api-key
+    - ${HOUMO_API_KEY}
+    - --log-prefix
+    - --log-timestamps
+    - -lv
+    - '4'
+    healthcheck:
+      test:
+      - CMD
+      - /usr/bin/curl
+      - --fail
+      - --silent
+      - --show-error
+      - --max-time
+      - '5'
+      - --header
+      - 'Authorization: Bearer ${HOUMO_API_KEY}'
+      - http://127.0.0.1:17703/health
+      interval: 10s
+      timeout: 6s
+      retries: 12
+      start_period: 60s
+    pull_policy: never
+  cosyvoice:
+    image: houmo-hlievllm-cosyvoice:1.4.0
+    profiles:
+    - cosyvoice
+    container_name: houmo-cosyvoice3
+    working_dir: /home/cix/cix_telecom_projects/cosyvoice-vllm-staging/logs
+    restart: 'no'
+    init: true
+    read_only: true
+    shm_size: 2g
+    devices: *id004
+    environment:
+      TZ: Asia/Shanghai
+      VLLM_TARGET_DEVICE: houmo
+      TCIM_BACKEND: Xh2HalBackend
+      HOUMO_TARGET: xh2
+      HDPL_PLATFORM: ASIC
+      HM_PLATFORM: '2'
+      IOMP_PATH: /usr/lib/aarch64-linux-gnu/libomp.so.5
+      TC_PATH: /usr/lib/aarch64-linux-gnu/libtcmalloc_minimal.so.4
+      LD_PRELOAD: /usr/lib/aarch64-linux-gnu/libtcmalloc_minimal.so.4:/usr/lib/aarch64-linux-gnu/libomp.so.5
+      LD_LIBRARY_PATH: /usr/lib/aarch64-linux-gnu:/home/cix/cix_telecom_projects/cosyvoice-vllm-staging/venv/lib/python3.11/site-packages/tcim_lite/lib:/home/cix/vendor-hliellama-2.1.1-6043/houmo-HLIELLama-xh2/lib
+      HF_HUB_OFFLINE: '1'
+      TRANSFORMERS_OFFLINE: '1'
+      PIP_NO_INDEX: '1'
+    tmpfs:
+    - /tmp:size=512m,mode=1777
+    - /root/.cache:size=128m,mode=0700
+    volumes:
+    - *id007
+    - *id008
+    - type: bind
+      source: /home/cix/cix_telecom_projects/cosyvoice-vllm-staging
+      target: /home/cix/cix_telecom_projects/cosyvoice-vllm-staging
+      read_only: false
+    - type: bind
+      source: /home/cix/cix_telecom_projects/cosyvoice3
+      target: /home/cix/cix_telecom_projects/cosyvoice3
+      read_only: true
+    - type: bind
+      source: /home/cix/vendor-hliellama-2.1.1-6043
+      target: /home/cix/vendor-hliellama-2.1.1-6043
+      read_only: true
+    - type: bind
+      source: /home/cix/modeldeck-runtime/lib/libomp.so.5
+      target: /usr/lib/aarch64-linux-gnu/libomp.so.5
+      read_only: true
+    - type: bind
+      source: /home/cix/modeldeck-runtime/lib/libtcmalloc_minimal.so.4
+      target: /usr/lib/aarch64-linux-gnu/libtcmalloc_minimal.so.4
+      read_only: true
+    - type: bind
+      source: /home/cix/modeldeck-runtime/lib/libnuma.so.1.0.0
+      target: /usr/lib/aarch64-linux-gnu/libnuma.so.1
+      read_only: true
+    entrypoint:
+    - /home/cix/cix_telecom_projects/cosyvoice-vllm-staging/venv/bin/vllm
+    command:
+    - serve
+    - /home/cix/cix_telecom_projects/cosyvoice-vllm-staging/models/tts
+    - --omni
+    - --host
+    - 0.0.0.0
+    - --port
+    - '8091'
+    - --served-model-name
+    - cosyvoice3
+    - --trust-remote-code
+    - --generation-config
+    - vllm
+    - --tokenizer
+    - /home/cix/cix_telecom_projects/cosyvoice-vllm-staging/models/tts
+    healthcheck:
+      test:
+      - CMD
+      - /home/cix/cix_telecom_projects/cosyvoice-vllm-staging/venv/bin/python
+      - -c
+      - import urllib.request; assert urllib.request.urlopen('http://127.0.0.1:8091/health', timeout=5).status == 200
+      interval: 10s
+      timeout: 6s
+      retries: 36
+      start_period: 240s
+    stop_grace_period: 60s
+    logging:
+      driver: json-file
+      options:
+        max-size: 100m
+        max-file: '3'
+    pull_policy: never
+  qwen-vl:
+    image: houmo-hliellama-xh2:2.1.1
+    init: true
+    read_only: true
+    restart: 'no'
+    environment: *id001
+    tmpfs: *id002
+    logging: *id003
+    stop_grace_period: 30s
+    profiles:
+    - qwen-vl
+    container_name: houmo-qwen3-vl-8b
+    shm_size: 1g
+    devices: *id004
+    volumes:
+    - *id005
+    - *id006
+    - *id007
+    - *id008
+    - type: bind
+      source: /home/cix/cix_telecom_projects/qwen3-vl-8b/HiModel_xh2_qwen3-vl_8b_256_32k_b1_1chip_2cores_v1.3.0_20260615.gguf
+      target: /models/qwen3-vl-8b.gguf
+      read_only: true
+    - type: bind
+      source: /home/cix/cix_telecom_projects/qwen3-vl-8b/mmproj_xh2_qwen3-vl_8b_2cores_vit_448x448_v1.3.0_20260615.gguf
+      target: /models/qwen3-vl-8b-mmproj.gguf
+      read_only: true
+    command:
+    - -m
+    - /models/qwen3-vl-8b.gguf
+    - --mmproj
+    - /models/qwen3-vl-8b-mmproj.gguf
+    - -c
+    - '32768'
+    - --host
+    - 0.0.0.0
+    - --port
+    - '17705'
+    - -np
+    - '2'
+    - --alias
+    - qwen3-vl-8b
+    - --api-key
+    - ${HOUMO_API_KEY}
+    - --reasoning
+    - 'off'
+    - --jinja
+    - --log-prefix
+    - --log-timestamps
+    - -lv
+    - '4'
+    healthcheck:
+      test:
+      - CMD
+      - /usr/bin/curl
+      - --fail
+      - --silent
+      - --show-error
+      - --max-time
+      - '5'
+      - --header
+      - 'Authorization: Bearer ${HOUMO_API_KEY}'
+      - http://127.0.0.1:17705/health
+      interval: 10s
+      timeout: 6s
+      retries: 18
+      start_period: 180s
+    pull_policy: never
+  glm-ocr:
+    image: houmo-hliellama-xh2:2.1.1
+    init: true
+    read_only: true
+    restart: 'no'
+    environment: *id001
+    tmpfs: *id002
+    logging: *id003
+    stop_grace_period: 30s
+    profiles:
+    - glm-ocr
+    container_name: houmo-glm-ocr-0.9b
+    shm_size: 1g
+    devices: *id004
+    volumes:
+    - *id005
+    - *id006
+    - *id007
+    - *id008
+    - type: bind
+      source: /home/cix/cix_telecom_projects/glm-ocr-0.9b/HiModel_xh2_glm-ocr_0.9b_256_8k_b1_1chip_2cores_v1.4.0_20260707.gguf
+      target: /models/glm-ocr-0.9b.gguf
+      read_only: true
+    - type: bind
+      source: /home/cix/cix_telecom_projects/glm-ocr-0.9b/mmproj_xh2_glm-ocr_0.9b_2cores_v1.4.0_20260707.gguf
+      target: /models/glm-ocr-0.9b-mmproj.gguf
+      read_only: true
+    command:
+    - -m
+    - /models/glm-ocr-0.9b.gguf
+    - --mmproj
+    - /models/glm-ocr-0.9b-mmproj.gguf
+    - -c
+    - '8192'
+    - --host
+    - 0.0.0.0
+    - --port
+    - '17709'
+    - -np
+    - '2'
+    - --alias
+    - glm-ocr-0.9b
+    - --api-key
+    - ${HOUMO_API_KEY}
+    - --reasoning
+    - 'off'
+    - --jinja
+    - --log-prefix
+    - --log-timestamps
+    - -lv
+    - '4'
+    healthcheck:
+      test:
+      - CMD
+      - /usr/bin/curl
+      - --fail
+      - --silent
+      - --show-error
+      - --max-time
+      - '5'
+      - --header
+      - 'Authorization: Bearer ${HOUMO_API_KEY}'
+      - http://127.0.0.1:17709/health
+      interval: 10s
+      timeout: 6s
+      retries: 18
+      start_period: 180s
+    pull_policy: never
+  qwen38:
+    image: houmo-hliellama-xh2:2.1.1
+    init: true
+    read_only: true
+    restart: 'no'
+    environment: *id001
+    tmpfs: *id002
+    logging: *id003
+    stop_grace_period: 30s
+    profiles:
+    - qwen38
+    container_name: houmo-qwen38-27b
+    shm_size: 2g
+    devices:
+    - /dev/xh2a_ctl0:/dev/xh2a_ctl0
+    - /dev/xh2a_fast_memory_device0:/dev/xh2a_fast_memory_device0
+    - /dev/xh2a_i2c_device0:/dev/xh2a_i2c_device0
+    - /dev/xh2a_ipu0:/dev/xh2a_ipu0
+    - /dev/xh2a_memory_allocator_device0_ddr:/dev/xh2a_memory_allocator_device0_ddr
+    - /dev/xh2a_memory_allocator_device0_spm0:/dev/xh2a_memory_allocator_device0_spm0
+    - /dev/xh2a_memory_allocator_device0_spm1:/dev/xh2a_memory_allocator_device0_spm1
+    - /dev/xh2a_memory_transfer_device0:/dev/xh2a_memory_transfer_device0
+    - /dev/xh2a_qspi_device0:/dev/xh2a_qspi_device0
+    - /dev/xh2a_rpmsg_device0_0:/dev/xh2a_rpmsg_device0_0
+    - /dev/xh2a_system_device0:/dev/xh2a_system_device0
+    - /dev/xh2a_fast_memory_device1:/dev/xh2a_fast_memory_device1
+    - /dev/xh2a_i2c_device1:/dev/xh2a_i2c_device1
+    - /dev/xh2a_ipu1:/dev/xh2a_ipu1
+    - /dev/xh2a_memory_allocator_device1_ddr:/dev/xh2a_memory_allocator_device1_ddr
+    - /dev/xh2a_memory_allocator_device1_spm0:/dev/xh2a_memory_allocator_device1_spm0
+    - /dev/xh2a_memory_allocator_device1_spm1:/dev/xh2a_memory_allocator_device1_spm1
+    - /dev/xh2a_memory_transfer_device1:/dev/xh2a_memory_transfer_device1
+    - /dev/xh2a_qspi_device1:/dev/xh2a_qspi_device1
+    - /dev/xh2a_rpmsg_device1_0:/dev/xh2a_rpmsg_device1_0
+    - /dev/xh2a_system_device1:/dev/xh2a_system_device1
+    volumes:
+    - *id005
+    - *id006
+    - *id007
+    - *id008
+    - type: bind
+      source: /home/cix/cix_telecom_projects/qwen3.8-27b/HiModel-Qwen3.8-27b-mtp-w4a8-p256-256K-b1-2core-2d-xh2-v1.5.0-20260911181607.gguf
+      target: /models/qwen3.8-27b.gguf
+      read_only: true
+    - type: bind
+      source: /home/cix/modeldeck-runtime/qwen38-mm/houmo-HLIELLama-xh2
+      target: /opt/hliellama
+      read_only: true
+    - type: bind
+      source: /home/cix/cix_telecom_projects/qwen3.8-27b/mmproj-Qwen3.8-27b-mtp-w4a8-vit-dynamic-m96-m196-m384-m704-m1536-xh2-v1.5.0-20260911181222.gguf
+      target: /models/qwen3.8-27b-mmproj.gguf
+      read_only: true
+    command:
+    - -m
+    - /models/qwen3.8-27b.gguf
+    - -mm
+    - /models/qwen3.8-27b-mmproj.gguf
+    - -c
+    - '262144'
+    - --host
+    - 0.0.0.0
+    - --port
+    - '17707'
+    - -np
+    - '1'
+    - --alias
+    - qwen3.8-27b
+    - --api-key
+    - ${HOUMO_API_KEY}
+    - --reasoning
+    - 'off'
+    - --jinja
+    - --log-prefix
+    - --log-timestamps
+    - -lv
+    - '4'
+    healthcheck:
+      test:
+      - CMD
+      - /usr/bin/curl
+      - --fail
+      - --silent
+      - --show-error
+      - --max-time
+      - '5'
+      - --header
+      - 'Authorization: Bearer ${HOUMO_API_KEY}'
+      - http://127.0.0.1:17707/health
+      interval: 10s
+      timeout: 6s
+      retries: 30
+      start_period: 300s
+    pull_policy: never
+  spark-x1:
+    image: houmo-hliellama-xh2:2.2.3-xunfei-spark
+    init: true
+    read_only: true
+    restart: 'no'
+    environment: *id001
+    tmpfs: *id002
+    logging: *id003
+    stop_grace_period: 30s
+    profiles:
+    - spark-x1
+    container_name: houmo-spark-x1
+    shm_size: 1g
+    devices: *id004
+    volumes:
+    - *id005
+    - *id006
+    - *id007
+    - *id008
+    - type: bind
+      source: /home/cix/cix_telecom_projects/xunfei-spark/HiModel_xh2_Spark_x1-4b-w4a8-256K-b1-2core-1d-xh2-v1.5.0-20260904.gguf
+      target: /models/spark-x1.gguf
+      read_only: true
+    command:
+    - -m
+    - /models/spark-x1.gguf
+    - -c
+    - '262144'
+    - --host
+    - 0.0.0.0
+    - --port
+    - '17711'
+    - -np
+    - '2'
+    - --alias
+    - spark-x1-4b
+    - --api-key
+    - ${HOUMO_API_KEY}
+    - --reasoning
+    - 'off'
+    - --jinja
+    - --log-prefix
+    - --log-timestamps
+    - -lv
+    - '4'
+    healthcheck:
+      test:
+      - CMD
+      - /usr/bin/curl
+      - --fail
+      - --silent
+      - --show-error
+      - --max-time
+      - '5'
+      - --header
+      - 'Authorization: Bearer ${HOUMO_API_KEY}'
+      - http://127.0.0.1:17711/health
+      interval: 10s
+      timeout: 6s
+      retries: 36
+      start_period: 180s
+    pull_policy: never
+  qwen3guard:
+    image: qwen3guard-stream-cpu:0.1.0
+    container_name: houmo-qwen3guard-stream-0.6b
+    restart: unless-stopped
+    init: true
+    read_only: true
+    shm_size: 512m
+    cpus: 8.0
+    mem_limit: 6g
+    environment:
+      TZ: Asia/Shanghai
+      HOUMO_API_KEY: ${HOUMO_API_KEY}
+      GUARD_MODEL_ID: qwen3guard-stream-0.6b
+      GUARD_MODEL_PATH: /models/Qwen3Guard-Stream-0.6B
+      GUARD_CPU_THREADS: '8'
+      GUARD_DTYPE: bfloat16
+      GUARD_MAX_TOKENS: '8192'
+      GUARD_MAX_STREAMS: '2'
+      HF_HUB_OFFLINE: '1'
+      TRANSFORMERS_OFFLINE: '1'
+      PIP_NO_INDEX: '1'
+    volumes:
+    - *id008
+    - type: bind
+      source: /home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B
+      target: /models/Qwen3Guard-Stream-0.6B
+      read_only: true
+    tmpfs:
+    - /tmp:size=256m,mode=1777
+    stop_grace_period: 30s
+    healthcheck:
+      test:
+      - CMD
+      - python
+      - -c
+      - import json,urllib.request; assert json.load(urllib.request.urlopen('http://127.0.0.1:17706/health', timeout=5))['ok']
+      interval: 10s
+      timeout: 6s
+      retries: 30
+      start_period: 300s
+    logging:
+      driver: json-file
+      options:
+        max-size: 100m
+        max-file: '3'
+    pull_policy: never

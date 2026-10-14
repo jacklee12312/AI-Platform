@@ -1,0 +1,40 @@
+# Generated releases and local state
+/build/
+/delivery/
+/transfer-state.json
+/delivery-result.json
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+
+# Large assets are retained locally and recorded by external-assets.json.
+*.tar
+*.tar.gz
+*.tgz
+*.run
+*.deb
+*.whl
+*.otf
+*.gguf
+*.cix
+*.onnx
+*.safetensors
+**/qwen36_35B/tokenizer.json
+**/qwen36_35B/vocab.json
+**/qwen36_35B/merges.txt
+
+# Local credentials; public release keys and examples are versioned.
+.env
+.env.*
+!.env.example
+*.key
+*.pfx
+*.p12
+*.pem
+!release-public.pem
+*-private.*
+
+# Generated installer integrity manifests belong in release artifacts.
+**/installer-manifest.json
+**/SHA256SUMS

@@ -1,0 +1,20 @@
+[Unit]
+Description=ModelDeck real-inference verification after host boot
+Requires=docker.service gateway-admin.service ai-model-gateway.service
+Wants=houmo-ai.service network-online.target
+After=docker.service network-online.target houmo-ai.service ai-model-gateway.service gateway-admin.service
+PartOf=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+User=cix
+Group=cix
+SupplementaryGroups=docker
+WorkingDirectory=/home/cix/gateway-admin
+ExecStart=/usr/bin/python3 /home/cix/gateway-admin/startup_verify.py --source boot
+TimeoutStartSec=1250
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target

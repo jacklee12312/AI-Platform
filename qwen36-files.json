@@ -1,0 +1,12 @@
+[
+  {
+    "name": "HiModel_xh2_qwen3.6-35b-a3b_w5a8_256_256k_b1_2chips_2cores_v1.4.0_20260716.gguf",
+    "size": 27106465664,
+    "sha256": "142b1e0b910687b903f31058da749113797bfd2e0f81f216fe3b36f8cd906708"
+  },
+  {
+    "name": "mmproj_xh2_qwen3.6-35b-a3b_w4a8_2cores_vit_dynamic_m96-m196-m384-m704-m1536_v1.5.0_20260824.gguf",
+    "size": 4326159264,
+    "sha256": "84f977c30083e80293d258e35c55c31e49e5b029c4ea982af837ca7112a55c4b"
+  }
+]

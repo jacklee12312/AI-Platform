@@ -1,0 +1,15 @@
+{
+  "date": "2026-09-23 11:07:45",
+  "model_repositories": 25,
+  "remote_model_files": 60,
+  "bundled_auxiliary_files": 4,
+  "remaining_local_models": [],
+  "cosyvoice3_reference": "aistore/cosyvoice3:v1",
+  "spark_reference": "aistore/xunfei-spark:v1",
+  "spark_manifest_digest": "sha256:98b7ce7b5949c0af7d0715081dc429bcb00abb15543b3686d7574e1dba772f0d",
+  "spark_blob_digest": "sha256:b1a45870e7a09989ee36c3c63649ef03303b71967a6dd1a8a68b5867162ec4b8",
+  "spark_blob_size": 8266037056,
+  "spark_matches_signed_model_file": true,
+  "signed_resource_catalog_unchanged": true,
+  "platform_runtime_remote_sources": false
+}
