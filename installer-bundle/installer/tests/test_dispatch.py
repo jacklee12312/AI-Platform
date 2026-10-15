@@ -26,6 +26,8 @@ class DispatchTests(unittest.TestCase):
         launch=next(c for c in self.calls if c[0]=='systemd-run')
         self.assertNotIn('fixture-password-123',' '.join(launch));self.assertIn('--unit=ai-platform-install.service',launch)
         self.assertTrue((self.root/'private/code/artifacts.py').is_file())
+        self.assertTrue((self.root/'private/code/version.py').is_file())
+        self.assertEqual(common.read_json(self.root/'private/code/release.json')['installer_version'],self.release['installer_version'])
     def test_resume_changes_sources_but_preserves_keys_and_password_hash(self):
         common.atomic_json(self.root/'private/journal.json',{'release_id':self.release['release_id'],'installer_version':self.release['installer_version'],'status':'failed'})
         common.atomic_json(self.root/'private/request.json',{'admin_hash':'fixture-hash','api_key':'fixture-api-key','sources':self.sources,'selected_models':['copaw-flash-9b'],'device_count':2})

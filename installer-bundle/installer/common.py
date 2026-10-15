@@ -3,7 +3,9 @@ from __future__ import annotations
 import hashlib,json,os,platform,re,shutil,socket,stat,subprocess,tempfile
 from pathlib import Path, PurePosixPath
 
-PRODUCT='AI 平台安装器 · 1.0.0'
+from version import VERSION
+
+PRODUCT='AI 平台安装器 · '+VERSION
 STATE_ROOT=Path('/var/lib/ai-platform-installer')
 PUBLIC_STATE=STATE_ROOT/'public/status.json'
 UNIT='ai-platform-install.service'

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=AI 平台安装器
+Comment=从本地或远端准备模型及组件，安装完整 AI 平台
+Exec=python3 -c "import os,sys,urllib.parse,pathlib; u=urllib.parse.urlparse(sys.argv[1]) if len(sys.argv)>1 else None; p=pathlib.Path(urllib.parse.unquote(u.path) if u and u.scheme else sys.argv[1]) if u else None; h=pathlib.Path.home(); paths=([p.parent/'启动安装.sh'] if p else [])+[pathlib.Path.cwd()/'启动安装.sh',h/'@DELIVERY_DIR@'/'启动安装.sh']; script=next((x for x in paths if x.is_file()),None); assert script,'找不到安装程序：请将交付目录放到用户主目录'; os.execv('/bin/sh',['sh',str(script)])" %k
+Icon=system-software-install
+Terminal=false
+Categories=System;

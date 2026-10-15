@@ -4,6 +4,7 @@ import contextlib,functools,hashlib,http.client,json,os,re,shutil,socket,subproc
 from pathlib import Path
 from urllib import error,parse,request
 from common import read_json,atomic_json,sha256,safe_relative,no_symlink_parents
+from version import VERSION
 
 CACHE=Path('/var/cache/ai-platform')
 CATEGORIES={'platform','docker','runtime','images','models'}
@@ -187,7 +188,7 @@ class BlobStore:
             part.unlink();offset=0
         if offset==row['size'] and self.check(part,row):return
         if offset==row['size']:part.unlink();offset=0
-        headers={'Accept-Encoding':'identity','User-Agent':'AI-Platform-Installer/1.0.0'}
+        headers={'Accept-Encoding':'identity','User-Agent':'AI-Platform-Installer/'+VERSION}
         if offset:headers['Range']='bytes='+str(offset)+'-'
         req=request.Request(url,headers=headers)
         with (open_request or self.opener.open)(req,timeout=self.config.get('timeout_seconds',45)) as response:

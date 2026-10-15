@@ -38,3 +38,4 @@ __pycache__/
 # Generated installer integrity manifests belong in release artifacts.
 **/installer-manifest.json
 **/SHA256SUMS
+!/support-files/files/manifests/SHA256SUMS

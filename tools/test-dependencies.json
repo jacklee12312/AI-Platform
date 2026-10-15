@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "platform": "manylinux_2_34_x86_64",
+  "python_abi": "cp39-abi3",
+  "version": "6.10.2",
+  "wheels": [
+    {
+      "filename": "pyside6_essentials-6.10.2-cp39-abi3-manylinux_2_34_x86_64.whl",
+      "sha256": "660aea45bfa36f1e06f799b934c2a7df963bd31abc5083e8bb8a5bfaef45686b"
+    },
+    {
+      "filename": "shiboken6-6.10.2-cp39-abi3-manylinux_2_34_x86_64.whl",
+      "sha256": "ace0790032d9cb0adda644b94ee28d59410180d9773643bb6cf8438c361987ad"
+    }
+  ]
+}

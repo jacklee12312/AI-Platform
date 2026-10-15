@@ -4,8 +4,10 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import shutil
 import zipfile
+from datetime import datetime, timezone
 from pathlib import Path
 
 
@@ -20,8 +22,13 @@ def main():
     output.parent.mkdir(parents=True,exist_ok=True)
     with output.open('xb') as stream:stream.write(b'#!/usr/bin/env python3\n')
     with zipfile.ZipFile(output,'a',compression=zipfile.ZIP_STORED) as archive:
-        archive.write(bundle/'tools/launcher_entry.py','__main__.py')
-        for name in paths:archive.write(bundle/name,'bundle/'+name)
+        epoch=int(os.environ.get('SOURCE_DATE_EPOCH','315532800'))
+        timestamp=datetime.fromtimestamp(max(epoch,315532800),timezone.utc).timetuple()[:6]
+        def add(path,name):
+            info=zipfile.ZipInfo(name,date_time=timestamp);info.create_system=3;info.external_attr=0o100644<<16
+            with path.open('rb') as src,archive.open(info,'w') as dst:shutil.copyfileobj(src,dst)
+        add(bundle/'tools/launcher_entry.py','__main__.py')
+        for name in paths:add(bundle/name,'bundle/'+name)
     with output.open('rb') as stream:digest=hashlib.file_digest(stream,'sha256').hexdigest()
     output.with_suffix('.run.sha256').write_text(digest+'  '+output.name+'\n',encoding='utf-8')
     shutil.copyfile(bundle/'sources.json',output.with_suffix('.sources.json'))

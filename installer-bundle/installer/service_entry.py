@@ -71,8 +71,9 @@ def dispatch(args,bundle):
     code=STATE_ROOT/'private/code';no_symlink_parents(code,STATE_ROOT)
     if code.is_symlink():raise RuntimeError('后台代码目录不能是链接')
     code.mkdir(exist_ok=True)
-    for name in ['common.py','engine.py','artifacts.py','registry.py','selection.py','verify_selected.py']:
+    for name in ['common.py','engine.py','artifacts.py','registry.py','selection.py','verify_selected.py','version.py']:
         shutil.copyfile(bundle/'installer'/name,code/name);(code/name).chmod(0o600)
+    shutil.copyfile(bundle/'release.json',code/'release.json');(code/'release.json').chmod(0o600)
     # Credentials are never command-line arguments, environment values or public status fields.
     command=['systemd-run','--unit='+UNIT,'--collect','--property=Type=exec','--property=Restart=no','--property=UMask=0077','--property=TimeoutStopSec=45','--setenv=PYTHONDONTWRITEBYTECODE=1','--setenv=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin','/usr/bin/python3','-u',str(code/'engine.py'),'--bundle',str(bundle)]
     subprocess.run(command,check=True)

@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "installer_version": "1.0.1",
+  "resource_release_id": "ai-platform-installer-1.0.0-20260929",
+  "release_date": "2026-10-15",
+  "source_bundle": "installer-bundle",
+  "resources_root": "support-files/files",
+  "target": "linux-arm64",
+  "validation_status": "candidate"
+}

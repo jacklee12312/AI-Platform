@@ -1,13 +1,13 @@
 {
   "product": "AI 平台安装器",
   "version": "1.4.0-dev.1",
-  "installer_version": "1.0.0",
+  "installer_version": "1.0.1",
   "release_id": "ai-platform-installer-1.0.0-20260929",
   "platform": "vendor Debian 12 ARM64 / CIX P1 / Houmo LQ50 XH2 v1.4.0",
   "models": 27,
   "images": 12,
   "install_mode": "selected-models",
-  "status": "release-build",
+  "status": "candidate",
   "resources_checksums_sha256": "0d5a241cdddeb6274742ca457a915922f00add79256e890248779fa8d93c2e49",
   "resources_manifest_sha256": "499524e4ba2b6c9eeac080e70af6be293dc90f108b940f87a531411ba7dae0b6",
   "catalog_sha256": "e6aa6bd784e876dc497d8452d1b3b1c1738d4544eb49b8828418f41b33a459a6",
@@ -15,13 +15,9 @@
   "validation": {
     "fresh_install": "not_run",
     "reboot": "not_run",
-    "harbor_new_model_uploads": "pending-publisher-upload",
-    "hardware_selection": "124-installer-tests-passed",
-    "qwen36_container": "text-image-stream-passed; original-platform-restored",
-    "source_note": "GGUF SHA-256 is pinned; uploading the expected files to v1 does not require rebuilding",
-    "qwen36_packaged_runtime": "safe-extract-and-container-import-passed",
-    "platform_integration": "4-new-integration-tests-passed; legacy-test-debt-documented",
-    "frontend": "typecheck-and-production-build-passed"
+    "historical_validation": "See validation/ and releases/1.0.0.json; those results belong to 1.0.0."
   },
-  "catalog_public_key_sha256": "2372e0f4636aad17b6a7bae4ccea27056ca43c3ffaa24563e588f4e889b88fe5"
+  "catalog_public_key_sha256": "2372e0f4636aad17b6a7bae4ccea27056ca43c3ffaa24563e588f4e889b88fe5",
+  "resource_release_id": "ai-platform-installer-1.0.0-20260929",
+  "platform_version": "1.4.0-dev.1"
 }
