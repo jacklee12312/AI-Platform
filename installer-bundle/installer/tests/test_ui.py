@@ -40,7 +40,7 @@ class WizardTests(unittest.TestCase):
             with mock.patch('registry.RegistryClient') as client:
                 checked=wizard.check_online_model_sources(self.w.sources,{'rows':rows})
             self.assertEqual(len(checked),2)
-            self.assertEqual({call.args[0]['repository'] for call in client.call_args_list},{repo})
+            self.assertEqual({call.args[0]['repository'] for call in client.call_args_list},{repo,'aistore/qwen3-8-27b-mmproj'})
     def test_online_dispatch_preserves_bundled_source_marker(self):
         self.w.preview=False
         with mock.patch('wizard.QProcess') as process:

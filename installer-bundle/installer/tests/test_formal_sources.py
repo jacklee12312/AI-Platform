@@ -18,7 +18,8 @@ class FormalSourcesTests(unittest.TestCase):
             self.assertEqual(len(rows),2)
             for r in rows:
                 s=oci_source(self.config,r)[1]
-                self.assertEqual(s['repository'],repo);self.assertEqual(s['reference'],'v1')
+                expected='aistore/qwen3-8-27b-mmproj' if '/mmproj-' in r['path'] else repo
+                self.assertEqual(s['repository'],expected);self.assertEqual(s['reference'],'v1')
                 self.assertEqual(s['blob_digest'],'sha256:'+r['sha256'])
                 self.assertEqual(s['blob_size'],r['size'])
                 self.assertEqual(remote_candidates(self.config,r),[])
@@ -36,7 +37,9 @@ class FormalSourcesTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as cache:
             plan=plan_sources(BUNDLE,subset,self.config,cache)
         for r in plan['rows']:
-            if r['category']=='models':self.assertEqual(oci_source(self.config,r)[1]['repository'],'aistore/qwen3-8-27b')
+            if r['category']=='models':
+                expected='aistore/qwen3-8-27b-mmproj' if '/mmproj-' in r['path'] else 'aistore/qwen3-8-27b'
+                self.assertEqual(oci_source(self.config,r)[1]['repository'],expected)
 
     def test_ambiguous_device_sources_and_missing_count_rejected(self):
         config=copy.deepcopy(self.config)

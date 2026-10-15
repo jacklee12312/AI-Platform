@@ -423,7 +423,7 @@
     },
     "qwen38-1-mmproj": {
       "registry": "http://36.111.34.121:15436",
-      "repository": "aistore/qwen3-8-27b",
+      "repository": "aistore/qwen3-8-27b-mmproj",
       "reference": "v1",
       "resolve_tag": true,
       "manifest_digest": null,
@@ -451,7 +451,7 @@
     },
     "qwen38-2-mmproj": {
       "registry": "http://36.111.34.121:15436",
-      "repository": "aistore/qwen3-8-27b-2",
+      "repository": "aistore/qwen3-8-27b-mmproj",
       "reference": "v1",
       "resolve_tag": true,
       "manifest_digest": null,
