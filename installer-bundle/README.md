@@ -1,13 +1,13 @@
-# AI 平台安装器 1.1.0
+# AI 平台安装器 1.1.1
 
 本包为待现场验收的候选交付包，适用于厂家 Debian 12 ARM64、CIX P1、后摩 LQ50/XH2 v1.4.0 驱动的单卡或双卡设备。
 
 1.1 固定按以下顺序安装：数据探针注册及 MQTT 连接 → 组件库认证与健康检查 → 所选模型及平台验收。组件库包括 Docker、Nginx、etcd、MySQL、Redis、ParadeDB、Neo4j、MinIO、Milvus。
 
-将整个 `AI-Platform-1.1.0-linux-arm64` 目录复制到设备主目录，在图形桌面双击 `安装AI平台.desktop`。也可打开终端运行：
+将整个 `AI-Platform-1.1.1-linux-arm64` 目录复制到设备主目录，在图形桌面双击 `安装AI平台.desktop`。也可打开终端运行：
 
 ```sh
-python3 ./安装AI平台-1.1.0.run
+python3 ./安装AI平台-1.1.1.run
 ```
 
 保留同目录的 `.sources.json` 和 `support-files/`。本包提供 27 个模型/服务选项；单卡可选 26 项，Qwen3.6-35B-A3B 仅双卡可选。模型权重不随包分发，按所选来源获取并核对大小与 SHA-256。

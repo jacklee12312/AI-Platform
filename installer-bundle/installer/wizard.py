@@ -8,11 +8,12 @@ from PySide6.QtCore import Qt,QThread,Signal,QTimer,QProcess,QProcessEnvironment
 from PySide6.QtGui import QColor,QFont,QDesktopServices,QFontDatabase
 from PySide6.QtWidgets import (QApplication,QWidget,QFrame,QLabel,QVBoxLayout,QHBoxLayout,QPushButton,
  QStackedWidget,QLineEdit,QCheckBox,QProgressBar,QPlainTextEdit,QTableWidget,QTableWidgetItem,
- QHeaderView,QMessageBox,QFileDialog,QDialog,QRadioButton,QScrollArea)
+ QHeaderView,QMessageBox,QFileDialog,QDialog,QRadioButton,QScrollArea,QTabWidget,QGridLayout)
 from common import PRODUCT,PUBLIC_STATE,STEPS,UNIT,read_json,quick_checks,check_password,atomic_json,detect_device_count
 from artifacts import load_catalog,source_config,source_roots,worker_source_roots,plan_sources,remote_candidates,oci_source,SourceError
 from download_speed import DownloadSpeedMeter
 from selection import selected_catalog,validate_selected,supported_on
+from workflow import COMPONENTS,COMPONENT_DEPENDENCIES,requested_components,resolved_components
 
 STYLE='''
 QWidget {font-family: "Noto Sans CJK SC"; font-size: 14px; color:#1c2c43; background:#f6f8fc;}
@@ -103,7 +104,8 @@ def check_online_model_sources(config,plan):
 
 class CheckThread(QThread):
     ready=Signal(object)
-    def __init__(self,bundle,config,selected):super().__init__();self.bundle=bundle;self.config=config;self.selected=selected
+    def __init__(self,bundle,config,selected,components=None):
+        super().__init__();self.bundle=bundle;self.config=config;self.selected=selected;self.components=components
     def run(self):
         try:
             device_count=detect_device_count()
@@ -112,9 +114,9 @@ class CheckThread(QThread):
             detail='全部资源都有来源；正式准备阶段逐一校验' if plan['ready'] else str(len(missing))+' 个资源缺少本地文件或远端地址：'+', '.join(sorted({m for r in missing for m in r['models']}))
             rows=[{'name':'资源来源','ok':plan['ready'],'detail':detail,'warning':False}]
             rows+=check_online_model_sources(self.config,plan)
-            rows+=quick_checks(self.bundle,self.selected)
-            self.ready.emit({'rows':rows,'plan':plan,'config':self.config,'selected':self.selected,'device_count':device_count})
-        except Exception as exc:self.ready.emit({'rows':[{'name':'来源 / 环境检查','ok':False,'detail':str(exc),'warning':False}],'plan':None,'config':self.config,'selected':self.selected})
+            rows+=quick_checks(self.bundle,self.selected,self.components)
+            self.ready.emit({'rows':rows,'plan':plan,'config':self.config,'selected':self.selected,'components':self.components,'device_count':device_count})
+        except Exception as exc:self.ready.emit({'rows':[{'name':'来源 / 环境检查','ok':False,'detail':str(exc),'warning':False}],'plan':None,'config':self.config,'selected':self.selected,'components':self.components})
 
 class Wizard(QWidget):
     def __init__(self,bundle,preview=False):
@@ -125,6 +127,7 @@ class Wizard(QWidget):
         self.sources=source_config(self.bundle);self.source_plan=None;self.editing_sources=False
         self.catalog=read_json(self.bundle/'catalog/release-catalog.json',{'models':[],'resources':[]})
         self.workflow_enabled=bool(self.catalog.get('workflow_sha256'))
+        self.component_requested=set();self.component_checks={};self.component_rows={}
         try:self.device_count=detect_device_count() if not preview else None
         except RuntimeError:self.device_count=None
         self.setWindowTitle(PRODUCT);self.resize(1120,760);self.setMinimumSize(1000,700)
@@ -132,7 +135,7 @@ class Wizard(QWidget):
         sidebar=QFrame();sidebar.setObjectName('sidebar');sidebar.setFixedWidth(238);sl=QVBoxLayout(sidebar);sl.setContentsMargins(25,32,20,24)
         sl.addWidget(label('AI PLATFORM','brand'));sl.addSpacing(8);sl.addWidget(label('AI 平台\n安装向导','sideTitle'));sl.addSpacing(28)
         self.step_labels=[]
-        for i,t in enumerate(['欢迎使用','选择模型与来源','检查结果','安装设置','确认安装','资源与安装','完成']):
+        for i,t in enumerate(['欢迎使用','选择组件与模型' if self.workflow_enabled else '选择模型与来源','检查结果','安装设置','确认安装','资源与安装','完成']):
             w=label(f'{i+1:02d}   {t}','step');self.step_labels.append(w);sl.addWidget(w)
         sl.addStretch();sl.addWidget(label('选择所需模型\n本地导入 / 联网下载','subtitle'));sl.addSpacing(12);sl.addWidget(label('CIX P1 · Houmo LQ50\nDebian 12 / ARM64','subtitle'))
         outer.addWidget(sidebar);body=QWidget();bl=QVBoxLayout(body);bl.setContentsMargins(30,26,30,20);bl.setSpacing(14)
@@ -157,12 +160,17 @@ class Wizard(QWidget):
         v.addLayout(stats)
         v.addWidget(card('完整推理能力','LLM / 图文理解 / OCR / 语音识别与合成 / 向量与重排 / CV / Guard / 民主测评识别'))
         v.addWidget(card('从运行环境到管理入口','Docker 与 Compose、配套镜像和运行时、所选模型、API 网关、管理界面、Agent 和开机自启。'))
-        if self.workflow_enabled:v.addWidget(label('先安装并注册数据探针，确认 MQTT 已连接；再安装组件库并检查认证；最后安装所选模型。兼容复用符合本版要求的探针和组件。','notice'))
+        if self.workflow_enabled:v.addWidget(label('先安装并注册数据探针，确认 MQTT 已连接；再安装勾选的组件库服务并检查认证；最后安装所选模型。组件库可全部不选，兼容复用符合本版要求的探针和所选组件。','notice'))
         v.addWidget(label('安装器与资源分开交付，模型地址可在之后配置。\n支持本地文件、离线缓存与远端断点下载，资源齐全后再安装。\n要求厂家 Debian 12 ARM64 及匹配驱动。','notice'))
         b=QPushButton('查看完整安装清单');b.clicked.connect(self.show_catalog);v.addWidget(b,alignment=Qt.AlignLeft);v.addStretch()
 
     def build_choices(self):
-        v=self.page();v.addWidget(label('勾选要安装的模型；未勾选项不会下载、部署或参加验收。平台基础组件固定安装，至少需要一个 LQ50 主模型。Qwen3.8 自动选择单卡或双卡多模态权重；Qwen3.6-35B-A3B 仅支持双卡。','notice'))
+        v=self.page()
+        if self.workflow_enabled:
+            self.choice_tabs=QTabWidget();v.addWidget(self.choice_tabs)
+            models=QWidget();v=QVBoxLayout(models);v.setContentsMargins(0,10,0,0);v.setSpacing(14)
+            self.choice_tabs.addTab(models,'模型与来源')
+        v.addWidget(label('勾选要安装的模型；未勾选项不会下载、部署或参加验收。模型平台基础环境固定安装，至少需要一个 LQ50 主模型。Qwen3.8 自动选择单卡或双卡多模态权重；Qwen3.6-35B-A3B 仅支持双卡。','notice'))
         self.hardware_label=label('设备：'+('待检查' if self.device_count is None else f'{self.device_count} 卡；自动选择对应模型版本'),'subtitle')
         v.addWidget(self.hardware_label)
         self.models_table=QTableWidget(len(self.catalog['models']),3)
@@ -195,6 +203,58 @@ class Wizard(QWidget):
         self.online.toggled.connect(self.source_mode_changed);self.local_path.textChanged.connect(self.refresh_library_hint)
         self.refresh_library_hint()
         v.addWidget(sources)
+        if self.workflow_enabled:self.build_component_choices()
+
+    def build_component_choices(self):
+        self.component_group=QWidget();v=QVBoxLayout(self.component_group)
+        self.choice_tabs.addTab(self.component_group,'组件库（按需选择）')
+        v.addWidget(label('勾选需要的组件；未勾选的服务不会安装、启动或参加验收。可以全部不选。选择 Milvus 时自动包含必需的 MinIO 和 etcd。','notice'))
+        base=QCheckBox('Docker / Compose（模型平台必需）');base.setChecked(True);base.setEnabled(False);v.addWidget(base)
+        grid=QGridLayout()
+        for index,(name,title) in enumerate(COMPONENTS.items()):
+            check=QCheckBox(title);self.component_checks[name]=check
+            check.toggled.connect(lambda checked,name=name:self.component_toggled(name,checked))
+            grid.addWidget(check,index//2,index%2)
+        v.addLayout(grid)
+        row=QHBoxLayout()
+        for title,selected in [('全选组件',list(COMPONENTS)),('清空组件',[])]:
+            button=QPushButton(title);button.clicked.connect(lambda checked=False,selected=selected:self.set_component_selection(selected));row.addWidget(button)
+        row.addStretch();v.addLayout(row)
+        self.component_summary=label('','notice');v.addWidget(self.component_summary);v.addStretch()
+        self.refresh_component_selection()
+
+    def component_selection(self):
+        return [name for name in COMPONENTS if name in self.component_requested]
+
+    def set_component_selection(self,selected):
+        self.component_requested=set(requested_components({'selected':selected}))
+        self.refresh_component_selection()
+
+    def component_toggled(self,name,checked):
+        if checked:self.component_requested.add(name)
+        else:self.component_requested.discard(name)
+        self.refresh_component_selection()
+
+    def refresh_component_selection(self):
+        requested=self.component_selection();selected=resolved_components({'selected':requested})
+        required={dep for name in requested for dep in COMPONENT_DEPENDENCIES.get(name,())}
+        for name,check in self.component_checks.items():
+            check.blockSignals(True);check.setChecked(name in selected);check.setEnabled(name not in required);check.blockSignals(False)
+            check.setText(COMPONENTS[name]+('（Milvus 必需）' if name in required else ''))
+        text='所选组件：'+('、'.join(COMPONENTS[name] for name in selected) if selected else '无，将跳过组件库安装')
+        automatic=[COMPONENTS[name] for name in selected if name not in requested]
+        if automatic:text+='\n自动包含依赖：'+'、'.join(automatic)
+        if hasattr(self,'component_summary'):self.component_summary.setText(text)
+        if hasattr(self,'confirm_components'):self.confirm_components.setText(text)
+        if hasattr(self,'component_credentials_hint'):
+            self.component_credentials_hint.setText(text+'\n仅需填写所选组件的凭据。')
+        for key,row in self.component_rows.items():
+            name='minio' if key=='minio_user' else key.removesuffix('_password')
+            row.setVisible(name in selected)
+        if hasattr(self,'choice_tabs'):
+            self.choice_tabs.setTabText(1,f'组件库（已选 {len(selected)} 项）')
+        if hasattr(self,'consent'):self.consent.setChecked(False)
+        self.sources_changed()
 
     def build_checks(self):
         v=self.page();self.check_hint=label('检查所选模型的来源、发行签名和盒子环境。','notice');v.addWidget(self.check_hint)
@@ -281,10 +341,13 @@ class Wizard(QWidget):
                 self.models_table.item(row,0).setCheckState(Qt.Checked if model in saved else Qt.Unchecked)
             self.models_table.blockSignals(False)
         self.models_table.setEnabled(False);self.show_page(1)
+        if self.workflow_enabled:
+            self.set_component_selection(self.latest.get('requested_components',self.latest.get('selected_components',list(COMPONENTS))))
+            self.component_group.setEnabled(False)
 
     def build_settings(self):
         page=self.page();scroll=QScrollArea();scroll.setWidgetResizable(True);content=QWidget();v=QVBoxLayout(content);scroll.setWidget(content);page.addWidget(scroll)
-        v.addWidget(card('安装范围：探针、组件库与所选模型' if self.workflow_enabled else '安装范围：平台基础组件 + 已选模型','组件库：Docker、Nginx、etcd、MySQL、Redis、ParadeDB、Neo4j、MinIO、Milvus。模型平台保留完整资源包，按勾选项获取权重。' if self.workflow_enabled else '12 个配套镜像、运行时、网关与管理界面固定安装；模型权重、模型服务和验收仅包含上一步勾选项。'))
+        v.addWidget(card('安装范围：探针、所选组件与所选模型' if self.workflow_enabled else '安装范围：平台基础组件 + 已选模型','组件库按前一步的勾选安装，Milvus 自动包含 MinIO 与 etcd。Docker / Compose 是模型平台必需环境。' if self.workflow_enabled else '12 个配套镜像、运行时、网关与管理界面固定安装；模型权重、模型服务和验收仅包含上一步勾选项。'))
         self.probe_fields={};self.component_fields={}
         if self.workflow_enabled:
             v.addWidget(label('第一阶段 · 数据探针','cardTitle'))
@@ -295,22 +358,25 @@ class Wizard(QWidget):
                 v.addWidget(label(title));field=QLineEdit();field.setText(default);self.probe_fields[key]=field
                 if key=='bindActivateToken':field.setEchoMode(QLineEdit.Password)
                 v.addWidget(field)
-            v.addWidget(label('第二阶段 · 组件库凭据','cardTitle'))
+            v.addWidget(label('第二阶段 · 所选组件凭据','cardTitle'))
+            self.component_credentials_hint=label('','notice');v.addWidget(self.component_credentials_hint)
             for key,title,default in [('minio_user','MinIO 用户名','minioadmin'),('mysql_password','MySQL root 密码',''),('redis_password','Redis 密码',''),('paradedb_password','ParadeDB 密码',''),('neo4j_password','Neo4j 密码',''),('minio_password','MinIO 密码（同时供 Milvus 使用）','')]:
-                v.addWidget(label(title));field=QLineEdit();field.setText(default);self.component_fields[key]=field
+                row=QWidget();row_layout=QVBoxLayout(row);row_layout.setContentsMargins(0,0,0,0)
+                row_layout.addWidget(label(title));field=QLineEdit();field.setText(default);self.component_fields[key]=field
                 if key!='minio_user':field.setEchoMode(QLineEdit.Password);field.setPlaceholderText('12–128 个字符')
-                v.addWidget(field)
+                row_layout.addWidget(field);v.addWidget(row);self.component_rows[key]=row
             v.addWidget(label('安装后生成仅安装用户可读的组件连接配置；已有组件只在版本、挂载、端口和认证兼容时复用。','notice'))
             v.addWidget(label('第三阶段 · 模型管理账号','cardTitle'))
         v.addWidget(label('管理员密码（12–128 个字符）'));self.password=QLineEdit();self.password.setEchoMode(QLineEdit.Password);self.password.setPlaceholderText('设置管理界面的登录密码');v.addWidget(self.password)
         v.addWidget(label('再次输入密码'));self.password2=QLineEdit();self.password2.setEchoMode(QLineEdit.Password);v.addWidget(self.password2)
         self.show_password=QCheckBox('显示管理员密码');self.show_password.toggled.connect(lambda checked:[x.setEchoMode(QLineEdit.Normal if checked else QLineEdit.Password) for x in [self.password,self.password2]]);v.addWidget(self.show_password)
         v.addWidget(label('安装位置：/home/cix（与已验证部署配置一致）\n管理界面：17780　API 网关：17700\nAPI 和 Agent 密钥独立生成，不复用安装源盒子的密钥。','notice'));v.addStretch()
+        if self.workflow_enabled:self.refresh_component_selection()
 
     def collect_workflow_settings(self):
         from workflow import validate_settings
         return validate_settings({'probe':{**{key:field.text() for key,field in self.probe_fields.items()},'reuse_existing':self.reuse_probe.isChecked()},
-                                  'components':{key:field.text() for key,field in self.component_fields.items()}})
+                                  'components':{'selected':self.component_selection(),**{key:field.text() for key,field in self.component_fields.items()}}})
 
     def import_workflow_settings(self):
         path,_=QFileDialog.getOpenFileName(self,'导入探针与组件配置','','JSON (*.json)')
@@ -320,17 +386,19 @@ class Wizard(QWidget):
             if Path(path).stat().st_size>262144:raise ValueError('接入配置文件过大')
             value=read_json(path);value=validate_settings(value.get('workflow',value))
             for key,field in self.probe_fields.items():field.setText(value['probe'].get(key,''))
-            for key,field in self.component_fields.items():field.setText(value['components'][key])
+            self.set_component_selection(value['components']['selected'])
+            for key,field in self.component_fields.items():field.setText(value['components'].get(key,'minioadmin' if key=='minio_user' else ''))
             self.reuse_probe.setChecked(value['probe']['reuse_existing'])
         except Exception as exc:QMessageBox.warning(self,'导入失败',str(exc))
 
     def build_confirm(self):
-        v=self.page();v.addWidget(card('将安装探针、组件库与所选模型' if self.workflow_enabled else '将安装 AI 平台与所选模型',
-            '① 探针注册和当前进程 MQTT 连接检查\n② 组件库安装、凭据认证和健康检查\n③ 所选模型、网关与管理中心安装及推理验收\n④ 三阶段联检，开启探针采集' if self.workflow_enabled else '① 准备所需资源，逐文件校验\n② 安装平台基础组件与勾选模型\n③ 导入配套镜像，配置账号、网关和开机自启\n④ 启动并验收勾选模型'))
-        if self.workflow_enabled:v.addWidget(label('固定安装顺序：① 探针注册及 MQTT 连接 → ② 组件库认证与健康检查 → ③ 所选模型安装与推理验收。任何阶段失败都会停在当前阶段，可修复后继续。','notice'))
+        v=self.page();v.addWidget(card('将安装探针、所选组件与所选模型' if self.workflow_enabled else '将安装 AI 平台与所选模型',
+            '① 探针注册和当前进程 MQTT 连接检查\n② 所选组件安装、凭据认证和健康检查（未选则跳过）\n③ 所选模型、网关与管理中心安装及推理验收\n④ 三阶段联检，开启探针采集' if self.workflow_enabled else '① 准备所需资源，逐文件校验\n② 安装平台基础组件与勾选模型\n③ 导入配套镜像，配置账号、网关和开机自启\n④ 启动并验收勾选模型'))
+        if self.workflow_enabled:
+            self.confirm_components=label('','notice');v.addWidget(self.confirm_components);self.refresh_component_selection()
         self.confirm_sources=label('来源与下载量将在检查后显示。','subtitle');v.addWidget(self.confirm_sources)
         v.addWidget(label('已有文件只在内容一致时复用；冲突文件不会静默覆盖。\n清单之外的模型和其他项目保持不动。\n请保持电源和 U 盘连接；关闭此窗口不会终止后台安装。','notice'))
-        self.consent=QCheckBox('我确认安装探针、组件库及所选模型，并允许设备注册和开机服务配置。' if self.workflow_enabled else '我确认在本机安装所选模型及平台组件，并允许配置开机服务。');self.consent.setChecked(False);self.consent.toggled.connect(self.update_buttons);v.addWidget(self.consent)
+        self.consent=QCheckBox('我确认安装探针、所选组件及模型，并允许设备注册和开机服务配置。' if self.workflow_enabled else '我确认在本机安装所选模型及平台组件，并允许配置开机服务。');self.consent.setChecked(False);self.consent.toggled.connect(self.update_buttons);v.addWidget(self.consent)
         v.addWidget(label('点击“开始安装”后，系统会请求管理员授权。\n资源复制和真实推理验收可能持续较长时间；不自动重启或复位加速卡。','subtitle'));v.addStretch()
 
     def build_progress(self):
@@ -358,9 +426,11 @@ class Wizard(QWidget):
 
     def show_page(self,index):
         self.page_index=index;self.stack.setCurrentIndex(index)
-        titles=['欢迎安装 AI 平台','选择模型与来源','检查结果','设置安装参数','确认安装','准备资源与安装平台','安装完成']
+        titles=['欢迎安装 AI 平台','选择组件、模型与来源' if self.workflow_enabled else '选择模型与来源','检查结果','设置安装参数','确认安装','准备资源与安装平台','安装完成']
         subtitles=['安装网关、管理中心及所需模型服务。','勾选所需模型，选择联网下载或本地导入。','确认来源与盒子的安装条件。','设置管理账号。','请确认范围与资源准备计划。','后台任务持续执行，可关闭窗口后重新查看。','已选模型服务已通过本次安装验收。']
-        if self.workflow_enabled:subtitles[3]='填写探针注册信息、组件密码及管理账号。'
+        if self.workflow_enabled:
+            subtitles[1]='按需勾选组件与模型，选择联网下载或本地导入。'
+            subtitles[3]='填写探针注册信息、所选组件密码及管理账号。'
         self.title.setText(titles[index]);self.subtitle.setText(subtitles[index])
         for i,w in enumerate(self.step_labels):w.setProperty('active',i==index);w.style().unpolish(w);w.style().polish(w)
         self.update_buttons()
@@ -401,14 +471,14 @@ class Wizard(QWidget):
             self.apply_checks([{'name':n,'ok':True,'detail':d,'warning':False} for n,d in [('勾选模型',f'{len(self.selected_models())} 项'),('目标平台','Debian 12 / ARM64'),('模型来源','预览：不请求真实网络'),('环境条件','预览：不执行真实检查')]]);return
         try:config=self.collect_sources();selected=self.selected_models()
         except Exception as exc:self.apply_checks([{'name':'资源来源','ok':False,'detail':str(exc)}]);return
-        self.check_thread=CheckThread(self.bundle,config,selected);self.check_thread.ready.connect(self.apply_checks);self.check_thread.start()
+        self.check_thread=CheckThread(self.bundle,config,selected,self.component_selection() if self.workflow_enabled else None);self.check_thread.ready.connect(self.apply_checks);self.check_thread.start()
 
     def apply_checks(self,rows):
         if isinstance(rows,dict):
             result=rows
             try:current=self.collect_sources();selected=self.selected_models()
             except Exception:current=None
-            if current!=result['config'] or selected!=result['selected']:
+            if current!=result['config'] or selected!=result['selected'] or (self.workflow_enabled and result.get('components')!=self.component_selection()):
                 self.recheck.setEnabled(True);self.check_hint.setText('检查过程中来源已改变，请重新检查。');return
             self.device_count=result.get('device_count')
             self.hardware_label.setText('设备：'+('待检查' if self.device_count is None else f'{self.device_count} 卡；自动选择对应模型版本'))

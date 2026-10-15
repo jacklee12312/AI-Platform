@@ -15,6 +15,25 @@ from common import atomic_json, no_symlink_parents, read_json, safe_relative, sh
 MINIO_DIGEST = 'sha256:2f25127f784f002f1b98df5ae40cb1a67e0b8a877c90b6113c14b223a2ac65a5'
 REGISTER_FIELDS = ('owner', 'project', 'city', 'location', 'deploymentPurpose', 'accessPolicy', 'hardwareModel')
 PASSWORD_FIELDS = ('mysql_password', 'redis_password', 'paradedb_password', 'neo4j_password', 'minio_password')
+COMPONENTS = {'nginx': 'Nginx', 'etcd': 'etcd', 'mysql': 'MySQL', 'redis': 'Redis',
+              'paradedb': 'ParadeDB', 'neo4j': 'Neo4j', 'minio': 'MinIO', 'milvus': 'Milvus'}
+COMPONENT_DEPENDENCIES = {'milvus': ('etcd', 'minio')}
+
+
+def requested_components(settings):
+    # Older onsite configurations installed everything; new configurations always carry an explicit list.
+    selected = settings.get('selected', list(COMPONENTS))
+    if (not isinstance(selected, list) or any(not isinstance(x, str) or x not in COMPONENTS for x in selected)
+            or len(set(selected)) != len(selected)):
+        raise ValueError('组件选择必须为不重复的组件标识列表')
+    return [name for name in COMPONENTS if name in selected]
+
+
+def resolved_components(settings):
+    selected = set(requested_components(settings))
+    for name in tuple(selected):
+        selected.update(COMPONENT_DEPENDENCIES.get(name, ()))
+    return [name for name in COMPONENTS if name in selected]
 
 
 def load_workflow(bundle, catalog):
@@ -58,7 +77,9 @@ def validate_settings(data):
     if not isinstance(data, dict) or not isinstance(data.get('probe'), dict) or not isinstance(data.get('components'), dict):
         raise ValueError('请填写探针接入信息和组件库密码，或导入完整安装配置')
     probe = data['probe'];components = data['components']
-    result = {'probe': {}, 'components': {}}
+    requested = requested_components(components)
+    selected = resolved_components(components)
+    result = {'probe': {}, 'components': {'selected': requested}}
     url = probe.get('platform_url', '').strip()
     parsed = urlsplit(url)
     if parsed.scheme not in ('http', 'https') or not parsed.hostname or parsed.username or parsed.password or parsed.query or parsed.fragment:
@@ -78,14 +99,17 @@ def validate_settings(data):
         raise ValueError('新安装探针需要有效的接入令牌；复用已注册探针时可留空')
     result['probe']['bindActivateToken'] = token.strip()
     for key in PASSWORD_FIELDS:
+        if key.removesuffix('_password') not in selected:
+            continue
         password = components.get(key, '')
         if not isinstance(password, str) or not 12 <= len(password) <= 128 or any(x in password for x in '\r\n\x00'):
             raise ValueError('组件密码需为 12–128 个字符，不含换行：' + key)
         result['components'][key] = password
-    user = components.get('minio_user', '')
-    if not isinstance(user, str) or not re.fullmatch(r'[A-Za-z0-9_.-]{3,64}', user):
-        raise ValueError('MinIO 用户名需为 3–64 位字母、数字、下划线、点或短横线')
-    result['components']['minio_user'] = user
+    if 'minio' in selected:
+        user = components.get('minio_user', '')
+        if not isinstance(user, str) or not re.fullmatch(r'[A-Za-z0-9_.-]{3,64}', user):
+            raise ValueError('MinIO 用户名需为 3–64 位字母、数字、下划线、点或短横线')
+        result['components']['minio_user'] = user
     return result
 
 
@@ -165,7 +189,13 @@ class Workflow:
             if result.returncode or not compatible:needed.append(name)
         if not needed:
             return
+        selected = resolved_components(self.settings['components'])
+        excluded = set()
+        if 'nginx' not in selected: excluded.update(('nginx', 'nginx-common'))
+        if 'etcd' not in selected: excluded.update(('etcd-server', 'etcd-client'))
         for row in self.lock['host_packages']:
+            if row.get('package') in excluded:
+                continue
             source = self.asset(row)
             target = stage / Path(row['path']).name
             if target.is_symlink():

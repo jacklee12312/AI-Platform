@@ -1,6 +1,7 @@
 """Stage ordering, recovery, credential handling and existing-data boundaries."""
 import copy
 import hashlib
+import itertools
 import json
 import os
 from pathlib import Path
@@ -26,10 +27,41 @@ BUNDLE=Path(__file__).resolve().parents[2]
 def settings():
     return {'probe':{'platform_url':'http://platform.example:15433','reuse_existing':False,
                      **{key:'fixture-'+key for key in workflow.REGISTER_FIELDS},'bindActivateToken':'fixture-registration-secret'},
-            'components':{**{key:'fixture-$-password-123' for key in workflow.PASSWORD_FIELDS},'minio_user':'fixture-minio'}}
+            'components':{'selected':list(workflow.COMPONENTS),**{key:'fixture-$-password-123' for key in workflow.PASSWORD_FIELDS},'minio_user':'fixture-minio'}}
 
 
 class WorkflowTests(unittest.TestCase):
+    def test_every_component_subset_resolves_dependencies_and_limits_credentials(self):
+        lock=common.read_json(BUNDLE/'catalog/workflow.json')
+        names=list(workflow.COMPONENTS)
+        for flags in itertools.product((False,True),repeat=len(names)):
+            selected=[name for name,flag in zip(names,flags) if flag]
+            with self.subTest(selected=selected):
+                value=settings();value['components']['selected']=selected
+                normalized=workflow.validate_settings(value)['components']
+                expected=set(selected)|({'minio','etcd'} if 'milvus' in selected else set())
+                self.assertEqual(set(workflow.resolved_components(normalized)),expected)
+                self.assertEqual(normalized['selected'],selected)
+                expected_fields={'selected'}|{name+'_password' for name in expected if name+'_password' in workflow.PASSWORD_FIELDS}
+                if 'minio' in expected:expected_fields.add('minio_user')
+                self.assertEqual(set(normalized),expected_fields)
+                spec=components.compose_spec(lock['images'],normalized)['services']
+                self.assertEqual(set(spec),expected&set(components.PORTS))
+    def test_empty_selection_requires_no_component_secrets(self):
+        value=settings();value['components']={'selected':[],'mysql_password':'ignored-short-value'}
+        self.assertEqual(workflow.validate_settings(value)['components'],{'selected':[]})
+    def test_unknown_duplicate_or_malformed_selection_is_rejected(self):
+        for selected in ['mysql',None,['unknown'],['mysql','mysql'],[{}],[1]]:
+            value=settings();value['components']['selected']=selected
+            with self.subTest(selected=selected),self.assertRaises(ValueError):workflow.validate_settings(value)
+    def test_legacy_configuration_keeps_its_original_all_component_scope(self):
+        value=settings();value['components'].pop('selected')
+        self.assertEqual(workflow.validate_settings(value)['components']['selected'],list(workflow.COMPONENTS))
+    def test_milvus_requires_minio_credentials_but_no_other_database_passwords(self):
+        value=settings();value['components']={'selected':['milvus'],'minio_user':'fixture-minio','minio_password':'fixture-password-123'}
+        self.assertEqual(set(workflow.resolved_components(workflow.validate_settings(value)['components'])),{'etcd','minio','milvus'})
+        value['components']['minio_password']='short'
+        with self.assertRaises(ValueError):workflow.validate_settings(value)
     def test_settings_validate_without_echoing_secrets(self):
         self.assertEqual(workflow.validate_settings(settings()),settings())
         for mutate in [lambda x:x['probe'].update(bindActivateToken=''),
@@ -149,6 +181,83 @@ class WorkflowTests(unittest.TestCase):
         self.assertFalse(value['gateway']['enabled'])
 
 
+class ComponentSelectionExecutionTests(unittest.TestCase):
+    def adapter(self,root,selected):
+        value=settings();value['components']['selected']=selected
+        value=workflow.validate_settings(value)
+        owner=SimpleNamespace(state={},release={'installer_version':'1.1.1'},home=root/'home',
+                              event=mock.Mock(),update=mock.Mock(),pause_point=mock.Mock())
+        owner.home.mkdir()
+        flow=SimpleNamespace(settings=value,lock=common.read_json(BUNDLE/'catalog/workflow.json'),owner=owner,
+                             run=mock.Mock(return_value=SimpleNamespace(returncode=0,stdout='1',stderr='')),
+                             wait=lambda check,*args,**kw: self.assertTrue(check()),host_packages=mock.Mock())
+        return components.Components(flow,data_root=root/'data',config_root=root/'config')
+    def test_empty_scope_skips_all_component_actions(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder);adapter=self.adapter(root,[])
+            with mock.patch.object(adapter,'preflight') as preflight,mock.patch.object(adapter,'host_services') as hosts,mock.patch.object(adapter,'export_connections') as export:
+                adapter.install();preflight.assert_not_called();hosts.assert_not_called();export.assert_called_once()
+            self.assertFalse((root/'config').exists());self.assertFalse((root/'data').exists())
+            adapter.acceptance()
+            self.assertEqual(adapter.flow.run.call_args_list,[mock.call(['systemctl','is-active','--quiet','docker'])])
+    def test_mysql_only_ignores_foreign_redis_data_and_checks_only_mysql(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder);adapter=self.adapter(root,['mysql'])
+            foreign=root/'data/redis';foreign.mkdir(parents=True);(foreign/'existing.rdb').write_bytes(b'preserve')
+            with mock.patch.object(adapter,'inspect',return_value=None) as inspect,mock.patch.object(adapter,'image') as image,mock.patch('components.check_ports') as ports,mock.patch.object(adapter,'healthy',return_value=True) as healthy,mock.patch.object(adapter,'export_connections'):
+                adapter.install()
+                self.assertEqual({c.args[0] for c in inspect.call_args_list},{'mysql'})
+                ports.assert_called_once_with([3306]);image.assert_called_once_with('mysql');healthy.assert_called_once_with('mysql')
+                self.assertEqual(set(common.read_json(adapter.compose)['services']),{'mysql'})
+                self.assertEqual(adapter.flow.owner.state['components_passed'],['mysql'])
+            self.assertEqual((foreign/'existing.rdb').read_bytes(),b'preserve')
+            adapter.flow.run.reset_mock()
+            with mock.patch.object(adapter,'healthy',return_value=True) as healthy,mock.patch.object(adapter,'nginx_healthy') as nginx,mock.patch.object(adapter,'etcd_healthy') as etcd:
+                adapter.acceptance();healthy.assert_called_once_with('mysql');nginx.assert_not_called();etcd.assert_not_called()
+            self.assertEqual(adapter.flow.run.call_args_list,[mock.call(['systemctl','is-active','--quiet','docker'])])
+    def test_individual_database_health_does_not_require_other_database_credentials(self):
+        with tempfile.TemporaryDirectory() as folder:
+            adapter=self.adapter(Path(folder),['mysql'])
+            with mock.patch.object(adapter,'inspect',return_value={'State':{'Running':True}}),mock.patch.object(adapter,'compatible'):
+                self.assertTrue(adapter.healthy('mysql'))
+            self.assertEqual(adapter.flow.run.call_args.kwargs['env']['MYSQL_PWD'],'fixture-$-password-123')
+    def test_host_components_are_independent_and_do_not_generate_container_compose(self):
+        for name,version in [('nginx','1.22.1'),('etcd','3.4.23')]:
+            with self.subTest(name=name),tempfile.TemporaryDirectory() as folder:
+                root=Path(folder);adapter=self.adapter(root,[name]);adapter.flow.run.return_value.stdout=version
+                with mock.patch('components.shutil.which',return_value='/fixture/bin'),mock.patch.object(adapter,'nginx_healthy',return_value=True),mock.patch.object(adapter,'etcd_healthy',return_value=True),mock.patch.object(adapter,'export_connections'):
+                    adapter.install();adapter.acceptance()
+                calls=[c.args[0] for c in adapter.flow.run.call_args_list]
+                other='etcd' if name=='nginx' else 'nginx'
+                self.assertFalse(any(other in command for command in calls),calls)
+                self.assertIn(['systemctl','enable','--now',name],calls)
+                self.assertFalse((root/'config').exists());adapter.flow.host_packages.assert_not_called()
+    def test_connection_export_contains_only_selected_components_and_dependencies(self):
+        for selected,expected in [([],set()),(['redis'],{'redis'}),(['milvus'],{'etcd','minio','milvus'})]:
+            with self.subTest(selected=selected),tempfile.TemporaryDirectory() as folder:
+                adapter=self.adapter(Path(folder),selected)
+                with mock.patch('components.pwd.getpwnam',return_value=SimpleNamespace(pw_uid=os.getuid(),pw_gid=os.getgid())),mock.patch('components.os.chown'):
+                    adapter.export_connections()
+                path=adapter.flow.owner.home/'AI-Platform-1.1-connections.json';value=common.read_json(path)
+                self.assertEqual(set(value['components']),expected)
+                self.assertEqual(value['requested_components'],selected)
+                self.assertEqual(path.stat().st_mode&0o777,0o600)
+                self.assertEqual('etcd' in value,'etcd' in expected)
+                self.assertNotIn('mysql_password',json.dumps(value))
+    def test_probe_dependency_preparation_does_not_fetch_unselected_host_components(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder);source=root/'fixture.deb';source.write_bytes(b'fixture-only')
+            obj=object.__new__(workflow.Workflow);obj.directory=root;obj.settings={'components':{'selected':['redis']}}
+            obj.lock=common.read_json(BUNDLE/'catalog/workflow.json')
+            obj.asset=mock.Mock(return_value=source)
+            obj.run=mock.Mock(return_value=SimpleNamespace(returncode=1,stdout=''))
+            obj.host_packages(['libpaho-mqtt1.3'])
+            fetched={call.args[0].get('package') for call in obj.asset.call_args_list}
+            self.assertFalse(fetched&{'nginx','nginx-common','etcd-server','etcd-client'})
+            install=obj.run.call_args.args[0]
+            self.assertEqual(install[-1],'libpaho-mqtt1.3='+next(r['version'] for r in obj.lock['host_packages'] if r.get('package')=='libpaho-mqtt1.3'))
+
+
 class StageIntegrationTests(unittest.TestCase):
     def fixture(self,stack):
         helper=worker_fixture.ModularWorkerTests()
@@ -158,7 +267,7 @@ class StageIntegrationTests(unittest.TestCase):
     def test_failed_probe_prevents_components_and_model_resources(self):
         with ExitStack() as stack:
             obj=self.fixture(stack)
-            obj.workflow=SimpleNamespace(probe=mock.Mock(side_effect=RuntimeError('MQTT offline')),components=mock.Mock(),finish=mock.Mock())
+            obj.workflow=SimpleNamespace(settings=settings(),probe=mock.Mock(side_effect=RuntimeError('MQTT offline')),components=mock.Mock(),finish=mock.Mock())
             with mock.patch.object(obj,'acquire') as acquire:
                 with self.assertRaisesRegex(RuntimeError,'MQTT'):obj.run()
             acquire.assert_not_called();obj.workflow.components.assert_not_called()
@@ -169,7 +278,7 @@ class StageIntegrationTests(unittest.TestCase):
             def component():
                 order.append('components')
                 if order.count('components')==1:raise RuntimeError('MinIO unavailable')
-            obj.workflow=SimpleNamespace(probe=lambda:order.append('probe'),components=component,finish=lambda:order.append('integration'))
+            obj.workflow=SimpleNamespace(settings=settings(),probe=lambda:order.append('probe'),components=component,finish=lambda:order.append('integration'))
             acquire=obj.acquire
             def wrapped_acquire():order.append('models');acquire()
             obj.acquire=wrapped_acquire
@@ -183,7 +292,7 @@ class StageIntegrationTests(unittest.TestCase):
     def test_integration_failure_cannot_mark_installed(self):
         with ExitStack() as stack:
             obj=self.fixture(stack)
-            obj.workflow=SimpleNamespace(probe=lambda:None,components=lambda:None,finish=mock.Mock(side_effect=RuntimeError('MQTT lost')))
+            obj.workflow=SimpleNamespace(settings=settings(),probe=lambda:None,components=lambda:None,finish=mock.Mock(side_effect=RuntimeError('MQTT lost')))
             with self.assertRaisesRegex(RuntimeError,'MQTT'):obj.run()
             self.assertEqual(obj.state['status'],'failed')
             self.assertNotIn('integration',obj.state['completed'])

@@ -12,6 +12,7 @@
     "bindActivateToken": ""
   },
   "components": {
+    "selected": [],
     "mysql_password": "",
     "redis_password": "",
     "paradedb_password": "",

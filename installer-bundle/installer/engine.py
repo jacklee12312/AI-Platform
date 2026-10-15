@@ -418,7 +418,15 @@ class Installer:
         self.state['status']='running';self.state['bundle']=str(self.bundle);self.state['selected_models']=self.selected;self.state['device_count']=self.device_count
         self.state['installer_version']=self.release.get('installer_version','legacy');self.update(force=True)
         try:
-            checks=quick_checks(self.bundle,self.selected)
+            selected_components=None
+            if self.workflow:
+                from workflow import requested_components,resolved_components
+                component_settings=self.workflow.settings['components']
+                selected_components=requested_components(component_settings)
+                self.state['requested_components']=selected_components
+                self.state['selected_components']=resolved_components(component_settings)
+                self.update(force=True)
+            checks=quick_checks(self.bundle,self.selected,selected_components)
             failed=[r['name']+': '+r['detail'] for r in checks if not r['ok']]
             if failed:raise RuntimeError('\n'.join(failed))
             # Full legacy OS package/device checks, without its directory blanket-rejection,

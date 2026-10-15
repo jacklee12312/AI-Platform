@@ -31,6 +31,53 @@ class WizardTests(unittest.TestCase):
     def test_preview_never_dispatches(self):
         with mock.patch('wizard.QProcess') as process:self.w.dispatch('install');process.assert_not_called()
 
+    def test_components_default_to_none_and_need_no_passwords(self):
+        self.assertEqual(self.w.component_selection(),[])
+        self.assertTrue(all(not check.isChecked() for check in self.w.component_checks.values()))
+        self.assertEqual(self.w.collect_workflow_settings()['components'],{'selected':[]})
+        self.assertTrue(all(row.isHidden() for row in self.w.component_rows.values()))
+    def test_milvus_auto_dependencies_follow_the_actual_checkbox_click(self):
+        self.w.show_page(1);self.w.choice_tabs.setCurrentIndex(1);self.w.show();APP.processEvents()
+        check=self.w.component_checks['milvus'];QTest.mouseClick(check,Qt.LeftButton,pos=QPoint(10,check.height()//2))
+        self.assertEqual(self.w.component_selection(),['milvus'])
+        for name in ['minio','etcd']:
+            self.assertTrue(self.w.component_checks[name].isChecked());self.assertFalse(self.w.component_checks[name].isEnabled())
+        self.assertFalse(self.w.component_rows['minio_password'].isHidden())
+        self.assertTrue(self.w.component_rows['mysql_password'].isHidden())
+        self.assertIn('MinIO',self.w.confirm_components.text())
+        QTest.mouseClick(check,Qt.LeftButton,pos=QPoint(10,check.height()//2))
+        self.assertEqual(self.w.component_selection(),[])
+        self.assertFalse(self.w.component_checks['minio'].isChecked());self.assertTrue(self.w.component_checks['minio'].isEnabled())
+    def test_explicit_minio_is_kept_after_milvus_is_deselected(self):
+        self.w.component_checks['minio'].setChecked(True)
+        self.w.component_checks['milvus'].setChecked(True);self.w.component_checks['milvus'].setChecked(False)
+        self.assertEqual(self.w.component_selection(),['minio'])
+        self.assertTrue(self.w.component_checks['minio'].isChecked());self.assertFalse(self.w.component_checks['etcd'].isChecked())
+    def test_scope_changes_invalidate_preflight_and_consent(self):
+        self.w.check_pass=True;self.w.consent.setChecked(True)
+        self.w.set_component_selection(['redis'])
+        self.assertFalse(self.w.check_pass);self.assertFalse(self.w.consent.isChecked())
+        self.assertFalse(self.w.component_rows['redis_password'].isHidden())
+        self.assertTrue(self.w.component_rows['mysql_password'].isHidden())
+    def test_import_and_dispatch_preserve_component_subset(self):
+        import test_workflow
+        value=test_workflow.settings();value['components']={'selected':['mysql'],'mysql_password':'fixture-password-123'}
+        with tempfile.TemporaryDirectory() as folder:
+            path=Path(folder)/'onsite.json';path.write_text(json.dumps(value))
+            with mock.patch('wizard.QFileDialog.getOpenFileName',return_value=(str(path),'')):
+                self.w.import_workflow_settings()
+        self.assertEqual(self.w.component_selection(),['mysql'])
+        self.w.preview=False
+        with mock.patch('wizard.QProcess') as process:
+            self.w.dispatch('install');request=process.return_value;request.started.connect.call_args.args[0]()
+            payload=json.loads(request.write.call_args.args[0])
+        self.assertEqual(payload['workflow']['components'],value['components'])
+    def test_resume_locks_original_component_selection(self):
+        self.w.latest={'selected_models':['copaw-flash-9b'],'requested_components':['milvus'],'selected_components':['etcd','minio','milvus']}
+        self.w.edit_source_settings()
+        self.assertEqual(self.w.component_selection(),['milvus'])
+        self.assertFalse(self.w.component_group.isEnabled())
+
     def test_card_count_controls_qwen36_checkbox(self):
         for count,number in [(1,26),(2,27)]:
             self.w.device_count=count;self.w.set_all_models(True)

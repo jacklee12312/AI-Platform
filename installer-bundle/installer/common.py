@@ -160,7 +160,7 @@ def command(args,timeout=20):
     if p.returncode:raise RuntimeError(f'{args[0]} 检查失败（退出码 {p.returncode}）')
     return p.stdout.strip()
 
-def quick_checks(bundle,selected_models=None):
+def quick_checks(bundle,selected_models=None,selected_components=None):
     """No writes, no model loads and no network requests."""
     bundle=Path(bundle);out=[]
     def row(name,ok,detail,warning=False):out.append({'name':name,'ok':bool(ok),'detail':str(detail),'warning':warning})
@@ -175,9 +175,11 @@ def quick_checks(bundle,selected_models=None):
             catalog=load_catalog(bundle)
             row('发行签名',True,'Ed25519 签名通过；安装前仍逐文件校验内容')
             if catalog.get('workflow_sha256'):
-                from workflow import load_workflow
+                from workflow import COMPONENTS,load_workflow,resolved_components
                 workflow=load_workflow(bundle,catalog)
-                row('三阶段安装',True,'探针 '+workflow['probe']['version']+' 注册与 MQTT → 9 项组件库 → 所选模型；6 个新增 ARM64 镜像摘要固定')
+                components=resolved_components({} if selected_components is None else {'selected':selected_components})
+                scope='、'.join(COMPONENTS[name] for name in components) if components else '未选组件，跳过组件库'
+                row('三阶段安装',True,'探针 '+workflow['probe']['version']+' 注册与 MQTT → '+scope+' → 所选模型；Docker / Compose 为必需环境')
             if catalog.get('limits')!={'bge-m3_parallel_sequences':8,'reranker_parallel_sequences':8}:raise RuntimeError('配套后端参数锁定信息错误')
         else:
             row('资源清单',sha256(resources/'manifests/SHA256SUMS')==release['resources_checksums_sha256'],'后续会逐文件校验全部资源；本页不加载模型')
@@ -213,7 +215,7 @@ def quick_checks(bundle,selected_models=None):
     need=payload+int(m['docker_disk_budget_bytes'])+8*1024**3
     free=shutil.disk_usage('/home/cix').free
     row('安装空间',free>=need,f'用户分区可用 {free/1e9:.1f} GB；保守预算 {need/1e9:.1f} GB。后台另核对 Docker 分区。')
-    if modular and catalog.get('workflow_sha256'):
+    if modular and catalog.get('workflow_sha256') and components:
         data=Path('/data')
         while not data.exists():data=data.parent
         budget=workflow['component_disk_budget_bytes'];available=shutil.disk_usage(data).free

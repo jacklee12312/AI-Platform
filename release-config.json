@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "installer_version": "1.1.0",
+  "installer_version": "1.1.1",
   "resource_release_id": "ai-platform-installer-1.1.0-20261015",
   "release_date": "2026-10-15",
   "source_bundle": "installer-bundle",
