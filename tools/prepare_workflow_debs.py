@@ -2,6 +2,7 @@
 
 Publisher-only, download-only. No host packages or system APT settings are changed.
 """
+import argparse
 import hashlib
 import json
 import os
@@ -9,6 +10,8 @@ from pathlib import Path
 import shlex
 import shutil
 import subprocess
+import tempfile
+import urllib.request
 
 ROOT = Path(__file__).resolve().parents[1]
 WORK = ROOT / 'build/workflow-apt'
@@ -17,9 +20,28 @@ LOCK = ROOT / 'installer-bundle/catalog/workflow.json'
 
 
 def main():
+    global WORK
+    parser=argparse.ArgumentParser();parser.add_argument('--refresh-lock',action='store_true');args=parser.parse_args()
     if os.name != 'posix':
         raise SystemExit('Run this download-only publisher utility through WSL')
     lock = json.loads(LOCK.read_text('utf-8'))
+    if lock.get('host_packages') and not args.refresh_lock:
+        WORK.mkdir(parents=True,exist_ok=True)
+        for row in lock['host_packages']:
+            target=ROOT/'support-files/files'/row['path']
+            if not target.exists():
+                if not row.get('urls'):raise RuntimeError('Restore the locked Packages index from Git')
+                part=WORK/(target.name+'.restore-part')
+                with urllib.request.urlopen(row['urls'][0],timeout=90) as source,part.open('wb') as output:shutil.copyfileobj(source,output)
+                with part.open('rb') as stream:
+                    if hashlib.file_digest(stream,'sha256').hexdigest()!=row['sha256']:raise RuntimeError('Locked dependency digest differs')
+                target.parent.mkdir(parents=True,exist_ok=True);shutil.move(str(part),str(target))
+            with target.open('rb') as stream:
+                actual=hashlib.file_digest(stream,'sha256').hexdigest()
+            if actual!=row['sha256'] or target.stat().st_size!=row['size']:raise RuntimeError('Changed locked dependency: '+target.name)
+        print('Verified and reused '+str(len(lock['host_packages'])-1)+' locked Debian packages.');return
+    if args.refresh_lock:
+        WORK=Path(tempfile.mkdtemp(prefix='workflow-apt-refresh-',dir=ROOT/'build'))
     WORK.mkdir(parents=True, exist_ok=True);OUTPUT.mkdir(parents=True, exist_ok=True)
     for name in ['lists/partial', 'archives/partial', 'sourceparts', 'preferences']:
         (WORK / name).mkdir(parents=True, exist_ok=True)

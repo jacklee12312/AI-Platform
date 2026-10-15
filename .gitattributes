@@ -11,3 +11,5 @@
 /support-files/** -text
 /AI-Platform-Installer-1.0.0/catalog/** -text
 /installer-bundle/catalog/** -text
+# Preserve upstream Debian control descriptions verbatim, including their spacing.
+/support-files/files/workflow/host-debs/Packages -whitespace
