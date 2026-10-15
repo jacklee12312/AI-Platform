@@ -71,6 +71,10 @@ class Installer:
             raise RuntimeError('已有不同安装器版本的任务记录；不能跨版本继续')
         if self.state.get('status')=='installed':raise RuntimeError('本版本已安装；请打开管理界面')
         self.last_update=0;self.plan=[];self.base=None;self.current='acquire'
+        self.workflow=None
+        if self.catalog and self.catalog.get('workflow_sha256'):
+            from workflow import Workflow
+            self.workflow=Workflow(self);self.current='probe'
 
     def acquire(self):
         if self.catalog is None:return
@@ -111,6 +115,15 @@ class Installer:
         materialize(self.bundle,self.install_catalog,config,self.resources,CACHE,progress,self.pause_point)
         self.state.pop('transfer',None)
         self.event('全部资源已准备，进入平台安装；下载缓存可用于失败恢复')
+
+    def probe(self):
+        if self.workflow:self.workflow.probe()
+
+    def components(self):
+        if self.workflow:self.workflow.components()
+
+    def integration(self):
+        if self.workflow:self.workflow.finish()
 
     def update(self,message=None,fraction=None,force=False,**fields):
         self.state.update(fields);self.state['current']=self.current;self.state['updated_at']=time.time()
@@ -422,6 +435,7 @@ class Installer:
             if docker_root.stat().st_dev!=self.home.stat().st_dev and shutil.disk_usage(docker_root).free<self.manifest['docker_disk_budget_bytes']:raise RuntimeError('Docker 数据分区空间不足')
             if shutil.disk_usage(self.root).free<8*1024**3:raise RuntimeError('安装状态分区至少需要 8 GiB 暂存空间')
             actions={'acquire':self.acquire,'verify':self.verify,'prepare':self.prepare,'conflicts':self.conflicts,'docker':self.docker,'payload':self.payload,'credentials':self.credentials,'images':lambda:self.base.images(self.manifest),'systemd':self.systemd,'start':self.start,'acceptance':self.acceptance}
+            actions.update(probe=self.probe,components=self.components,integration=self.integration)
             for name,title in STEPS:
                 self.current=name;self.pause_point();self.update(title,0,force=True)
                 # Always revalidate the resource source and file conflicts on resume.

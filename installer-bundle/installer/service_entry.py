@@ -52,7 +52,11 @@ def dispatch(args,bundle):
         selected=validate_selected(catalog,request.get('selected_models'))
         if any(not supported_on(catalog,model,device_count) for model in selected):
             raise RuntimeError('所选模型不支持当前设备卡数，请返回模型选择页面')
-        atomic_json(request_path,{'admin_password':request['admin_password'],'release_id':release['release_id'],'sources':config,'selected_models':selected,'device_count':device_count})
+        saved_request={'admin_password':request['admin_password'],'release_id':release['release_id'],'sources':config,'selected_models':selected,'device_count':device_count}
+        if catalog.get('workflow_sha256'):
+            from workflow import validate_settings
+            saved_request['workflow']=validate_settings(request.get('workflow'))
+        atomic_json(request_path,saved_request)
     elif not saved or not request_path.exists():raise RuntimeError('没有可继续的完整任务记录')
     else:
         request=read_json(request_path)
@@ -71,7 +75,7 @@ def dispatch(args,bundle):
     code=STATE_ROOT/'private/code';no_symlink_parents(code,STATE_ROOT)
     if code.is_symlink():raise RuntimeError('后台代码目录不能是链接')
     code.mkdir(exist_ok=True)
-    for name in ['common.py','engine.py','artifacts.py','registry.py','selection.py','verify_selected.py','version.py']:
+    for name in ['common.py','engine.py','artifacts.py','registry.py','selection.py','verify_selected.py','version.py','workflow.py','probe.py','components.py','probe_runner.py']:
         shutil.copyfile(bundle/'installer'/name,code/name);(code/name).chmod(0o600)
     shutil.copyfile(bundle/'release.json',code/'release.json');(code/'release.json').chmod(0o600)
     # Credentials are never command-line arguments, environment values or public status fields.

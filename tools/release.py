@@ -81,6 +81,12 @@ def check_assets(root, store=None):
     return len(rows)
 
 
+def resource_rows(bundle,catalog):
+    from workflow import load_workflow,workflow_assets
+    workflow=load_workflow(bundle,catalog)
+    return catalog['resources']+([dict(row,category='platform') for row in workflow_assets(workflow)] if workflow else [])
+
+
 def check(root, online=False):
     spec = config(root)
     bundle = inside(root, spec['source_bundle'])
@@ -104,7 +110,7 @@ def check(root, online=False):
     local_count = 0
     tracked = set(subprocess.check_output(['git', '-C', str(root), 'ls-files', '-z']).decode('utf-8').split('\0'))
     external = {row['path'] for row in read(root / 'external-assets.json')['files']}
-    for row in catalog['resources']:
+    for row in resource_rows(bundle,catalog):
         if row['category'] == 'models':
             continue
         path = inside(inside(root, spec['resources_root']), row['path'])
@@ -216,6 +222,15 @@ def build(root, online=False):
     record_path = root / 'releases' / (version + '.json')
     if delivery.exists() or archive.exists() or archive.with_name(archive.name + '.sha256').exists() or record_path.exists():
         raise RuntimeError('Version already has output; use a new version, never overwrite a published release')
+    workflow_reports=[]
+    if read(inside(root,spec['source_bundle'])/'catalog/release-catalog.json').get('workflow_sha256'):
+        for name in ['workflow-artifacts.json','component-archives.json']:
+            path=root/'build/validation'/name
+            if not path.is_file():raise RuntimeError('Run the prerequisite artifact validation: '+name)
+            report=read(path)
+            if not report.get('passed') or report.get('source_dirty') or report.get('source_commit')!=commit:
+                raise RuntimeError('Prerequisite artifacts must be validated against this exact clean commit: '+name)
+            workflow_reports.append(path)
     print('Checking signatures, assets, local resources and original delivery...', flush=True)
     checks = check(root, online)
     work = root / 'build'
@@ -242,7 +257,7 @@ def build(root, online=False):
     subprocess.run(command + [str(bundle / 'tools/pack_launcher_023.py'), '--bundle', str(bundle), '--output', str(launcher)], check=True, env=env)
     print('Assembling the delivery with verified local resources...', flush=True)
     artifacts, _ = installer_modules(bundle)
-    for row in artifacts.load_catalog(bundle)['resources']:
+    for row in resource_rows(bundle,artifacts.load_catalog(bundle)):
         if row['category'] == 'models':
             continue
         source = inside(inside(root, spec['resources_root']), row['path'])
@@ -257,6 +272,10 @@ def build(root, online=False):
         shutil.copyfile(root / source, assembled / target)
     write(assembled / 'validation/tests.json', tests)
     shutil.copyfile(root / 'build/validation/tests.log', assembled / 'validation/tests.log')
+    for report in workflow_reports:shutil.copyfile(report,assembled/'validation'/report.name)
+    for relative in ['workflow-settings.example.json','docs/1.1安装流程.md']:
+        source=bundle/relative
+        if source.is_file():shutil.copyfile(source,assembled/source.name)
     write(assembled / 'validation/preflight.json', checks)
     provenance = {'schema': 1, 'installer_version': version, 'resource_release_id': spec['resource_release_id'],
                   'source_commit': commit, 'source_tag': 'v' + version, 'build_time': build_time,
@@ -268,8 +287,9 @@ def build(root, online=False):
     warnings = [row for row in checks['remote_checks'] if not row['passed']]
     lines = [f'# AI 平台安装器 {version} 验证记录', '', f'源码提交：`{commit}`。自动化测试：{tests["tests_run"]} 项通过，无跳过。',
              '', '签名、外置资源摘要、来源映射和交付文件校验通过。', '', '完整模型下载、空白设备安装、真实推理及重启验收：本次未执行。',
-             '', '本版保留跨版本任务限制：1.0.0 的未完成任务请使用原 1.0.0 安装器及修正后的独立来源配置继续；1.0.1 不接管旧任务。',
-             '', '签名平台资源沿用 1.0.0；本次只修正安装器获取 mmproj 的来源。管理中心内置的历史模型补装目录未改。']
+             '', '不跨版本接管已有安装任务；1.0.x 任务请继续使用对应版本。',
+             '', '本版安装顺序：探针注册和 MQTT 连接 → 组件库认证与健康检查 → 所选模型安装与真实推理检查。',
+             '', 'MinIO 使用 dappros/minio:RELEASE.2025-09-07T16-13-09Z，ARM64 清单及配置摘要固定在签名工作流中。']
     if warnings:
         lines += ['', '远端检查未通过的项目（候选包保留这些选项，请在使用前补齐或取消勾选）：']
         lines += ['- ' + row['key'] + '：' + row['detail'] for row in warnings]
@@ -305,13 +325,14 @@ def build(root, online=False):
                   blocked_remote_models=[row['key'] for row in warnings], fresh_device_acceptance='not_run')
     write(record_path, record)
     # Existing 1.0.0 tasks can consume the corrected mutable source routing without changing their installer.
-    recovery = delivery.parent / 'AI-Platform-1.0.0-mmproj-source-fix'
-    recovery.mkdir(exist_ok=True)
-    recovery_source = recovery / '安装AI平台-1.0.0.sources.json'
-    if recovery_source.exists() and digest(recovery_source) != digest(bundle / 'sources.json'):
-        raise RuntimeError('A different 1.0.0 recovery source patch already exists')
-    shutil.copyfile(bundle / 'sources.json', recovery_source)
-    (recovery / 'README.txt').write_text('仅供现有 1.0.0 安装任务恢复：先备份目标设备原来的同名 sources.json，再以此文件替换 .run 旁边的来源配置。保留原 1.0.0 .run 和 support-files；重新检查后继续。此补丁仅修正 Qwen3.8 单双卡 mmproj 来源，模型摘要不变。\n', encoding='utf-8')
+    if version=='1.0.1':
+        recovery = delivery.parent / 'AI-Platform-1.0.0-mmproj-source-fix'
+        recovery.mkdir(exist_ok=True)
+        recovery_source = recovery / '安装AI平台-1.0.0.sources.json'
+        if recovery_source.exists() and digest(recovery_source) != digest(bundle / 'sources.json'):
+            raise RuntimeError('A different 1.0.0 recovery source patch already exists')
+        shutil.copyfile(bundle / 'sources.json', recovery_source)
+        (recovery / 'README.txt').write_text('仅供现有 1.0.0 安装任务恢复：先备份目标设备原来的同名 sources.json，再以此文件替换 .run 旁边的来源配置。保留原 1.0.0 .run 和 support-files；重新检查后继续。此补丁仅修正 Qwen3.8 单双卡 mmproj 来源，模型摘要不变。\n', encoding='utf-8')
     print(json.dumps(record, ensure_ascii=False, indent=2), flush=True)
 
 

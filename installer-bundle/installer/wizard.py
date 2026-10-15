@@ -8,7 +8,7 @@ from PySide6.QtCore import Qt,QThread,Signal,QTimer,QProcess,QProcessEnvironment
 from PySide6.QtGui import QColor,QFont,QDesktopServices,QFontDatabase
 from PySide6.QtWidgets import (QApplication,QWidget,QFrame,QLabel,QVBoxLayout,QHBoxLayout,QPushButton,
  QStackedWidget,QLineEdit,QCheckBox,QProgressBar,QPlainTextEdit,QTableWidget,QTableWidgetItem,
- QHeaderView,QMessageBox,QFileDialog,QDialog,QRadioButton)
+ QHeaderView,QMessageBox,QFileDialog,QDialog,QRadioButton,QScrollArea)
 from common import PRODUCT,PUBLIC_STATE,STEPS,UNIT,read_json,quick_checks,check_password,atomic_json,detect_device_count
 from artifacts import load_catalog,source_config,source_roots,worker_source_roots,plan_sources,remote_candidates,oci_source,SourceError
 from download_speed import DownloadSpeedMeter
@@ -124,6 +124,7 @@ class Wizard(QWidget):
         self.release=read_json(self.bundle/'release.json',{'release_id':'gui-dev','version':'1.4.0-dev.1'})
         self.sources=source_config(self.bundle);self.source_plan=None;self.editing_sources=False
         self.catalog=read_json(self.bundle/'catalog/release-catalog.json',{'models':[],'resources':[]})
+        self.workflow_enabled=bool(self.catalog.get('workflow_sha256'))
         try:self.device_count=detect_device_count() if not preview else None
         except RuntimeError:self.device_count=None
         self.setWindowTitle(PRODUCT);self.resize(1120,760);self.setMinimumSize(1000,700)
@@ -151,11 +152,12 @@ class Wizard(QWidget):
 
     def build_welcome(self):
         v=self.page();stats=QHBoxLayout()
-        for number,title in [(str(len(self.catalog['models'])),'注册模型及服务'),('12','配套容器镜像'),('2 种','本地与远端来源')]:
+        for number,title in [(str(len(self.catalog['models'])),'注册模型及服务'),('18' if self.workflow_enabled else '12','配套容器镜像'),('3 阶段' if self.workflow_enabled else '2 种','探针 → 组件库 → 模型' if self.workflow_enabled else '本地与远端来源')]:
             f=QFrame();f.setObjectName('card');l=QVBoxLayout(f);l.setContentsMargins(18,14,18,14);l.addWidget(label(number,'number'));l.addWidget(label(title,'subtitle'));stats.addWidget(f)
         v.addLayout(stats)
         v.addWidget(card('完整推理能力','LLM / 图文理解 / OCR / 语音识别与合成 / 向量与重排 / CV / Guard / 民主测评识别'))
         v.addWidget(card('从运行环境到管理入口','Docker 与 Compose、配套镜像和运行时、所选模型、API 网关、管理界面、Agent 和开机自启。'))
+        if self.workflow_enabled:v.addWidget(label('先安装并注册数据探针，确认 MQTT 已连接；再安装组件库并检查认证；最后安装所选模型。兼容复用符合本版要求的探针和组件。','notice'))
         v.addWidget(label('安装器与资源分开交付，模型地址可在之后配置。\n支持本地文件、离线缓存与远端断点下载，资源齐全后再安装。\n要求厂家 Debian 12 ARM64 及匹配驱动。','notice'))
         b=QPushButton('查看完整安装清单');b.clicked.connect(self.show_catalog);v.addWidget(b,alignment=Qt.AlignLeft);v.addStretch()
 
@@ -281,17 +283,54 @@ class Wizard(QWidget):
         self.models_table.setEnabled(False);self.show_page(1)
 
     def build_settings(self):
-        v=self.page();v.addWidget(card('安装范围：平台基础组件 + 已选模型','12 个配套镜像、运行时、网关与管理界面固定安装；模型权重、模型服务和验收仅包含上一步勾选项。'))
+        page=self.page();scroll=QScrollArea();scroll.setWidgetResizable(True);content=QWidget();v=QVBoxLayout(content);scroll.setWidget(content);page.addWidget(scroll)
+        v.addWidget(card('安装范围：探针、组件库与所选模型' if self.workflow_enabled else '安装范围：平台基础组件 + 已选模型','组件库：Docker、Nginx、etcd、MySQL、Redis、ParadeDB、Neo4j、MinIO、Milvus。模型平台保留完整资源包，按勾选项获取权重。' if self.workflow_enabled else '12 个配套镜像、运行时、网关与管理界面固定安装；模型权重、模型服务和验收仅包含上一步勾选项。'))
+        self.probe_fields={};self.component_fields={}
+        if self.workflow_enabled:
+            v.addWidget(label('第一阶段 · 数据探针','cardTitle'))
+            import_button=QPushButton('导入接入配置');import_button.clicked.connect(self.import_workflow_settings);v.addWidget(import_button,alignment=Qt.AlignLeft)
+            self.reuse_probe=QCheckBox('复用本机已注册的兼容探针（保留原绑定，接入令牌可留空）');v.addWidget(self.reuse_probe)
+            fields=[('platform_url','平台地址','http://36.111.34.121:15433'),('owner','负责人',''),('project','项目',''),('city','城市',''),('location','部署地点',''),('deploymentPurpose','部署用途','生产交付'),('accessPolicy','访问策略','允许公网'),('hardwareModel','设备型号','cix'),('bindActivateToken','接入令牌','')]
+            for key,title,default in fields:
+                v.addWidget(label(title));field=QLineEdit();field.setText(default);self.probe_fields[key]=field
+                if key=='bindActivateToken':field.setEchoMode(QLineEdit.Password)
+                v.addWidget(field)
+            v.addWidget(label('第二阶段 · 组件库凭据','cardTitle'))
+            for key,title,default in [('minio_user','MinIO 用户名','minioadmin'),('mysql_password','MySQL root 密码',''),('redis_password','Redis 密码',''),('paradedb_password','ParadeDB 密码',''),('neo4j_password','Neo4j 密码',''),('minio_password','MinIO 密码（同时供 Milvus 使用）','')]:
+                v.addWidget(label(title));field=QLineEdit();field.setText(default);self.component_fields[key]=field
+                if key!='minio_user':field.setEchoMode(QLineEdit.Password);field.setPlaceholderText('12–128 个字符')
+                v.addWidget(field)
+            v.addWidget(label('安装后生成仅安装用户可读的组件连接配置；已有组件只在版本、挂载、端口和认证兼容时复用。','notice'))
+            v.addWidget(label('第三阶段 · 模型管理账号','cardTitle'))
         v.addWidget(label('管理员密码（12–128 个字符）'));self.password=QLineEdit();self.password.setEchoMode(QLineEdit.Password);self.password.setPlaceholderText('设置管理界面的登录密码');v.addWidget(self.password)
         v.addWidget(label('再次输入密码'));self.password2=QLineEdit();self.password2.setEchoMode(QLineEdit.Password);v.addWidget(self.password2)
-        self.show_password=QCheckBox('显示密码');self.show_password.toggled.connect(lambda checked:[x.setEchoMode(QLineEdit.Normal if checked else QLineEdit.Password) for x in [self.password,self.password2]]);v.addWidget(self.show_password)
+        self.show_password=QCheckBox('显示管理员密码');self.show_password.toggled.connect(lambda checked:[x.setEchoMode(QLineEdit.Normal if checked else QLineEdit.Password) for x in [self.password,self.password2]]);v.addWidget(self.show_password)
         v.addWidget(label('安装位置：/home/cix（与已验证部署配置一致）\n管理界面：17780　API 网关：17700\nAPI 和 Agent 密钥独立生成，不复用安装源盒子的密钥。','notice'));v.addStretch()
 
+    def collect_workflow_settings(self):
+        from workflow import validate_settings
+        return validate_settings({'probe':{**{key:field.text() for key,field in self.probe_fields.items()},'reuse_existing':self.reuse_probe.isChecked()},
+                                  'components':{key:field.text() for key,field in self.component_fields.items()}})
+
+    def import_workflow_settings(self):
+        path,_=QFileDialog.getOpenFileName(self,'导入探针与组件配置','','JSON (*.json)')
+        if not path:return
+        try:
+            from workflow import validate_settings
+            if Path(path).stat().st_size>262144:raise ValueError('接入配置文件过大')
+            value=read_json(path);value=validate_settings(value.get('workflow',value))
+            for key,field in self.probe_fields.items():field.setText(value['probe'].get(key,''))
+            for key,field in self.component_fields.items():field.setText(value['components'][key])
+            self.reuse_probe.setChecked(value['probe']['reuse_existing'])
+        except Exception as exc:QMessageBox.warning(self,'导入失败',str(exc))
+
     def build_confirm(self):
-        v=self.page();v.addWidget(card('将安装 AI 平台与所选模型','① 准备所需资源，逐文件校验\n② 安装平台基础组件与勾选模型\n③ 导入配套镜像，配置账号、网关和开机自启\n④ 启动并验收勾选模型'))
+        v=self.page();v.addWidget(card('将安装探针、组件库与所选模型' if self.workflow_enabled else '将安装 AI 平台与所选模型',
+            '① 探针注册和当前进程 MQTT 连接检查\n② 组件库安装、凭据认证和健康检查\n③ 所选模型、网关与管理中心安装及推理验收\n④ 三阶段联检，开启探针采集' if self.workflow_enabled else '① 准备所需资源，逐文件校验\n② 安装平台基础组件与勾选模型\n③ 导入配套镜像，配置账号、网关和开机自启\n④ 启动并验收勾选模型'))
+        if self.workflow_enabled:v.addWidget(label('固定安装顺序：① 探针注册及 MQTT 连接 → ② 组件库认证与健康检查 → ③ 所选模型安装与推理验收。任何阶段失败都会停在当前阶段，可修复后继续。','notice'))
         self.confirm_sources=label('来源与下载量将在检查后显示。','subtitle');v.addWidget(self.confirm_sources)
         v.addWidget(label('已有文件只在内容一致时复用；冲突文件不会静默覆盖。\n清单之外的模型和其他项目保持不动。\n请保持电源和 U 盘连接；关闭此窗口不会终止后台安装。','notice'))
-        self.consent=QCheckBox('我确认在本机安装所选模型及平台组件，并允许配置开机服务。');self.consent.setChecked(False);self.consent.toggled.connect(self.update_buttons);v.addWidget(self.consent)
+        self.consent=QCheckBox('我确认安装探针、组件库及所选模型，并允许设备注册和开机服务配置。' if self.workflow_enabled else '我确认在本机安装所选模型及平台组件，并允许配置开机服务。');self.consent.setChecked(False);self.consent.toggled.connect(self.update_buttons);v.addWidget(self.consent)
         v.addWidget(label('点击“开始安装”后，系统会请求管理员授权。\n资源复制和真实推理验收可能持续较长时间；不自动重启或复位加速卡。','subtitle'));v.addStretch()
 
     def build_progress(self):
@@ -308,17 +347,20 @@ class Wizard(QWidget):
         self.edit_sources=QPushButton('修改资源来源');self.edit_sources.clicked.connect(self.edit_source_settings);row.addWidget(self.edit_sources);row.addStretch();v.addLayout(row)
 
     def build_finish(self):
-        v=self.page();self.finish_title=label('平台与所选模型已安装并验收通过','cardTitle');v.addWidget(self.finish_title)
+        v=self.page();self.finish_title=label('探针、组件库及模型平台已通过安装检查' if self.workflow_enabled else '平台与所选模型已安装并验收通过','cardTitle');v.addWidget(self.finish_title)
         v.addWidget(card('你的 AI 平台已就绪','所选模型资源安装完成。管理中心、API 网关和配套服务已经配置，可通过管理中心切换已安装模型。'))
         v.addWidget(label('管理中心：http://127.0.0.1:17780/\nAPI 网关：http://127.0.0.1:17700/v1\n使用安装时设置的管理员密码登录；局域网访问时改用盒子的 IP。','notice'))
         open_button=QPushButton('打开 AI 平台管理中心');open_button.setObjectName('primary');open_button.clicked.connect(lambda:None if self.preview else QDesktopServices.openUrl(QUrl('http://127.0.0.1:17780/')));v.addWidget(open_button,alignment=Qt.AlignLeft)
         report=QPushButton('导出安装报告');report.clicked.connect(self.export_report);v.addWidget(report,alignment=Qt.AlignLeft)
+        if self.workflow_enabled:
+            connections=QPushButton('导出组件连接配置（含密码）');connections.clicked.connect(self.export_connections);v.addWidget(connections,alignment=Qt.AlignLeft)
         v.addWidget(label('已配置开机自启。离线重启验证需另行进行，不因本页成功而自动视为通过。','subtitle'));v.addStretch()
 
     def show_page(self,index):
         self.page_index=index;self.stack.setCurrentIndex(index)
         titles=['欢迎安装 AI 平台','选择模型与来源','检查结果','设置安装参数','确认安装','准备资源与安装平台','安装完成']
         subtitles=['安装网关、管理中心及所需模型服务。','勾选所需模型，选择联网下载或本地导入。','确认来源与盒子的安装条件。','设置管理账号。','请确认范围与资源准备计划。','后台任务持续执行，可关闭窗口后重新查看。','已选模型服务已通过本次安装验收。']
+        if self.workflow_enabled:subtitles[3]='填写探针注册信息、组件密码及管理账号。'
         self.title.setText(titles[index]);self.subtitle.setText(subtitles[index])
         for i,w in enumerate(self.step_labels):w.setProperty('active',i==index);w.style().unpolish(w);w.style().polish(w)
         self.update_buttons()
@@ -346,6 +388,7 @@ class Wizard(QWidget):
             try:
                 check_password(self.password.text())
                 if self.password.text()!=self.password2.text():raise ValueError('两次输入的密码不一致。')
+                if self.workflow_enabled:self.collect_workflow_settings()
                 self.show_page(4)
             except ValueError as e:QMessageBox.warning(self,'请检查安装设置',str(e))
         elif i==4:self.dispatch('install')
@@ -399,6 +442,9 @@ class Wizard(QWidget):
             try:payload={'sources':self.collect_sources(),'selected_models':self.selected_models(),'device_count':self.device_count}
             except Exception as exc:self.pending=False;self.update_buttons();QMessageBox.warning(self,'来源配置错误',str(exc));return
             if action=='install':payload['admin_password']=self.password.text()
+            if action=='install' and self.workflow_enabled:
+                try:payload['workflow']=self.collect_workflow_settings()
+                except ValueError as exc:self.pending=False;self.update_buttons();QMessageBox.warning(self,'安装配置不完整',str(exc));return
             payload['sources']['local_roots']=worker_source_roots(self.bundle,payload['sources'])
             secret=json.dumps(payload).encode()
             self.request.started.connect(lambda:(self.request.write(secret),self.request.closeWriteChannel()))
@@ -417,6 +463,9 @@ class Wizard(QWidget):
             QMessageBox.warning(self,'安装任务未启动',error or '系统授权被取消或后台任务启动失败。');return
         if action=='pause':self.pause_pending=True;self.detail.setText('已请求安全暂停；当前不可中断步骤完成后暂停。');return
         self.editing_sources=False;self.dispatch_time=time.time();self.password.clear();self.password2.clear();self.show_page(5);self.detail.setText('后台任务已启动，等待第一条进度……');self.poll()
+        for key,field in self.component_fields.items():
+            if key!='minio_user':field.clear()
+        if self.probe_fields:self.probe_fields['bindActivateToken'].clear()
 
     def continue_task(self):
         if self.latest.get('can_resume',True):self.dispatch('resume')
@@ -461,10 +510,23 @@ class Wizard(QWidget):
         path,_=QFileDialog.getSaveFileName(self,'导出安装诊断摘要','AI平台安装报告.json','JSON (*.json)')
         if path:Path(path).write_text(json.dumps(self.latest or {'preview':self.preview,'release':self.release},ensure_ascii=False,indent=2),encoding='utf-8')
 
+    def export_connections(self):
+        if self.preview:return
+        path,_=QFileDialog.getSaveFileName(self,'导出组件连接配置（包含现场密码）','AI-Platform-1.1-connections.json','JSON (*.json)')
+        if not path:return
+        try:
+            if Path(path).is_symlink():raise ValueError('导出目标不能是符号链接')
+            atomic_json(path,read_json('/home/cix/AI-Platform-1.1-connections.json'),0o600)
+        except Exception as exc:QMessageBox.warning(self,'导出失败',str(exc))
+
     def show_catalog(self):
         m=read_json(self.bundle/'catalog/platform-manifest.json',{})
         d=QDialog(self);d.setWindowTitle('完整安装清单');d.resize(640,600);v=QVBoxLayout(d);text=QPlainTextEdit();text.setReadOnly(True)
-        text.setPlainText('可选模型及服务\n\n'+'\n'.join(m.get('models',[]))+'\n\n固定配套镜像\n\n'+'\n'.join(x['tag'] for x in m.get('images',[])));v.addWidget(text);b=QPushButton('关闭');b.clicked.connect(d.accept);v.addWidget(b);d.exec()
+        contents='可选模型及服务\n\n'+'\n'.join(m.get('models',[]))+'\n\n固定配套镜像\n\n'+'\n'.join(x['tag'] for x in m.get('images',[]))
+        if self.workflow_enabled:
+            workflow=read_json(self.bundle/'catalog/workflow.json')
+            contents='安装顺序：探针 → 组件库 → 模型\n\n探针 '+workflow['probe']['version']+'\n组件库：Docker、Nginx、etcd\n'+'\n'.join(x['image']+'\n  '+x['manifest_digest'] for x in workflow['images'])+'\n\n'+contents
+        text.setPlainText(contents);v.addWidget(text);b=QPushButton('关闭');b.clicked.connect(d.accept);v.addWidget(b);d.exec()
 
     def closeEvent(self,event):
         if self.pending:

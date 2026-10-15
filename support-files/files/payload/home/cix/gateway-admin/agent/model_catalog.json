@@ -101,7 +101,7 @@
           "sha256": "830c502df06021faaa4df112dd1bf1597c775345b28f7229ec1a639552d0c71d",
           "oci_source": {
             "registry": "http://36.111.34.121:15436",
-            "repository": "aistore/qwen3-8-27b-2",
+            "repository": "aistore/qwen3-8-27b-mmproj",
             "reference": "v1",
             "resolve_tag": true,
             "manifest_digest": null,

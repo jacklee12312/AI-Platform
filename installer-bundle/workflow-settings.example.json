@@ -1,0 +1,22 @@
+{
+  "probe": {
+    "platform_url": "http://36.111.34.121:15433",
+    "reuse_existing": false,
+    "owner": "",
+    "project": "",
+    "city": "",
+    "location": "",
+    "deploymentPurpose": "生产交付",
+    "accessPolicy": "允许公网",
+    "hardwareModel": "cix",
+    "bindActivateToken": ""
+  },
+  "components": {
+    "mysql_password": "",
+    "redis_password": "",
+    "paradedb_password": "",
+    "neo4j_password": "",
+    "minio_user": "minioadmin",
+    "minio_password": ""
+  }
+}

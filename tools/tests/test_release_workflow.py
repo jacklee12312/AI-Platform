@@ -20,10 +20,12 @@ BUNDLE = ROOT / 'installer-bundle'
 
 
 class ReleaseWorkflowTests(unittest.TestCase):
-    def test_signed_resource_definitions_are_byte_identical_to_1_0_0(self):
+    def test_historical_1_0_1_preserves_the_1_0_0_trust_and_resource_baseline(self):
         for name in ('release-catalog.json', 'release-catalog.sig', 'release-public.pem', 'platform-manifest.json'):
             original = subprocess.check_output(['git', '-C', str(ROOT), 'show', 'v1.0.0:AI-Platform-Installer-1.0.0/catalog/' + name])
-            self.assertEqual(original, (BUNDLE / 'catalog' / name).read_bytes(), name)
+            preserved=subprocess.check_output(['git','-C',str(ROOT),'show','v1.0.1:installer-bundle/catalog/'+name])
+            self.assertEqual(original,preserved,name)
+            if name=='release-public.pem':self.assertEqual(original,(BUNDLE/'catalog'/name).read_bytes(),name)
 
     def test_shared_projector_changes_only_repository(self):
         old = json.loads(subprocess.check_output(['git', '-C', str(ROOT), 'show', 'v1.0.0:AI-Platform-Installer-1.0.0/sources.json']))

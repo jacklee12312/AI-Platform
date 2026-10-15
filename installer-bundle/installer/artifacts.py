@@ -37,6 +37,9 @@ def load_catalog(bundle,verify=True):
             raise SourceError('设备专用模型资源缺少有效的单卡或双卡标记')
         if row['sha256'] in digests and digests[row['sha256']]!=row['size']:raise SourceError('同一摘要的大小冲突')
         digests[row['sha256']]=row['size']
+    if catalog.get('workflow_sha256'):
+        from workflow import load_workflow
+        load_workflow(bundle,catalog)
     return catalog
 
 def validate_url(url,allow_http=False):

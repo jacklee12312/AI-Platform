@@ -1,11 +1,11 @@
 {
   "package": "houmo-ai-cluster",
-  "release_id": "ai-platform-installer-1.0.0-20260929",
+  "release_id": "ai-platform-installer-1.1.0-20261015",
   "package_version": "1.4.0-dev.1",
   "release_state": "development",
   "status": "complete-artifacts",
   "built_at": "2026-09-29T03:48:34.033350+00:00",
-  "source": "deployed box with offline-install packaging transforms; Qwen3.8 multimodal overlay; XH2 single/dual model selection; single-card Qwen3.8 multimodal correction; portable local model library discovery; online model download default; installer 1.0.0: hardware-routed Harbor GGUF and Qwen3.6 dual runtime",
+  "source": "deployed box with offline-install packaging transforms; Qwen3.8 multimodal overlay; XH2 single/dual model selection; single-card Qwen3.8 multimodal correction; portable local model library discovery; online model download default; installer 1.0.0: hardware-routed Harbor GGUF and Qwen3.6 dual runtime; installer 1.1: registered probe, authenticated middleware, shared Qwen3.8 projector",
   "platform": "vendor Debian 12 ARM64 CIX P1 / Houmo LQ50 XH2 v1.4.0",
   "source_commit": "d72cd79ad43c1fbbc69ee224ec267577047e9ae0",
   "source_worktree_dirty": true,

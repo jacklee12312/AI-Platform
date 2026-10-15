@@ -78,7 +78,9 @@ class FilesystemTests(unittest.TestCase):
         for p in ['short',None,'x'*129,'abcdefghijkl\n']:
             with self.assertRaises(ValueError):common.check_password(p)
     def test_full_scope_stages(self):
-        self.assertEqual(len(common.STEPS),11);self.assertEqual(common.STEPS[0][0],'acquire');self.assertEqual(common.STEPS[-1][0],'acceptance')
+        self.assertEqual(len(common.STEPS),14)
+        self.assertEqual([x[0] for x in common.STEPS[:3]],['probe','components','acquire'])
+        self.assertEqual(common.STEPS[-1][0],'integration')
     def test_pause_boundary(self):
         obj=object.__new__(engine.Installer);obj.root=self.dst;(self.dst/'private').mkdir();(self.dst/'private/pause.request').touch()
         with self.assertRaises(engine.Paused):obj.pause_point()

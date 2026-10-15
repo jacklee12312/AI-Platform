@@ -90,6 +90,7 @@ class ModularWorkerTests(unittest.TestCase):
             o=engine.Installer(b,s,h);commands=self.simulate_commands(o,m)
             with self.assertRaisesRegex(RuntimeError,'资源'):o.run()
             self.assertEqual(o.state['current'],'acquire');self.assertEqual(o.state['status'],'failed')
-            self.assertEqual(list(h.iterdir()),[]);self.assertFalse(commands);self.assertFalse(o.state['completed'])
+            self.assertEqual(list(h.iterdir()),[]);self.assertFalse(commands)
+            self.assertNotIn('acquire',o.state['completed'])
 
 if __name__=='__main__':unittest.main(verbosity=2)

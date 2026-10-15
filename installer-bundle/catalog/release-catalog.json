@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "release_id": "ai-platform-installer-1.0.0-20260929",
-  "installer_version": "1.0.0",
-  "platform_manifest_sha256": "499524e4ba2b6c9eeac080e70af6be293dc90f108b940f87a531411ba7dae0b6",
+  "release_id": "ai-platform-installer-1.1.0-20261015",
+  "installer_version": "1.1.0",
+  "platform_manifest_sha256": "793baff301f46daf800ee4935fb2a8d0b6b5a2e8126d26a59ca2de7c6f2dfc66",
   "platform": "vendor Debian 12 ARM64 / CIX P1 / Houmo LQ50 XH2 v1.4.0",
   "install_mode": "full",
   "models": [
@@ -765,7 +765,7 @@
     },
     {
       "path": "manifests/SHA256SUMS",
-      "sha256": "0d5a241cdddeb6274742ca457a915922f00add79256e890248779fa8d93c2e49",
+      "sha256": "75e6e22ca7736b576d421997b04c6e6ba74bcf25691bf8c5c52422727c7954c9",
       "size": 37674,
       "category": "platform",
       "models": []
@@ -786,8 +786,8 @@
     },
     {
       "path": "manifests/manifest.json",
-      "size": 22976,
-      "sha256": "499524e4ba2b6c9eeac080e70af6be293dc90f108b940f87a531411ba7dae0b6",
+      "size": 23061,
+      "sha256": "793baff301f46daf800ee4935fb2a8d0b6b5a2e8126d26a59ca2de7c6f2dfc66",
       "category": "platform",
       "models": []
     },
@@ -1917,8 +1917,8 @@
     },
     {
       "path": "payload/home/cix/gateway-admin/agent/model_catalog.json",
-      "size": 34231,
-      "sha256": "027ba81d6c87326f82ae1b3481e4346e5d0b1b1c824f465935e4ad4faf9bcfde",
+      "size": 34236,
+      "sha256": "dab6f024201e1130fdbd5325a732a0f872058ced4d31f6e825ce8ee6c08082b7",
       "category": "platform",
       "models": []
     },
@@ -2914,8 +2914,8 @@
     },
     {
       "path": "variants/single/gateway-admin/agent/model_catalog.json",
-      "size": 32063,
-      "sha256": "5b8f38c29d518646e064dfb27f75bc80d56c8457da56c81d966e11b47c6d28da",
+      "size": 32070,
+      "sha256": "44e0f20861db0831caac4f155007afe5d46e3e45c020a6a1d8c50e0024034798",
       "category": "platform",
       "models": []
     },
@@ -2939,7 +2939,7 @@
     "reranker_parallel_sequences": 8
   },
   "source_layout": "files/<resource-path> or blobs/sha256/<digest>",
-  "created_at": "2026-09-29T03:48:45.900825+00:00",
+  "created_at": "2026-10-15T00:00:00+00:00",
   "model_device_counts": {
     "qwen3.6-35b-a3b": [
       2
@@ -2948,5 +2948,6 @@
       1,
       2
     ]
-  }
+  },
+  "workflow_sha256": "32f08b5490dfb44d22f9362c020b1f852df24496d4bdaabb11ee87ef020f7af2"
 }

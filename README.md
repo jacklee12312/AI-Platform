@@ -2,11 +2,14 @@
 
 源码与发布记录由 Git 管理，当前工作版本由 `release-config.json` 定义。工程外层目录仍保留历史名称 `AI-Platform-1.0.0`，它不决定当前版本。
 
+1.1 按“探针注册及 MQTT → 组件库认证与健康检查 → 所选模型安装及验收”执行。现场配置、固定版本和兼容复用边界见 [1.1 安装流程](installer-bundle/docs/1.1安装流程.md)。MinIO 固定为 `dappros/minio:RELEASE.2025-09-07T16-13-09Z` 的已批准 ARM64 清单摘要；其余组件镜像同样锁定平台、版本与内容摘要。
+
 | 路径 | 用途 |
 |---|---|
 | `installer-bundle/` | 稳定的安装器源码、签名资源清单与来源配置 |
 | `support-files/files/` | 已签名平台代码和配套资源；文本源码保留原始字节 |
 | `release-config.json` | 安装器版本、资源发行 ID、构建布局 |
+| `installer-bundle/catalog/workflow.json` | 受发行签名保护的探针、组件、镜像与依赖锁定清单 |
 | `external-assets.json` | 大型外置依赖的相对路径、大小和 SHA-256 |
 | `tools/release.py` | 唯一的当前发布入口 |
 | `releases/` | 每版交付摘要和验证范围 |
@@ -46,3 +49,7 @@ Git 仓库本身不包含这些依赖；当前机器的本地文件已保留。�
 5. 在兼容空白设备完成安装、推理和重启验收，再记录现场结果。候选状态不自动变成通过。
 
 当前只建立本地 Git 管理，尚未配置远端仓库和异机备份。Git 历史支持恢复源码；设备上的跨版本升级、迁移和回滚需要单独实现。
+
+制作新的 1.1 前置资源时，使用 `tools/prepare_workflow_resources.py` 和 WSL 中的 `tools/prepare_workflow_debs.py`，下载与构造归档，不安装宿主机软件。首次建立锁定之后默认复用锁定内容；更新来源需显式刷新并重新签名。`tools/finalize_workflow_release.py --key 项目外的原发布密钥路径` 校对原公钥、更新资源发行身份及摘要并签名。密钥不进入 Git 或交付包。
+
+真实 ARM64 程序的开发验证入口为 WSL root 下的 `tools/validate_workflow_artifacts.py` 和 `tools/validate_component_archives.py`。前者以 QEMU 检查 ARM64 MinIO、Compose 和探针依赖，探针只访问不可用的 loopback 测试注册地址；后者仅在临时独立 Docker 中导入并校对六个离线镜像。它们不替代目标设备的真实注册、MQTT、全组件联通和重启验收。

@@ -15,6 +15,11 @@ BUNDLE=Path(__file__).resolve().parents[2]
 class WizardTests(unittest.TestCase):
     def setUp(self):
         self.w=wizard.Wizard(BUNDLE,preview=True);self.w.timer.stop()
+        if self.w.workflow_enabled:
+            import test_workflow
+            config=test_workflow.settings()
+            for key,field in self.w.probe_fields.items():field.setText(config['probe'][key])
+            for key,field in self.w.component_fields.items():field.setText(config['components'][key])
         self.temporary=tempfile.TemporaryDirectory()
         self.library=Path(self.temporary.name)/'AI-Platform-Model-Library'
         (self.library/'files').mkdir(parents=True)

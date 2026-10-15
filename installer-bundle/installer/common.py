@@ -11,6 +11,8 @@ PUBLIC_STATE=STATE_ROOT/'public/status.json'
 UNIT='ai-platform-install.service'
 STEPS=[('verify','校验所选资源'),('prepare','展开配套运行时'),('conflicts','检查文件冲突与可复用模型'),('docker','配置容器基础环境'),('payload','安装所选模型与项目文件'),('credentials','配置账号与独立密钥'),('images','导入配套 12 个镜像'),('systemd','配置开机自启'),('start','启动平台与所选服务'),('acceptance','依次验收所选模型')]
 STEPS.insert(0,('acquire','准备资源：缓存、本地源与远端下载'))
+STEPS[0:0]=[('probe','第一阶段：安装探针，完成注册和 MQTT 连接'),('components','第二阶段：安装组件库并检查健康状态')]
+STEPS.append(('integration','联检探针、组件库和模型平台'))
 CORE_DIRS=['houmo-docker-deployment','ai-model-gateway','gateway-admin','cv_deploy','sensevoice-cpu','kokoro-cix','matcha-tts-cpu','qwen3guard-stream-cpu','ballot-reader','modeldeck-models']
 ACCELERATOR_MODELS={'copaw':'copaw-flash-9b','spark-x1':'spark-x1-4b','qwen38':'qwen3.8-27b','qwen36':'qwen3.6-35b-a3b','qwen-vl':'qwen3-vl-8b','glm-ocr':'glm-ocr-0.9b','bge-m3':'bge-m3','reranker':'bge-reranker-v2-m3','cosyvoice':'cosyvoice3-0.5b'}
 DEVICE1_NODES=tuple('/dev/xh2a_'+name for name in (
@@ -72,6 +74,16 @@ def atomic_json(path,value,mode=0o600):
     try:
         with os.fdopen(fd,'w',encoding='utf-8') as f:
             json.dump(value,f,ensure_ascii=False,indent=2);f.write('\n');f.flush();os.fsync(f.fileno())
+        os.chmod(tmp,mode);os.replace(tmp,path)
+    finally:
+        if os.path.exists(tmp):os.unlink(tmp)
+
+def atomic_text(path,text,mode=0o600):
+    path=Path(path);path.parent.mkdir(parents=True,exist_ok=True)
+    fd,tmp=tempfile.mkstemp(prefix='.'+path.name+'.',dir=path.parent)
+    try:
+        with os.fdopen(fd,'w',encoding='utf-8') as out:
+            out.write(text);out.flush();os.fsync(out.fileno())
         os.chmod(tmp,mode);os.replace(tmp,path)
     finally:
         if os.path.exists(tmp):os.unlink(tmp)
@@ -162,6 +174,10 @@ def quick_checks(bundle,selected_models=None):
             from artifacts import load_catalog
             catalog=load_catalog(bundle)
             row('发行签名',True,'Ed25519 签名通过；安装前仍逐文件校验内容')
+            if catalog.get('workflow_sha256'):
+                from workflow import load_workflow
+                workflow=load_workflow(bundle,catalog)
+                row('三阶段安装',True,'探针 '+workflow['probe']['version']+' 注册与 MQTT → 9 项组件库 → 所选模型；6 个新增 ARM64 镜像摘要固定')
             if catalog.get('limits')!={'bge-m3_parallel_sequences':8,'reranker_parallel_sequences':8}:raise RuntimeError('配套后端参数锁定信息错误')
         else:
             row('资源清单',sha256(resources/'manifests/SHA256SUMS')==release['resources_checksums_sha256'],'后续会逐文件校验全部资源；本页不加载模型')
@@ -197,6 +213,11 @@ def quick_checks(bundle,selected_models=None):
     need=payload+int(m['docker_disk_budget_bytes'])+8*1024**3
     free=shutil.disk_usage('/home/cix').free
     row('安装空间',free>=need,f'用户分区可用 {free/1e9:.1f} GB；保守预算 {need/1e9:.1f} GB。后台另核对 Docker 分区。')
+    if modular and catalog.get('workflow_sha256'):
+        data=Path('/data')
+        while not data.exists():data=data.parent
+        budget=workflow['component_disk_budget_bytes'];available=shutil.disk_usage(data).free
+        row('组件库数据空间',available>=budget,f'数据分区可用 {available/1e9:.1f} GB；组件库预留 {budget/1e9:.1f} GB')
     state=read_json(PUBLIC_STATE,{})
     resume=state.get('release_id')==release['release_id'] and state.get('status') in ['running','failed','paused','installed']
     conflicts=[] if resume else [str(Path('/home/cix')/n) for n in CORE_DIRS if (Path('/home/cix')/n).exists() and (not (Path('/home/cix')/n).is_dir() or any((Path('/home/cix')/n).iterdir()))]

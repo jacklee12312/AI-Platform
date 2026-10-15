@@ -1,16 +1,16 @@
 {
   "product": "AI 平台安装器",
   "version": "1.4.0-dev.1",
-  "installer_version": "1.0.1",
-  "release_id": "ai-platform-installer-1.0.0-20260929",
+  "installer_version": "1.1.0",
+  "release_id": "ai-platform-installer-1.1.0-20261015",
   "platform": "vendor Debian 12 ARM64 / CIX P1 / Houmo LQ50 XH2 v1.4.0",
   "models": 27,
-  "images": 12,
-  "install_mode": "selected-models",
+  "images": 18,
+  "install_mode": "probe-components-selected-models",
   "status": "candidate",
-  "resources_checksums_sha256": "0d5a241cdddeb6274742ca457a915922f00add79256e890248779fa8d93c2e49",
-  "resources_manifest_sha256": "499524e4ba2b6c9eeac080e70af6be293dc90f108b940f87a531411ba7dae0b6",
-  "catalog_sha256": "e6aa6bd784e876dc497d8452d1b3b1c1738d4544eb49b8828418f41b33a459a6",
+  "resources_checksums_sha256": "75e6e22ca7736b576d421997b04c6e6ba74bcf25691bf8c5c52422727c7954c9",
+  "resources_manifest_sha256": "793baff301f46daf800ee4935fb2a8d0b6b5a2e8126d26a59ca2de7c6f2dfc66",
+  "catalog_sha256": "64fe47fa7685963b64fec8f534e8002246386f4b94e0b5b041045cb2154beeca",
   "signature": "Ed25519; dedicated installer 1.x release key",
   "validation": {
     "fresh_install": "not_run",
@@ -18,6 +18,6 @@
     "historical_validation": "See validation/ and releases/1.0.0.json; those results belong to 1.0.0."
   },
   "catalog_public_key_sha256": "2372e0f4636aad17b6a7bae4ccea27056ca43c3ffaa24563e588f4e889b88fe5",
-  "resource_release_id": "ai-platform-installer-1.0.0-20260929",
+  "resource_release_id": "ai-platform-installer-1.1.0-20261015",
   "platform_version": "1.4.0-dev.1"
 }

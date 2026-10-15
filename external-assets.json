@@ -325,6 +325,456 @@
       "path": "support-files/files/runtime/ui-static.tar.gz",
       "bytes": 137380,
       "sha256": "ff4ba5100e112e6b0f939831a73d4a5dafe91bf4c024ca80ff086b7efb27d545"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/Packages",
+      "bytes": 90872,
+      "sha256": "528655bb62c6d5acda01d589813cc2301bdbd752ce438a65eeda594cd75f6082"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/adduser_3.134_all.deb",
+      "bytes": 183272,
+      "sha256": "c24fe4eb8e60d8632d72ed104cce7c92cff200847c897dc8ba764b6c47b519e0"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/debconf_1.5.82_all.deb",
+      "bytes": 121212,
+      "sha256": "74ab14194a3762b2fc717917dcfda42929ab98e3c59295a063344dc551cd7cc8"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/dpkg_1.21.23_arm64.deb",
+      "bytes": 1550216,
+      "sha256": "00b2b9d112ecbfe99d8f0c3de56dd33bc242f71c8ae51c3fd1e154ab2e2eb07a"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/etcd-client_3.4.23-4+b4_arm64.deb",
+      "bytes": 3988688,
+      "sha256": "3f1bcd6d47e2c9eaa274c5bb2f7b2ebc090226dc10dde00e13e32d0b03d137d7"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/etcd-server_3.4.23-4+b4_arm64.deb",
+      "bytes": 7620188,
+      "sha256": "821e59be145fa42bd72b3e003d275640947c3d824b4c06b1ed2a01a631d555a1"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/gcc-12-base_12.2.0-14+deb12u1_arm64.deb",
+      "bytes": 37624,
+      "sha256": "674cf6cba6d432bd200c45fe866c1652c7a53523cc2e7a613e05bc4abf7b5440"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/init-system-helpers_1.65.2+deb12u1_all.deb",
+      "bytes": 39020,
+      "sha256": "afab482524c64e4e256eb5cab43c1a96dc493ec476d94f19f1a5ec3de5fa0fef"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/iproute2_6.1.0-3_arm64.deb",
+      "bytes": 1008124,
+      "sha256": "58fad55c5a29be6c1e6301d0c572f2ac5e5962ff244e7da3784c1b29ffc6c6bf"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libacl1_2.3.1-3_arm64.deb",
+      "bytes": 30768,
+      "sha256": "2b0eef11a2e271e7355adaf1f6cbf8d2e83835ae1b6cf15165d59b8289c08342"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libaudit-common_1%3a3.0.9-1_all.deb",
+      "bytes": 10448,
+      "sha256": "17d0341ca6ce604ce59c296780ac2c2a24141a769823c50669af942c025e6591"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libaudit1_1%3a3.0.9-1_arm64.deb",
+      "bytes": 46104,
+      "sha256": "619606427a334cba955e0afb18bf4a636df4141d32ea474a79cc512b5ca358e7"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libbpf1_1%3a1.1.2-0+deb12u1_arm64.deb",
+      "bytes": 136376,
+      "sha256": "c9929839798e7d8e66b212f345ecf1653ba7f1a9e1b753d0eb67bd521b0b5511"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libbrotli1_1.0.9-2+b6_arm64.deb",
+      "bytes": 269124,
+      "sha256": "3137de7f71952e710ee9f0df05026b3c6f463be9369a502d57c7696732f1ed22"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libbsd0_0.11.7-2_arm64.deb",
+      "bytes": 115116,
+      "sha256": "ef00f132ddd268ee67d756998723ee18543db27ab34930c0a9f1cff75cf55382"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libbz2-1.0_1.0.8-5+b1_arm64.deb",
+      "bytes": 47452,
+      "sha256": "d3a96ece03326498b39ff093a76800dfcbcb1d4049d6ae6e9f6fa1aa7a590ad6"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libc6_2.36-9+deb12u14_arm64.deb",
+      "bytes": 2324660,
+      "sha256": "01f4330719fd4f65580e16ea5a0527f372fca750e8f588d26deaf09f2d3b1cf4"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libcap-ng0_0.8.3-1+b3_arm64.deb",
+      "bytes": 16428,
+      "sha256": "24e74ad29a37d2a3940b8977d11298a7afc77379ef414b561d79c64147d740e0"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libcap2-bin_1%3a2.66-4+deb12u3+b1_arm64.deb",
+      "bytes": 34452,
+      "sha256": "139adf54b27522e838f3ce895c10d27a5fb406809b7b12d477dd5c13d2b2d286"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libcap2_1%3a2.66-4+deb12u3+b1_arm64.deb",
+      "bytes": 27072,
+      "sha256": "b3a21ae1cef9c2f3fa340007100fb0aa934ab6a4d8aed131660de9713db2bb6e"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libcom-err2_1.47.0-2+b2_arm64.deb",
+      "bytes": 19928,
+      "sha256": "36c15f933a965b50f4c9558d792d9556934c84e532703935d8ae7e69dd3fa863"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libcrypt1_1%3a4.4.33-2_arm64.deb",
+      "bytes": 90044,
+      "sha256": "eea0ad76ea5eb507127fea0c291622ea4ecdbb71c4b9a8ed9c76ae33fc1a0127"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libcurl4_7.88.1-10+deb12u15_arm64.deb",
+      "bytes": 367496,
+      "sha256": "e54bdd269c960b643ded903c3dbde36fe5d4d5f5b6389b47a0344d4a711cf70a"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libdb5.3_5.3.28+dfsg2-1_arm64.deb",
+      "bytes": 625748,
+      "sha256": "344367608d622298a3d916f4cee3dc3173286f3b21f8f497ab21e7178ba930f9"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libelf1_0.188-2.1_arm64.deb",
+      "bytes": 172708,
+      "sha256": "32971952d8f5d563447bf275f24e26057500924da2d855c1edb53b0f0400bd11"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libffi8_3.4.4-1_arm64.deb",
+      "bytes": 20492,
+      "sha256": "80b5c36177dc0e29d531c7eddbed3cc7355cb490e49f8cfa5959572d161f27b3"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libfile-find-rule-perl_0.34-4~deb12u1_all.deb",
+      "bytes": 26736,
+      "sha256": "d941143c65e47eff192195ed1b8367d3d74e5a0de668fc5ae9d787383ec48c23"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libfmt9_9.1.0+ds1-2_arm64.deb",
+      "bytes": 106808,
+      "sha256": "7d4f191b968e33c491b252bae91b5f67737c01b8946bda98d1a13d4bac65a0f2"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libgcc-s1_12.2.0-14+deb12u1_arm64.deb",
+      "bytes": 34816,
+      "sha256": "576926b283613db80168ddf76380a3bd877602778cf0d226caa7bfbfa71eacf3"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libgdbm-compat4_1.23-3_arm64.deb",
+      "bytes": 47996,
+      "sha256": "acc13a12acbf3b17dbacc77e3c22c6c273a552150cd50fdc9bd70cdb5169af73"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libgdbm6_1.23-3_arm64.deb",
+      "bytes": 70948,
+      "sha256": "3c704feaf89c5f2709a76b84126ac8affe4ddff69dc0b91af0ca9910c7e75714"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libgmp10_2%3a6.2.1+dfsg1-1.1_arm64.deb",
+      "bytes": 537920,
+      "sha256": "9906387c1dd806518c915bd8616d072c741061d7fa26b222e52763456060b31a"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libgnutls30_3.7.9-2+deb12u7_arm64.deb",
+      "bytes": 1317844,
+      "sha256": "84f7f70084c9179d6670f4a6ebdf32adc36c6e4741a3a118104377e18cfa977f"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libgssapi-krb5-2_1.20.1-2+deb12u5_arm64.deb",
+      "bytes": 124152,
+      "sha256": "a00678963f692a929312968f19b77a61a8fc0011690d7dc909a8a2c4810fc7b3"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libhogweed6_3.8.1-2_arm64.deb",
+      "bytes": 323840,
+      "sha256": "e653a1a7e5a44be0f7b6443dc6ac865d2504e49149660fc253655245965e157f"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libidn2-0_2.3.3-1+b1_arm64.deb",
+      "bytes": 122396,
+      "sha256": "12a3efc056671bf1c1bed4c3444c2559c8d5e0c158a13316fc728f263b83ddc4"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libk5crypto3_1.20.1-2+deb12u5_arm64.deb",
+      "bytes": 79880,
+      "sha256": "8ae2c31cde0b3e6f80c573a495b0f90bf6d9efb4455d900728278bb54d9092e5"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libkeyutils1_1.6.3-2_arm64.deb",
+      "bytes": 8844,
+      "sha256": "aac46cb6faec4e737502b3c2290b7b02f8ba04e8accd5af7fd07934df0c867b1"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libkrb5-3_1.20.1-2+deb12u5_arm64.deb",
+      "bytes": 315528,
+      "sha256": "c3c7227f5db903a7a8b8936d47d1d79643edcda36365c4c992e1a96bcc2d4c7e"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libkrb5support0_1.20.1-2+deb12u5_arm64.deb",
+      "bytes": 32592,
+      "sha256": "3043fd4a54b945a1b503170749527f825dcfc7add2f8bf5abb4a329deeb48f4a"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libldap-2.5-0_2.5.13+dfsg-5_arm64.deb",
+      "bytes": 170832,
+      "sha256": "71e6ae4291a20db999c62cd0a4f30a92a799c46b99205d5e787d4acd7c343b91"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/liblzma5_5.4.1-1+deb12u2_arm64.deb",
+      "bytes": 199704,
+      "sha256": "36358d245f246234721e6c1c2ee5d11a46c1c877023c63f7570df02cd79964f5"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libmd0_1.0.4-2_arm64.deb",
+      "bytes": 29400,
+      "sha256": "99a8c7dd591fae9fb37d8bf8dfdffa850e207fa405b3198c5b24711a5f972381"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libmnl0_1.0.4-3_arm64.deb",
+      "bytes": 12116,
+      "sha256": "d63aafb6f2c07db8fcb135b00ff915baf72ef8a3397e773c9c24d67950c6a46c"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libnettle8_3.8.1-2_arm64.deb",
+      "bytes": 293748,
+      "sha256": "c945ff210df69cf7b95e935b8fa936e81c1c1f475355e3d5db83510b174f0cd6"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libnghttp2-14_1.52.0-1+deb12u3_arm64.deb",
+      "bytes": 68976,
+      "sha256": "7767833033739adb2e2e374f2c4b36134d9f36fcdfe8e2aab7029bf850146da9"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libnumber-compare-perl_0.03-3_all.deb",
+      "bytes": 6332,
+      "sha256": "cf95662e27037d92c582647400bb1ca7a6dfd2eb26eee5b968b23263cd4976dc"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libp11-kit0_0.24.1-2_arm64.deb",
+      "bytes": 326552,
+      "sha256": "d1f1f55023e9fc085b9ebfc9c4113d2d2dab2dc6b81a337f274b75c95ad8dc0a"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libpaho-mqtt1.3_1.3.12-1_arm64.deb",
+      "bytes": 142380,
+      "sha256": "d1573ac112ecf564dd27581d1a061fbc67ec4ac2b49bd41cf1a57039d531938b"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libpam-modules-bin_1.5.2-6+deb12u2_arm64.deb",
+      "bytes": 74980,
+      "sha256": "82dcd30add63288c86becb14edec0a0ba7df74b07c9267f5a4cb9a28d023d65e"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libpam-modules_1.5.2-6+deb12u2_arm64.deb",
+      "bytes": 285848,
+      "sha256": "f6a8cc6a384205fb5bce79a0261c1c1974d587f048cfb1f0d1d2ade8c2c1ae77"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libpam0g_1.5.2-6+deb12u2_arm64.deb",
+      "bytes": 90876,
+      "sha256": "f04916b56a3225cb109e1c283ebfb163524797a406148875a6871816dc8939cd"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libpcre2-8-0_10.42-1+deb12u2_arm64.deb",
+      "bytes": 230704,
+      "sha256": "8498d2c0bd6747dfc2fc6eec62774a86967079555f7043d5a7b78ee4efbbc0fb"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libperl5.36_5.36.0-7+deb12u4_arm64.deb",
+      "bytes": 4001524,
+      "sha256": "35013c8ce9c319abd608d27719d71ff5d2090002e5a424708df26c11d18bffb3"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libpsl5_0.21.2-1_arm64.deb",
+      "bytes": 58600,
+      "sha256": "90a68e4a6d9eb95abee32595762dbf67974f13c158e4ce4a05c7c2b54440db73"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/librtmp1_2.4+20151223.gitfa8646d.1-2+b2_arm64.deb",
+      "bytes": 59364,
+      "sha256": "a3a1a6e4b02bcd3254e932b1972ed744082fd7dd5cc1545eec3dd3d539ce6c93"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libsasl2-2_2.1.28+dfsg-10_arm64.deb",
+      "bytes": 58016,
+      "sha256": "61dcbb6560e2eb20bff256f1b445ac9af13aa61c6a6ae115ad8cb96c9c50ea38"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libsasl2-modules-db_2.1.28+dfsg-10_arm64.deb",
+      "bytes": 20820,
+      "sha256": "56d9c35ac6729b02f78900175557dd36bef26611dab89584f29da15631628869"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libselinux1_3.4-1+b6_arm64.deb",
+      "bytes": 68800,
+      "sha256": "29201edf23ebae40844d6c289afdb9bba52f927d55096ed1b1cd37e040135edc"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libsemanage-common_3.4-1_all.deb",
+      "bytes": 21632,
+      "sha256": "835f806c21ae25e39053bd3057051640341b0cf08e1db9746fd82e370d82fa30"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libsemanage2_3.4-1+b5_arm64.deb",
+      "bytes": 82628,
+      "sha256": "6d1958b29ac622d352e00f9de55d9de8aea12bd0c27dee8b522e052ace3c67bd"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libsepol2_3.4-2.1_arm64.deb",
+      "bytes": 246968,
+      "sha256": "22b0041a04af364f643ff2e7ff88eaaecdf0714dcfd253e8c99a6a952ae1fec6"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libspdlog1.10_1%3a1.10.0+ds-0.4_arm64.deb",
+      "bytes": 118568,
+      "sha256": "da8decc7f9cc620d5ac0f0beaac4c7d0d4a824702c8b8daf8f55191d675375a3"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libssh2-1_1.10.0-3+deb12u1_arm64.deb",
+      "bytes": 169420,
+      "sha256": "72db6dc64cb0dd4c8a6b0f1b998063338956a7b3eb8a27125beb27bee0d7cc46"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libssl3_3.0.22-1~deb12u1_arm64.deb",
+      "bytes": 1827612,
+      "sha256": "026105b99749b437b03d0de5b3a58c0cabefb9791bc6f9cf916d18691ee7519a"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libstdc++6_12.2.0-14+deb12u1_arm64.deb",
+      "bytes": 556608,
+      "sha256": "26e138c677a985775331373828a6c286c551ff397cb735d00e2383cb273d1cb2"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libtasn1-6_4.19.0-2+deb12u1_arm64.deb",
+      "bytes": 46040,
+      "sha256": "7e80513007e8a71b5e737d3307dedbb06712f9cfed05ec2fad6fc00de460cc5f"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libtext-glob-perl_0.11-3_all.deb",
+      "bytes": 7676,
+      "sha256": "b0f1a40c5b26f4e4c83a4f8e1768fcf50ae9aac84b7f807ccb38123b50396f64"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libtirpc-common_1.3.3+ds-1_all.deb",
+      "bytes": 14048,
+      "sha256": "3e3ef129b4bf61513144236e15e1b4ec57fa5ae3dc8a72137abdbefb7a63af85"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libtirpc3_1.3.3+ds-1_arm64.deb",
+      "bytes": 80940,
+      "sha256": "deaf9ea54f74cab6690b4bc0b427f05cbe62cc073580d84f5f18a8d9e2ece401"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libunistring2_1.0-2_arm64.deb",
+      "bytes": 422768,
+      "sha256": "05b0b7700bfe269ff7af61f45e92055d7ef4c532c9584e4e2a352cf0bd4de5b1"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libxtables12_1.8.9-2_arm64.deb",
+      "bytes": 29572,
+      "sha256": "8884a42f98b989e5ba2e91d931b5c6e9eb72568e5d3001d97d73d7913890a7b3"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libyaml-cpp0.7_0.7.0+dfsg-8+b1_arm64.deb",
+      "bytes": 99816,
+      "sha256": "8623509d15f1e145d24ff0ce89cbfe7f931f22977898b2b25cdb30c60291bac4"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/libzstd1_1.5.4+dfsg2-5_arm64.deb",
+      "bytes": 250548,
+      "sha256": "95e173c9538f96ede4fc275ec7863f395a97dd0ea62454be9bc914efa1b9be93"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/nginx-common_1.22.1-9+deb12u10_all.deb",
+      "bytes": 114932,
+      "sha256": "3b9e2207c67de87706c53d86ec4bed0760ed46e1401f30d078c3a926fdc2f9ee"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/nginx_1.22.1-9+deb12u10_arm64.deb",
+      "bytes": 497760,
+      "sha256": "482916490b3dfa7e23b0efdbe5eb0b4871220bbe6ea1f54d1cf1010de8d01fbb"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/passwd_1%3a4.13+dfsg1-1+deb12u2_arm64.deb",
+      "bytes": 947048,
+      "sha256": "680144df37766acb90253caaa9144cd00e78e0a76a2e171ecfb4277ec231922e"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/perl-base_5.36.0-7+deb12u4_arm64.deb",
+      "bytes": 1477684,
+      "sha256": "03d979b849a1a0a8955eee28b988dbc25a407fd3a0581df5c94e6ae7bcc01ddf"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/perl-modules-5.36_5.36.0-7+deb12u4_all.deb",
+      "bytes": 2817356,
+      "sha256": "3ed38ffa8320e9bf7597cefa01b6a6ace4a08ccc77cdfd15ef7d8b711dea7166"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/perl_5.36.0-7+deb12u4_arm64.deb",
+      "bytes": 239392,
+      "sha256": "b20b172eff2f1edef5c29ebb9fec09ceec5b32ca62aeb9b3700e7c71a58b5071"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/tar_1.34+dfsg-1.2+deb12u1_arm64.deb",
+      "bytes": 817696,
+      "sha256": "04a945d4f24068f9d4c44294014ef5a33fc6179a57021978afc7d08358e13df3"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/usrmerge_37~deb12u1_all.deb",
+      "bytes": 13336,
+      "sha256": "8a25318213244f075b56363408c87a519ed8cef24b270c3d045ef35d695de13a"
+    },
+    {
+      "path": "support-files/files/workflow/host-debs/zlib1g_1%3a1.2.13.dfsg-1_arm64.deb",
+      "bytes": 82744,
+      "sha256": "52b8b8a145bbe1956bba82034f77022cbef0c3d0885c9e32d9817a7932fe1913"
+    },
+    {
+      "path": "support-files/files/workflow/images/milvus-linux-arm64.tar.gz",
+      "bytes": 382396058,
+      "sha256": "ac101c14c5a878a50a94180783f689603bd1773dbb88fe7742c6412232778992"
+    },
+    {
+      "path": "support-files/files/workflow/images/minio-linux-arm64.tar.gz",
+      "bytes": 55790536,
+      "sha256": "04c2edcbd02684af5975677d78efb7b7098349ac4e3a22dbcc0e52f1213041ac"
+    },
+    {
+      "path": "support-files/files/workflow/images/mysql-linux-arm64.tar.gz",
+      "bytes": 192397398,
+      "sha256": "938aeaf5767d0a1a3d663b9b29f1bb666c3b25fbd7041b18157ac50e2728c9b0"
+    },
+    {
+      "path": "support-files/files/workflow/images/neo4j-linux-arm64.tar.gz",
+      "bytes": 366430789,
+      "sha256": "7749cc7675a887c51426d0dc470f54e7b851fa6619a0f92e2ac87feaf9d6ef2e"
+    },
+    {
+      "path": "support-files/files/workflow/images/paradedb-linux-arm64.tar.gz",
+      "bytes": 370612595,
+      "sha256": "8482342af5f5faae7db97ed2bfba5ae95473ce2cbe6274afa10aae9e76869bf3"
+    },
+    {
+      "path": "support-files/files/workflow/images/redis-linux-arm64.tar.gz",
+      "bytes": 48885274,
+      "sha256": "47aee615d87c92daca5d97b84a3b48bb47e73d37bd4774a5f2f2ac85d024560a"
+    },
+    {
+      "path": "support-files/files/workflow/probe/data-probe-1.1.2-sanitized.tar.gz",
+      "bytes": 3959287,
+      "sha256": "3b8be504df61887f61f60293dce670a31ae6f6701ae3edd8947bc9b0cdae608f"
     }
   ]
 }

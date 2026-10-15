@@ -1,0 +1,1399 @@
+{
+  "schema": 1,
+  "target": "linux-arm64",
+  "order": [
+    "probe",
+    "components",
+    "models"
+  ],
+  "probe": {
+    "version": "1.1.2",
+    "archive": {
+      "path": "workflow/probe/data-probe-1.1.2-sanitized.tar.gz",
+      "size": 3959287,
+      "sha256": "3b8be504df61887f61f60293dce670a31ae6f6701ae3edd8947bc9b0cdae608f"
+    },
+    "binary_sha256": "fb8091c35ee80f4c4f5bf5e998be797476bdc9488886ae73523c18e4e6215d06",
+    "upstream_sha256": "4c7b3f3fa608232543bf39d418c491a6a92f05404374a05150a63cf39934d483",
+    "registration_required": true,
+    "mqtt_required": true
+  },
+  "images": [
+    {
+      "id": "mysql",
+      "image": "mysql:8.0.36",
+      "pinned": "mysql@sha256:677727326431d3a51a71bb2af925c2de40782d806a4f8439930d861cd3515f61",
+      "manifest_digest": "sha256:677727326431d3a51a71bb2af925c2de40782d806a4f8439930d861cd3515f61",
+      "config_id": "sha256:8aca36d040eba3cfafcd3b6cec800214e89f3789921bdcb3b967e8844145c27f",
+      "rootfs_diff_ids": [
+        "sha256:7d74438bf3ce1fc23e385166230b8dd08e87ceb6425359cd8cdbd06f63b5871d",
+        "sha256:a4e501e8cd5b00da856ceac787794d334958eaf077b832ba0e77d0ced8a4098e",
+        "sha256:62793f91d91bc492aba9bbce6f8e0444fb3c59c7044881cf148ae3256723ec43",
+        "sha256:d6713a2e78cba1714442867439cf051d4586f11eddc3c1af205198e160dfa341",
+        "sha256:d96ffda251f1d1f85a2bede2c7c0577bccf6f1066a14d3b88580f883a237e2c6",
+        "sha256:3a23155e6f4e8c4314be4697fc43f10d757886a63391bfde6c16483ff0b18e82",
+        "sha256:f99def875835f18cef94fe868435d85b29f6ffb2024595a87a7b285067fc4e15",
+        "sha256:c30082113674a0903a6d4645fdae2b83fe0f7efb7e61be728bdf4c58cd9fe3a8",
+        "sha256:ae86175d49541af4254fa5911c13a7b76cab7cd9b21766a31aeb3950a1ff828d",
+        "sha256:434beb668d78aadc2c9b70cc5fac6f8250a99c50384d35296f71ab7096172635",
+        "sha256:39170710b6e17a13df119de8de8075d61ab12f9604ab6a5e3313a2678322ab7a"
+      ],
+      "layers": [
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:c6a0976a2dbedfeb9ad1ab09e887e49a58ae8bc68480745fc5d1a97c201cda78",
+          "size": 50082278
+        },
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:8dd4f8e415ca18dc0ceb9fb0cc7ce91b49cb4a4df85151ed7f3ac2a61ddb2012",
+          "size": 882
+        },
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:6e01a6ece3afbc5e9bbbcf1d8150dc3de9ac2b3ab6d578ac17d120a0a62f6c75",
+          "size": 913449
+        },
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:6cfdeffd91404630ce8145820b88429909e3310d33ddac4cf26ae972b210360b",
+          "size": 4302586
+        },
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:73fed55ee93c9e222231cb00f47e3c950d52db4ab075c39b00af2e9667efc387",
+          "size": 2604
+        },
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:39c3b4c317a626ac71a230ee380929ac66890b508707d5e1e0f2fa421c58f748",
+          "size": 331
+        },
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:de375e24a2a756dfe46e90b5550b0936ef1de80638610bcc50d00a7c74d80e02",
+          "size": 57594148
+        },
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:d5ad96b86b999adf6ca6e6024b70cebcbbbeff16c9ac92d318368708ec2b932c",
+          "size": 315
+        },
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:5241e2cffaa1aca95241e9c0c95b918c337f500f182b843cac330761010bc0a3",
+          "size": 65603255
+        },
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:4e39d469d2ab5ba6dca5786bd011425e90c60f3cd1781d62f67d880d618b1087",
+          "size": 5180
+        },
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:f718345410af26023ee97b279b5cc5f69134804309c8dd147538594d7aced234",
+          "size": 122
+        }
+      ],
+      "archive": {
+        "path": "workflow/images/mysql-linux-arm64.tar.gz",
+        "size": 192397398,
+        "sha256": "938aeaf5767d0a1a3d663b9b29f1bb666c3b25fbd7041b18157ac50e2728c9b0"
+      }
+    },
+    {
+      "id": "redis",
+      "image": "redis:7.4",
+      "pinned": "redis@sha256:7e180df929e2aa87c71fd61838e7775ebab7e7e7a08e438045fbeaa123960320",
+      "manifest_digest": "sha256:7e180df929e2aa87c71fd61838e7775ebab7e7e7a08e438045fbeaa123960320",
+      "config_id": "sha256:eae677c4b4cf3669522e2721e11a1527e1a56ca63b67963c73bb51555b55778b",
+      "rootfs_diff_ids": [
+        "sha256:dca69811453d69d10b6c0345a5c49147162abe20a2f77802d66efc60667949ea",
+        "sha256:5830ff0e2620b71ebca7af1e108e9edc7f57a1eb078f1d6f6ae82ef414e5b0f4",
+        "sha256:5f10aad7453f0f495e40493c4d22b4e68665b2f58e3f7b4a02a00d11af04f243",
+        "sha256:1b5328926b9b343d89433f8558b19744eb9f7a776a718d917c876ee9d3159b10",
+        "sha256:1e6674c22aec5c4416befc907bd2a9d7d3e9a7ec1e1d246049f95c661a2e9708",
+        "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+        "sha256:da15ee4aa18aaea452a6ad8af2cf4920c12179e937906f1d69ece1ca3c09075f"
+      ],
+      "layers": [
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:c75f989a229d12b2d2613a5997de9ff3546f664c22da9248720033a2410220f6",
+          "size": 28137179
+        },
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:e58b76760e97dc168e1fd6d33de1fd6a24d20b1a43dac058252d55e66b95f027",
+          "size": 1102
+        },
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:20bd35cbaf27428ab21d43b4b2316f2c918712944e3a00d7ba0904c67b1234f9",
+          "size": 874
+        },
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:19380c48579032ad27ee07482047538b732adae4e3f28dd1615ac2bb2f94dc21",
+          "size": 17603876
+        },
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:a1f9d646249c0a786164ff978c84187596257ada8142eee571ad1b22fe210b2c",
+          "size": 97
+        },
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1",
+          "size": 32
+        },
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:e3e00f1d8a5ee26ea4ca3353029c2d41f083f0f660e96844eba9b6a42970b6cc",
+          "size": 600
+        }
+      ],
+      "archive": {
+        "path": "workflow/images/redis-linux-arm64.tar.gz",
+        "size": 48885274,
+        "sha256": "47aee615d87c92daca5d97b84a3b48bb47e73d37bd4774a5f2f2ac85d024560a"
+      }
+    },
+    {
+      "id": "paradedb",
+      "image": "paradedb/paradedb:0.24.0-pg18",
+      "pinned": "paradedb/paradedb@sha256:19f4731c9b88c86e602622a84f7ce2d74f06ba3e3d04ebab0e6024d2fe9d938b",
+      "manifest_digest": "sha256:19f4731c9b88c86e602622a84f7ce2d74f06ba3e3d04ebab0e6024d2fe9d938b",
+      "config_id": "sha256:ee7f8e62da798bf6517bf3e261d0bc0fb5b543ce123573e30e9331c67966087b",
+      "rootfs_diff_ids": [
+        "sha256:0f0c47d76d9eb2be2ad0e5d15813906c7c4d32fa5a098b4a456208142516bab4",
+        "sha256:8952c88ad998d426447ba4d0f5be14e9f11c419cf57db1e7832ced5d8edd21d8",
+        "sha256:a5069148f5581409f2d1a2a3e1d2e9b6cf2f88307309b8ee22b76dfd38c34210",
+        "sha256:ef944161bc622eb558f49d58140b8b9172e40fa0596a46042418b0a568396cbe",
+        "sha256:cbd78d939b5f1a8a3d5c293d1039ff4b05fb4b2f042791c1d5f66a9ff2f64fd0",
+        "sha256:276168b2a8392fc72e1b9c620702881e21720102f80ba75b28f0691288ed974a",
+        "sha256:83c85000630c41bc197d3e7aec0fc742344eb95217477123f39e6c0d24806c20",
+        "sha256:a2b231ea8cd41bc2242f209e884ddb8a837c9947069ae1570a9ee0524a5eb328",
+        "sha256:68ae34b0eacb0b13c454bb887648431ca36650eb25f02f82aecebba3433fcfcb",
+        "sha256:76952945661a8567d0015b1589ed0aa61313dafc02f05997e3407bf9e01cbcb5",
+        "sha256:7185df59d43aecae812bff4fd9910f7d31a6fb132faa82ac2a2b7429fa61482a",
+        "sha256:2ef1d94c28e922b12e8502de4f95c924f7c603c084081dcb4a376f1dc826bb8c",
+        "sha256:2d243d13da61cc24d145aa903580244fe2551e245f2a600a4f70da5ef24bc7c0",
+        "sha256:14d0b86f13235900febd19ef70a7da4aa93e28c6f36808b8f2d2d6ed556feec8",
+        "sha256:eca9600addec6d9d8b4b7f2eb4372c194f6e8dbc37b2a5ab8995f6ca3f1c2bcb",
+        "sha256:8eda106d2284356b0f0c4beda7a6695442c303492e5bd1cfdc2c53ca85c8e8a6",
+        "sha256:61ddeed6902e798ad788f4cac6a2a3f1a3fa7b4c9314f40efb6e2d91d38a5ccb",
+        "sha256:d6e1b8f465c3d80c468b942f61de42b9fe308c90922053498fe78b9100282e52"
+      ],
+      "layers": [
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:cda3d70ae7d7c3d0b3b57a99a2085f9d93e919a846913dc6517a420b348c123d",
+          "size": 30141919
+        },
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:44d42e6947396dc3a3e053f0552cd7db9128a3231575b63bb445ba801fd6196b",
+          "size": 1167
+        },
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:e0f64b82520a75d2e24fa41d59cc70c46e67e04026f856416e5b2d4a2c199716",
+          "size": 6235505
+        },
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:9e86f6b8bd4b14dd6a0dcd150061520ed43e2d2ffc7d0906b8db65e1845589a3",
+          "size": 1209591
+        },
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:6014830c5e6d97e276d1e4ece3ba5c03baad3d5ffdf2858f87774394cb0c1742",
+          "size": 8204034
+        },
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:55963178907b22586d2a83e6e6c743ca4b97e10f3467d8169889e2ca758def5a",
+          "size": 1220567
+        },
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:ab0d9985687d3d304f160e39b80ddfe97f928dc8a692633c17a6e8027bd07783",
+          "size": 116
+        },
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:2ce720ec930b7116adc09d5398b7d8e9cf7211e540ee9360d00955a4007d3ffd",
+          "size": 3144
+        },
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:24a19057306bee1b752b1f78c420d4990983764f286f385b476507f3976b2b83",
+          "size": 113913632
+        },
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:e8668cf528ee0ce1a46243e87789db90620a37781fb0042077482a51b991d5f5",
+          "size": 19327
+        },
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:8fde3e4485e3d4ca4f09219f5ef014b9e7e5907d4ff13227c2653d93c6dd2b20",
+          "size": 128
+        },
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:a30f8e8e47ac902ee5852f61905f75290d6e62bc2b832e8a1cec3e03fe511b7f",
+          "size": 6096
+        },
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:b859742db43296a73c99bae2e10c6eafeed533a27a11ba1ad3df6f877379e5ad",
+          "size": 185
+        },
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:47e88530197be5f2297230aa7e78f92ca63bc21d2279c8af1c45aef06eb5c89e",
+          "size": 86818004
+        },
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:a81b153a0e03908b4cfc33c4834c4fb3f8c62f501a2bf22edd2e6fff57ca93e9",
+          "size": 33637308
+        },
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:498c46d1f5660b4b92a1000587e5d8546a4874d5cee60178d2b4c8ee35c75f84",
+          "size": 70826782
+        },
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:7c63fff031be2a948dc7cb7c72c2c5e0498d71f0cffc8af914e24631d06b32af",
+          "size": 10000
+        },
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:91e4eddc2d8cd1953d9709f3aa9435bb8c2846d4a2803c4c9e601fa339d8acc6",
+          "size": 857
+        }
+      ],
+      "archive": {
+        "path": "workflow/images/paradedb-linux-arm64.tar.gz",
+        "size": 370612595,
+        "sha256": "8482342af5f5faae7db97ed2bfba5ae95473ce2cbe6274afa10aae9e76869bf3"
+      }
+    },
+    {
+      "id": "neo4j",
+      "image": "neo4j:5.26.29",
+      "pinned": "neo4j@sha256:a58f3320cb0112b71df549bbebe42b75236b0dd365df551d1bf16c127f8414f7",
+      "manifest_digest": "sha256:a58f3320cb0112b71df549bbebe42b75236b0dd365df551d1bf16c127f8414f7",
+      "config_id": "sha256:d1e4fe6df87b9e183d045cb0c10fcd94d45313a8599a8983fbfb4174eb1f0dc9",
+      "rootfs_diff_ids": [
+        "sha256:c01c35a040a25a51cd473910e3212a46d85fb700a6467c687f231d7edd47cbc1",
+        "sha256:de3325a39861eda61441630ec1d0f1de3f45e9c1bca56cc4b66da23d6e5108be",
+        "sha256:3343ba273187a566ab28f97ba43357f41886ea5a35ad6b0c2567825aceefb0f6",
+        "sha256:5aa16acc28f9878acf3443b26260377a0ac9bc7abb44f54a16572ef2aca8872c",
+        "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef"
+      ],
+      "layers": [
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:1b7200988f192e72703c70486d494e2457935ac9b0f031ac09eb115b01a12d45",
+          "size": 30143609
+        },
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:26f5a8e50b6cb1ede94ce2d059a6d7e70b34f47c6e87148ebd30ccb941a13e72",
+          "size": 156401948
+        },
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:24f2c07bb9b1e419e7b6bcb04635c3652a626a1a2a5e4f0d34616141c0e99513",
+          "size": 10061
+        },
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:618d07ed97bb1d2ff374a092504554138648730e6270fabf25176d185e542402",
+          "size": 168685274
+        },
+        {
+          "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+          "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1",
+          "size": 32
+        }
+      ],
+      "archive": {
+        "path": "workflow/images/neo4j-linux-arm64.tar.gz",
+        "size": 366430789,
+        "sha256": "7749cc7675a887c51426d0dc470f54e7b851fa6619a0f92e2ac87feaf9d6ef2e"
+      }
+    },
+    {
+      "id": "minio",
+      "image": "dappros/minio:RELEASE.2025-09-07T16-13-09Z",
+      "pinned": "dappros/minio@sha256:2f25127f784f002f1b98df5ae40cb1a67e0b8a877c90b6113c14b223a2ac65a5",
+      "manifest_digest": "sha256:2f25127f784f002f1b98df5ae40cb1a67e0b8a877c90b6113c14b223a2ac65a5",
+      "config_id": "sha256:8f08aee614800a237906bd48114d733e5ac5bfac4ccdf731f141b0e880d7a253",
+      "rootfs_diff_ids": [
+        "sha256:9dda751d24a37607651f6c6f30a6b79db8f4eb5ff7bb11d4cc204afb8cf63b0c",
+        "sha256:5c008b9cea33ae9cd1ed407506fdab57dad68a27a5de3e6704c3435035a29f24",
+        "sha256:f22f4b0fbb155c53b729bdaca84ad27857e2b16bfe93cf860cc17f4c4db53cb4",
+        "sha256:aa871aa04b16d6a44871115fcf3f71d55f1d93449a6c53051081d8ee1fcd046d",
+        "sha256:cc10c2ef605726de0d5fef87a1248a1a411aaa00eabff7f899a754211bfe2f92",
+        "sha256:0d7c33a872cbf6d0abd716186285d2ac3132fe5609637dd794df5c14f701709d",
+        "sha256:bb3cfed0bdf9ebe580b02a1bdea6c159f34376fc320893a430b1168d1f3d7a3b",
+        "sha256:9477f9d3aa699f24f0babd85237612f6a506c7469882e5f2f5493f25c8c8401b",
+        "sha256:38386ee45763f17ce22c5f6422238c67969c43e2bfcf9090bb6ecc928d119f82"
+      ],
+      "layers": [
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "size": 6455669,
+          "digest": "sha256:b066791d3647d537527a0f9705fe02b34d9880294b8c79baca11ebdf8fabe6d9"
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "size": 1638580,
+          "digest": "sha256:4e6e13ec1e11d081858332af724abc4767cb335c70a232ab2c4904a11c81ca71"
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "size": 122724,
+          "digest": "sha256:c75db12fb9c02ea876da23013cc9f7a88f576503c3e1cefc9d69ae4e5457461a"
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "size": 36943528,
+          "digest": "sha256:7b79da5d3567e4edf09247b21a408253f41d1c76195b149aa4487d6941602df1"
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "size": 10265537,
+          "digest": "sha256:166b5f0a4239e97e9d4803c4d18a3f62e001f1fd52508109cd6b54a0077af985"
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "size": 1753159,
+          "digest": "sha256:7c6ea1bdb2f6d20053ff105adbf21e3cfabc4ba3774dc6d849e6811e3fa1a765"
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "size": 180305,
+          "digest": "sha256:2f0dae0f0359429c85df5e225dcc27d0707f958838936a4603bc2cf8f37e74ca"
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "size": 11876,
+          "digest": "sha256:f06361c774fad004bdc8571c1f5bf83e38dae640a6e10e79c958c2644df497e7"
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "size": 498,
+          "digest": "sha256:1e1cfd58aa021dea2b6da43946603ae51da32fc4dddcaa8d1a95bfaf0cbaab42"
+        }
+      ],
+      "archive": {
+        "path": "workflow/images/minio-linux-arm64.tar.gz",
+        "size": 55790536,
+        "sha256": "04c2edcbd02684af5975677d78efb7b7098349ac4e3a22dbcc0e52f1213041ac"
+      }
+    },
+    {
+      "id": "milvus",
+      "image": "milvusdb/milvus:v2.6.21",
+      "pinned": "milvusdb/milvus@sha256:35669c22159e69d5197bfdb5b760bba4ae8eabe0a6bb0142abdc8eb2416d1ce1",
+      "manifest_digest": "sha256:35669c22159e69d5197bfdb5b760bba4ae8eabe0a6bb0142abdc8eb2416d1ce1",
+      "config_id": "sha256:c6941d070fd4f68772bc56384cced7ccfd59d5e5a84ccfece39054fec986fcec",
+      "rootfs_diff_ids": [
+        "sha256:3cf0fc64dd1a205539a88309795f2edb270dd14ed073d1971e88ac24642ff9a5",
+        "sha256:84693306b80d5ed56e58c1b4c24877c4bbdd4226c9157cc3074e17849ee9e0f9",
+        "sha256:f650be57cb359aac11a3a80d17a59073d67fcee3a626bee3b556f1764a035b07",
+        "sha256:4ec5718a18bfba38f64d6eda4442065a9a1802794db5faed3a353703dd1c763c",
+        "sha256:b8e228f91914bf1475ef558f52fa14d40792ff1287b734cbc5555cc67352babe",
+        "sha256:0d301a3fb5b52f553aab5736c8e33f8199db2fac5ab81f92872e53a36c9e9598",
+        "sha256:922304740d756b98313edcf4053aff7c32161c3f2f8e0488a252d82c17d7af25",
+        "sha256:2d7d5f7b6f61f8804224d8b0342ee0dae09c2fea3c4d1112a440bff262b6eeac",
+        "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef"
+      ],
+      "layers": [
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "size": 27361782,
+          "digest": "sha256:9b10a938e28486049341cb41134e8c0c141b2e25870896c597e2a54df471acbb"
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "size": 44395479,
+          "digest": "sha256:fecdd35fdcfbe34fe8de7fcf1c470536e14092518454c563454b4166d52c99ce"
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "size": 9040,
+          "digest": "sha256:93866f6fb2c998ecdca0daf9ac719c4cc40f6bd76806b249a07be72c68931d00"
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "size": 115,
+          "digest": "sha256:325f2ba4041334dce203c43f2855919ecfdb647a57cc5d125de86f33110845b0"
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "size": 58417907,
+          "digest": "sha256:3669c069d77c208361b699bdcb30082c79064d46b477772125335109d7dfed14"
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "size": 38169,
+          "digest": "sha256:6198e6dc40c124a6a8c39fa7bcf5f7f70934eca73a6426c82674825b77016508"
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "size": 233273733,
+          "digest": "sha256:7d32cc014f54cd8bc24d01902057da5a219a63f288158d9b38eeb303ddd57685"
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "size": 433,
+          "digest": "sha256:37a028513871963eae3d3d25d28c435531fff1c265e1fbb66400dc9631e4ec56"
+        },
+        {
+          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+          "size": 32,
+          "digest": "sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1"
+        }
+      ],
+      "archive": {
+        "path": "workflow/images/milvus-linux-arm64.tar.gz",
+        "size": 382396058,
+        "sha256": "ac101c14c5a878a50a94180783f689603bd1773dbb88fe7742c6412232778992"
+      }
+    }
+  ],
+  "host_packages": [
+    {
+      "path": "workflow/host-debs/adduser_3.134_all.deb",
+      "size": 183272,
+      "sha256": "c24fe4eb8e60d8632d72ed104cce7c92cff200847c897dc8ba764b6c47b519e0",
+      "package": "adduser",
+      "version": "3.134",
+      "architecture": "all",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/a/adduser/adduser_3.134_all.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/debconf_1.5.82_all.deb",
+      "size": 121212,
+      "sha256": "74ab14194a3762b2fc717917dcfda42929ab98e3c59295a063344dc551cd7cc8",
+      "package": "debconf",
+      "version": "1.5.82",
+      "architecture": "all",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/d/debconf/debconf_1.5.82_all.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/dpkg_1.21.23_arm64.deb",
+      "size": 1550216,
+      "sha256": "00b2b9d112ecbfe99d8f0c3de56dd33bc242f71c8ae51c3fd1e154ab2e2eb07a",
+      "package": "dpkg",
+      "version": "1.21.23",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/d/dpkg/dpkg_1.21.23_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/etcd-client_3.4.23-4+b4_arm64.deb",
+      "size": 3988688,
+      "sha256": "3f1bcd6d47e2c9eaa274c5bb2f7b2ebc090226dc10dde00e13e32d0b03d137d7",
+      "package": "etcd-client",
+      "version": "3.4.23-4+b4",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/e/etcd/etcd-client_3.4.23-4%2bb4_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/etcd-server_3.4.23-4+b4_arm64.deb",
+      "size": 7620188,
+      "sha256": "821e59be145fa42bd72b3e003d275640947c3d824b4c06b1ed2a01a631d555a1",
+      "package": "etcd-server",
+      "version": "3.4.23-4+b4",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/e/etcd/etcd-server_3.4.23-4%2bb4_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/gcc-12-base_12.2.0-14+deb12u1_arm64.deb",
+      "size": 37624,
+      "sha256": "674cf6cba6d432bd200c45fe866c1652c7a53523cc2e7a613e05bc4abf7b5440",
+      "package": "gcc-12-base",
+      "version": "12.2.0-14+deb12u1",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/g/gcc-12/gcc-12-base_12.2.0-14%2bdeb12u1_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/init-system-helpers_1.65.2+deb12u1_all.deb",
+      "size": 39020,
+      "sha256": "afab482524c64e4e256eb5cab43c1a96dc493ec476d94f19f1a5ec3de5fa0fef",
+      "package": "init-system-helpers",
+      "version": "1.65.2+deb12u1",
+      "architecture": "all",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/i/init-system-helpers/init-system-helpers_1.65.2%2bdeb12u1_all.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/iproute2_6.1.0-3_arm64.deb",
+      "size": 1008124,
+      "sha256": "58fad55c5a29be6c1e6301d0c572f2ac5e5962ff244e7da3784c1b29ffc6c6bf",
+      "package": "iproute2",
+      "version": "6.1.0-3",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/i/iproute2/iproute2_6.1.0-3_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libacl1_2.3.1-3_arm64.deb",
+      "size": 30768,
+      "sha256": "2b0eef11a2e271e7355adaf1f6cbf8d2e83835ae1b6cf15165d59b8289c08342",
+      "package": "libacl1",
+      "version": "2.3.1-3",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/a/acl/libacl1_2.3.1-3_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libaudit-common_1%3a3.0.9-1_all.deb",
+      "size": 10448,
+      "sha256": "17d0341ca6ce604ce59c296780ac2c2a24141a769823c50669af942c025e6591",
+      "package": "libaudit-common",
+      "version": "1:3.0.9-1",
+      "architecture": "all",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/a/audit/libaudit-common_3.0.9-1_all.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libaudit1_1%3a3.0.9-1_arm64.deb",
+      "size": 46104,
+      "sha256": "619606427a334cba955e0afb18bf4a636df4141d32ea474a79cc512b5ca358e7",
+      "package": "libaudit1",
+      "version": "1:3.0.9-1",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/a/audit/libaudit1_3.0.9-1_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libbpf1_1%3a1.1.2-0+deb12u1_arm64.deb",
+      "size": 136376,
+      "sha256": "c9929839798e7d8e66b212f345ecf1653ba7f1a9e1b753d0eb67bd521b0b5511",
+      "package": "libbpf1",
+      "version": "1:1.1.2-0+deb12u1",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/libb/libbpf/libbpf1_1.1.2-0%2bdeb12u1_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libbrotli1_1.0.9-2+b6_arm64.deb",
+      "size": 269124,
+      "sha256": "3137de7f71952e710ee9f0df05026b3c6f463be9369a502d57c7696732f1ed22",
+      "package": "libbrotli1",
+      "version": "1.0.9-2+b6",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/b/brotli/libbrotli1_1.0.9-2%2bb6_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libbsd0_0.11.7-2_arm64.deb",
+      "size": 115116,
+      "sha256": "ef00f132ddd268ee67d756998723ee18543db27ab34930c0a9f1cff75cf55382",
+      "package": "libbsd0",
+      "version": "0.11.7-2",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/libb/libbsd/libbsd0_0.11.7-2_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libbz2-1.0_1.0.8-5+b1_arm64.deb",
+      "size": 47452,
+      "sha256": "d3a96ece03326498b39ff093a76800dfcbcb1d4049d6ae6e9f6fa1aa7a590ad6",
+      "package": "libbz2-1.0",
+      "version": "1.0.8-5+b1",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/b/bzip2/libbz2-1.0_1.0.8-5%2bb1_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libc6_2.36-9+deb12u14_arm64.deb",
+      "size": 2324660,
+      "sha256": "01f4330719fd4f65580e16ea5a0527f372fca750e8f588d26deaf09f2d3b1cf4",
+      "package": "libc6",
+      "version": "2.36-9+deb12u14",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/g/glibc/libc6_2.36-9%2bdeb12u14_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libcap-ng0_0.8.3-1+b3_arm64.deb",
+      "size": 16428,
+      "sha256": "24e74ad29a37d2a3940b8977d11298a7afc77379ef414b561d79c64147d740e0",
+      "package": "libcap-ng0",
+      "version": "0.8.3-1+b3",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/libc/libcap-ng/libcap-ng0_0.8.3-1%2bb3_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libcap2-bin_1%3a2.66-4+deb12u3+b1_arm64.deb",
+      "size": 34452,
+      "sha256": "139adf54b27522e838f3ce895c10d27a5fb406809b7b12d477dd5c13d2b2d286",
+      "package": "libcap2-bin",
+      "version": "1:2.66-4+deb12u3+b1",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/libc/libcap2/libcap2-bin_2.66-4%2bdeb12u3%2bb1_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libcap2_1%3a2.66-4+deb12u3+b1_arm64.deb",
+      "size": 27072,
+      "sha256": "b3a21ae1cef9c2f3fa340007100fb0aa934ab6a4d8aed131660de9713db2bb6e",
+      "package": "libcap2",
+      "version": "1:2.66-4+deb12u3+b1",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/libc/libcap2/libcap2_2.66-4%2bdeb12u3%2bb1_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libcom-err2_1.47.0-2+b2_arm64.deb",
+      "size": 19928,
+      "sha256": "36c15f933a965b50f4c9558d792d9556934c84e532703935d8ae7e69dd3fa863",
+      "package": "libcom-err2",
+      "version": "1.47.0-2+b2",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/e/e2fsprogs/libcom-err2_1.47.0-2%2bb2_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libcrypt1_1%3a4.4.33-2_arm64.deb",
+      "size": 90044,
+      "sha256": "eea0ad76ea5eb507127fea0c291622ea4ecdbb71c4b9a8ed9c76ae33fc1a0127",
+      "package": "libcrypt1",
+      "version": "1:4.4.33-2",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/libx/libxcrypt/libcrypt1_4.4.33-2_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libcurl4_7.88.1-10+deb12u15_arm64.deb",
+      "size": 367496,
+      "sha256": "e54bdd269c960b643ded903c3dbde36fe5d4d5f5b6389b47a0344d4a711cf70a",
+      "package": "libcurl4",
+      "version": "7.88.1-10+deb12u15",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/c/curl/libcurl4_7.88.1-10%2bdeb12u15_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libdb5.3_5.3.28+dfsg2-1_arm64.deb",
+      "size": 625748,
+      "sha256": "344367608d622298a3d916f4cee3dc3173286f3b21f8f497ab21e7178ba930f9",
+      "package": "libdb5.3",
+      "version": "5.3.28+dfsg2-1",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/d/db5.3/libdb5.3_5.3.28%2bdfsg2-1_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libelf1_0.188-2.1_arm64.deb",
+      "size": 172708,
+      "sha256": "32971952d8f5d563447bf275f24e26057500924da2d855c1edb53b0f0400bd11",
+      "package": "libelf1",
+      "version": "0.188-2.1",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/e/elfutils/libelf1_0.188-2.1_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libffi8_3.4.4-1_arm64.deb",
+      "size": 20492,
+      "sha256": "80b5c36177dc0e29d531c7eddbed3cc7355cb490e49f8cfa5959572d161f27b3",
+      "package": "libffi8",
+      "version": "3.4.4-1",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/libf/libffi/libffi8_3.4.4-1_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libfile-find-rule-perl_0.34-4~deb12u1_all.deb",
+      "size": 26736,
+      "sha256": "d941143c65e47eff192195ed1b8367d3d74e5a0de668fc5ae9d787383ec48c23",
+      "package": "libfile-find-rule-perl",
+      "version": "0.34-4~deb12u1",
+      "architecture": "all",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/libf/libfile-find-rule-perl/libfile-find-rule-perl_0.34-4%7edeb12u1_all.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libfmt9_9.1.0+ds1-2_arm64.deb",
+      "size": 106808,
+      "sha256": "7d4f191b968e33c491b252bae91b5f67737c01b8946bda98d1a13d4bac65a0f2",
+      "package": "libfmt9",
+      "version": "9.1.0+ds1-2",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/f/fmtlib/libfmt9_9.1.0%2bds1-2_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libgcc-s1_12.2.0-14+deb12u1_arm64.deb",
+      "size": 34816,
+      "sha256": "576926b283613db80168ddf76380a3bd877602778cf0d226caa7bfbfa71eacf3",
+      "package": "libgcc-s1",
+      "version": "12.2.0-14+deb12u1",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/g/gcc-12/libgcc-s1_12.2.0-14%2bdeb12u1_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libgdbm-compat4_1.23-3_arm64.deb",
+      "size": 47996,
+      "sha256": "acc13a12acbf3b17dbacc77e3c22c6c273a552150cd50fdc9bd70cdb5169af73",
+      "package": "libgdbm-compat4",
+      "version": "1.23-3",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/g/gdbm/libgdbm-compat4_1.23-3_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libgdbm6_1.23-3_arm64.deb",
+      "size": 70948,
+      "sha256": "3c704feaf89c5f2709a76b84126ac8affe4ddff69dc0b91af0ca9910c7e75714",
+      "package": "libgdbm6",
+      "version": "1.23-3",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/g/gdbm/libgdbm6_1.23-3_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libgmp10_2%3a6.2.1+dfsg1-1.1_arm64.deb",
+      "size": 537920,
+      "sha256": "9906387c1dd806518c915bd8616d072c741061d7fa26b222e52763456060b31a",
+      "package": "libgmp10",
+      "version": "2:6.2.1+dfsg1-1.1",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/g/gmp/libgmp10_6.2.1%2bdfsg1-1.1_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libgnutls30_3.7.9-2+deb12u7_arm64.deb",
+      "size": 1317844,
+      "sha256": "84f7f70084c9179d6670f4a6ebdf32adc36c6e4741a3a118104377e18cfa977f",
+      "package": "libgnutls30",
+      "version": "3.7.9-2+deb12u7",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/g/gnutls28/libgnutls30_3.7.9-2%2bdeb12u7_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libgssapi-krb5-2_1.20.1-2+deb12u5_arm64.deb",
+      "size": 124152,
+      "sha256": "a00678963f692a929312968f19b77a61a8fc0011690d7dc909a8a2c4810fc7b3",
+      "package": "libgssapi-krb5-2",
+      "version": "1.20.1-2+deb12u5",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/k/krb5/libgssapi-krb5-2_1.20.1-2%2bdeb12u5_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libhogweed6_3.8.1-2_arm64.deb",
+      "size": 323840,
+      "sha256": "e653a1a7e5a44be0f7b6443dc6ac865d2504e49149660fc253655245965e157f",
+      "package": "libhogweed6",
+      "version": "3.8.1-2",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/n/nettle/libhogweed6_3.8.1-2_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libidn2-0_2.3.3-1+b1_arm64.deb",
+      "size": 122396,
+      "sha256": "12a3efc056671bf1c1bed4c3444c2559c8d5e0c158a13316fc728f263b83ddc4",
+      "package": "libidn2-0",
+      "version": "2.3.3-1+b1",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/libi/libidn2/libidn2-0_2.3.3-1%2bb1_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libk5crypto3_1.20.1-2+deb12u5_arm64.deb",
+      "size": 79880,
+      "sha256": "8ae2c31cde0b3e6f80c573a495b0f90bf6d9efb4455d900728278bb54d9092e5",
+      "package": "libk5crypto3",
+      "version": "1.20.1-2+deb12u5",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/k/krb5/libk5crypto3_1.20.1-2%2bdeb12u5_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libkeyutils1_1.6.3-2_arm64.deb",
+      "size": 8844,
+      "sha256": "aac46cb6faec4e737502b3c2290b7b02f8ba04e8accd5af7fd07934df0c867b1",
+      "package": "libkeyutils1",
+      "version": "1.6.3-2",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/k/keyutils/libkeyutils1_1.6.3-2_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libkrb5-3_1.20.1-2+deb12u5_arm64.deb",
+      "size": 315528,
+      "sha256": "c3c7227f5db903a7a8b8936d47d1d79643edcda36365c4c992e1a96bcc2d4c7e",
+      "package": "libkrb5-3",
+      "version": "1.20.1-2+deb12u5",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/k/krb5/libkrb5-3_1.20.1-2%2bdeb12u5_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libkrb5support0_1.20.1-2+deb12u5_arm64.deb",
+      "size": 32592,
+      "sha256": "3043fd4a54b945a1b503170749527f825dcfc7add2f8bf5abb4a329deeb48f4a",
+      "package": "libkrb5support0",
+      "version": "1.20.1-2+deb12u5",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/k/krb5/libkrb5support0_1.20.1-2%2bdeb12u5_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libldap-2.5-0_2.5.13+dfsg-5_arm64.deb",
+      "size": 170832,
+      "sha256": "71e6ae4291a20db999c62cd0a4f30a92a799c46b99205d5e787d4acd7c343b91",
+      "package": "libldap-2.5-0",
+      "version": "2.5.13+dfsg-5",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/o/openldap/libldap-2.5-0_2.5.13%2bdfsg-5_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/liblzma5_5.4.1-1+deb12u2_arm64.deb",
+      "size": 199704,
+      "sha256": "36358d245f246234721e6c1c2ee5d11a46c1c877023c63f7570df02cd79964f5",
+      "package": "liblzma5",
+      "version": "5.4.1-1+deb12u2",
+      "architecture": "arm64",
+      "urls": [
+        "https://security.debian.org/debian-security/pool/updates/main/x/xz-utils/liblzma5_5.4.1-1%2bdeb12u2_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libmd0_1.0.4-2_arm64.deb",
+      "size": 29400,
+      "sha256": "99a8c7dd591fae9fb37d8bf8dfdffa850e207fa405b3198c5b24711a5f972381",
+      "package": "libmd0",
+      "version": "1.0.4-2",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/libm/libmd/libmd0_1.0.4-2_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libmnl0_1.0.4-3_arm64.deb",
+      "size": 12116,
+      "sha256": "d63aafb6f2c07db8fcb135b00ff915baf72ef8a3397e773c9c24d67950c6a46c",
+      "package": "libmnl0",
+      "version": "1.0.4-3",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/libm/libmnl/libmnl0_1.0.4-3_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libnettle8_3.8.1-2_arm64.deb",
+      "size": 293748,
+      "sha256": "c945ff210df69cf7b95e935b8fa936e81c1c1f475355e3d5db83510b174f0cd6",
+      "package": "libnettle8",
+      "version": "3.8.1-2",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/n/nettle/libnettle8_3.8.1-2_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libnghttp2-14_1.52.0-1+deb12u3_arm64.deb",
+      "size": 68976,
+      "sha256": "7767833033739adb2e2e374f2c4b36134d9f36fcdfe8e2aab7029bf850146da9",
+      "package": "libnghttp2-14",
+      "version": "1.52.0-1+deb12u3",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/n/nghttp2/libnghttp2-14_1.52.0-1%2bdeb12u3_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libnumber-compare-perl_0.03-3_all.deb",
+      "size": 6332,
+      "sha256": "cf95662e27037d92c582647400bb1ca7a6dfd2eb26eee5b968b23263cd4976dc",
+      "package": "libnumber-compare-perl",
+      "version": "0.03-3",
+      "architecture": "all",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/libn/libnumber-compare-perl/libnumber-compare-perl_0.03-3_all.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libp11-kit0_0.24.1-2_arm64.deb",
+      "size": 326552,
+      "sha256": "d1f1f55023e9fc085b9ebfc9c4113d2d2dab2dc6b81a337f274b75c95ad8dc0a",
+      "package": "libp11-kit0",
+      "version": "0.24.1-2",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/p/p11-kit/libp11-kit0_0.24.1-2_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libpaho-mqtt1.3_1.3.12-1_arm64.deb",
+      "size": 142380,
+      "sha256": "d1573ac112ecf564dd27581d1a061fbc67ec4ac2b49bd41cf1a57039d531938b",
+      "package": "libpaho-mqtt1.3",
+      "version": "1.3.12-1",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/p/paho.mqtt.c/libpaho-mqtt1.3_1.3.12-1_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libpam-modules-bin_1.5.2-6+deb12u2_arm64.deb",
+      "size": 74980,
+      "sha256": "82dcd30add63288c86becb14edec0a0ba7df74b07c9267f5a4cb9a28d023d65e",
+      "package": "libpam-modules-bin",
+      "version": "1.5.2-6+deb12u2",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/p/pam/libpam-modules-bin_1.5.2-6%2bdeb12u2_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libpam-modules_1.5.2-6+deb12u2_arm64.deb",
+      "size": 285848,
+      "sha256": "f6a8cc6a384205fb5bce79a0261c1c1974d587f048cfb1f0d1d2ade8c2c1ae77",
+      "package": "libpam-modules",
+      "version": "1.5.2-6+deb12u2",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/p/pam/libpam-modules_1.5.2-6%2bdeb12u2_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libpam0g_1.5.2-6+deb12u2_arm64.deb",
+      "size": 90876,
+      "sha256": "f04916b56a3225cb109e1c283ebfb163524797a406148875a6871816dc8939cd",
+      "package": "libpam0g",
+      "version": "1.5.2-6+deb12u2",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/p/pam/libpam0g_1.5.2-6%2bdeb12u2_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libpcre2-8-0_10.42-1+deb12u2_arm64.deb",
+      "size": 230704,
+      "sha256": "8498d2c0bd6747dfc2fc6eec62774a86967079555f7043d5a7b78ee4efbbc0fb",
+      "package": "libpcre2-8-0",
+      "version": "10.42-1+deb12u2",
+      "architecture": "arm64",
+      "urls": [
+        "https://security.debian.org/debian-security/pool/updates/main/p/pcre2/libpcre2-8-0_10.42-1%2bdeb12u2_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libperl5.36_5.36.0-7+deb12u4_arm64.deb",
+      "size": 4001524,
+      "sha256": "35013c8ce9c319abd608d27719d71ff5d2090002e5a424708df26c11d18bffb3",
+      "package": "libperl5.36",
+      "version": "5.36.0-7+deb12u4",
+      "architecture": "arm64",
+      "urls": [
+        "https://security.debian.org/debian-security/pool/updates/main/p/perl/libperl5.36_5.36.0-7%2bdeb12u4_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libpsl5_0.21.2-1_arm64.deb",
+      "size": 58600,
+      "sha256": "90a68e4a6d9eb95abee32595762dbf67974f13c158e4ce4a05c7c2b54440db73",
+      "package": "libpsl5",
+      "version": "0.21.2-1",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/libp/libpsl/libpsl5_0.21.2-1_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/librtmp1_2.4+20151223.gitfa8646d.1-2+b2_arm64.deb",
+      "size": 59364,
+      "sha256": "a3a1a6e4b02bcd3254e932b1972ed744082fd7dd5cc1545eec3dd3d539ce6c93",
+      "package": "librtmp1",
+      "version": "2.4+20151223.gitfa8646d.1-2+b2",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/r/rtmpdump/librtmp1_2.4%2b20151223.gitfa8646d.1-2%2bb2_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libsasl2-2_2.1.28+dfsg-10_arm64.deb",
+      "size": 58016,
+      "sha256": "61dcbb6560e2eb20bff256f1b445ac9af13aa61c6a6ae115ad8cb96c9c50ea38",
+      "package": "libsasl2-2",
+      "version": "2.1.28+dfsg-10",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/c/cyrus-sasl2/libsasl2-2_2.1.28%2bdfsg-10_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libsasl2-modules-db_2.1.28+dfsg-10_arm64.deb",
+      "size": 20820,
+      "sha256": "56d9c35ac6729b02f78900175557dd36bef26611dab89584f29da15631628869",
+      "package": "libsasl2-modules-db",
+      "version": "2.1.28+dfsg-10",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/c/cyrus-sasl2/libsasl2-modules-db_2.1.28%2bdfsg-10_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libselinux1_3.4-1+b6_arm64.deb",
+      "size": 68800,
+      "sha256": "29201edf23ebae40844d6c289afdb9bba52f927d55096ed1b1cd37e040135edc",
+      "package": "libselinux1",
+      "version": "3.4-1+b6",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/libs/libselinux/libselinux1_3.4-1%2bb6_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libsemanage-common_3.4-1_all.deb",
+      "size": 21632,
+      "sha256": "835f806c21ae25e39053bd3057051640341b0cf08e1db9746fd82e370d82fa30",
+      "package": "libsemanage-common",
+      "version": "3.4-1",
+      "architecture": "all",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/libs/libsemanage/libsemanage-common_3.4-1_all.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libsemanage2_3.4-1+b5_arm64.deb",
+      "size": 82628,
+      "sha256": "6d1958b29ac622d352e00f9de55d9de8aea12bd0c27dee8b522e052ace3c67bd",
+      "package": "libsemanage2",
+      "version": "3.4-1+b5",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/libs/libsemanage/libsemanage2_3.4-1%2bb5_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libsepol2_3.4-2.1_arm64.deb",
+      "size": 246968,
+      "sha256": "22b0041a04af364f643ff2e7ff88eaaecdf0714dcfd253e8c99a6a952ae1fec6",
+      "package": "libsepol2",
+      "version": "3.4-2.1",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/libs/libsepol/libsepol2_3.4-2.1_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libspdlog1.10_1%3a1.10.0+ds-0.4_arm64.deb",
+      "size": 118568,
+      "sha256": "da8decc7f9cc620d5ac0f0beaac4c7d0d4a824702c8b8daf8f55191d675375a3",
+      "package": "libspdlog1.10",
+      "version": "1:1.10.0+ds-0.4",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/s/spdlog/libspdlog1.10_1.10.0%2bds-0.4_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libssh2-1_1.10.0-3+deb12u1_arm64.deb",
+      "size": 169420,
+      "sha256": "72db6dc64cb0dd4c8a6b0f1b998063338956a7b3eb8a27125beb27bee0d7cc46",
+      "package": "libssh2-1",
+      "version": "1.10.0-3+deb12u1",
+      "architecture": "arm64",
+      "urls": [
+        "https://security.debian.org/debian-security/pool/updates/main/libs/libssh2/libssh2-1_1.10.0-3%2bdeb12u1_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libssl3_3.0.22-1~deb12u1_arm64.deb",
+      "size": 1827612,
+      "sha256": "026105b99749b437b03d0de5b3a58c0cabefb9791bc6f9cf916d18691ee7519a",
+      "package": "libssl3",
+      "version": "3.0.22-1~deb12u1",
+      "architecture": "arm64",
+      "urls": [
+        "https://security.debian.org/debian-security/pool/updates/main/o/openssl/libssl3_3.0.22-1%7edeb12u1_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libstdc++6_12.2.0-14+deb12u1_arm64.deb",
+      "size": 556608,
+      "sha256": "26e138c677a985775331373828a6c286c551ff397cb735d00e2383cb273d1cb2",
+      "package": "libstdc++6",
+      "version": "12.2.0-14+deb12u1",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/g/gcc-12/libstdc%2b%2b6_12.2.0-14%2bdeb12u1_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libtasn1-6_4.19.0-2+deb12u1_arm64.deb",
+      "size": 46040,
+      "sha256": "7e80513007e8a71b5e737d3307dedbb06712f9cfed05ec2fad6fc00de460cc5f",
+      "package": "libtasn1-6",
+      "version": "4.19.0-2+deb12u1",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/libt/libtasn1-6/libtasn1-6_4.19.0-2%2bdeb12u1_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libtext-glob-perl_0.11-3_all.deb",
+      "size": 7676,
+      "sha256": "b0f1a40c5b26f4e4c83a4f8e1768fcf50ae9aac84b7f807ccb38123b50396f64",
+      "package": "libtext-glob-perl",
+      "version": "0.11-3",
+      "architecture": "all",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/libt/libtext-glob-perl/libtext-glob-perl_0.11-3_all.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libtirpc-common_1.3.3+ds-1_all.deb",
+      "size": 14048,
+      "sha256": "3e3ef129b4bf61513144236e15e1b4ec57fa5ae3dc8a72137abdbefb7a63af85",
+      "package": "libtirpc-common",
+      "version": "1.3.3+ds-1",
+      "architecture": "all",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/libt/libtirpc/libtirpc-common_1.3.3%2bds-1_all.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libtirpc3_1.3.3+ds-1_arm64.deb",
+      "size": 80940,
+      "sha256": "deaf9ea54f74cab6690b4bc0b427f05cbe62cc073580d84f5f18a8d9e2ece401",
+      "package": "libtirpc3",
+      "version": "1.3.3+ds-1",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/libt/libtirpc/libtirpc3_1.3.3%2bds-1_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libunistring2_1.0-2_arm64.deb",
+      "size": 422768,
+      "sha256": "05b0b7700bfe269ff7af61f45e92055d7ef4c532c9584e4e2a352cf0bd4de5b1",
+      "package": "libunistring2",
+      "version": "1.0-2",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/libu/libunistring/libunistring2_1.0-2_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libxtables12_1.8.9-2_arm64.deb",
+      "size": 29572,
+      "sha256": "8884a42f98b989e5ba2e91d931b5c6e9eb72568e5d3001d97d73d7913890a7b3",
+      "package": "libxtables12",
+      "version": "1.8.9-2",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/i/iptables/libxtables12_1.8.9-2_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libyaml-cpp0.7_0.7.0+dfsg-8+b1_arm64.deb",
+      "size": 99816,
+      "sha256": "8623509d15f1e145d24ff0ce89cbfe7f931f22977898b2b25cdb30c60291bac4",
+      "package": "libyaml-cpp0.7",
+      "version": "0.7.0+dfsg-8+b1",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/y/yaml-cpp/libyaml-cpp0.7_0.7.0%2bdfsg-8%2bb1_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/libzstd1_1.5.4+dfsg2-5_arm64.deb",
+      "size": 250548,
+      "sha256": "95e173c9538f96ede4fc275ec7863f395a97dd0ea62454be9bc914efa1b9be93",
+      "package": "libzstd1",
+      "version": "1.5.4+dfsg2-5",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/libz/libzstd/libzstd1_1.5.4%2bdfsg2-5_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/nginx-common_1.22.1-9+deb12u10_all.deb",
+      "size": 114932,
+      "sha256": "3b9e2207c67de87706c53d86ec4bed0760ed46e1401f30d078c3a926fdc2f9ee",
+      "package": "nginx-common",
+      "version": "1.22.1-9+deb12u10",
+      "architecture": "all",
+      "urls": [
+        "https://security.debian.org/debian-security/pool/updates/main/n/nginx/nginx-common_1.22.1-9%2bdeb12u10_all.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/nginx_1.22.1-9+deb12u10_arm64.deb",
+      "size": 497760,
+      "sha256": "482916490b3dfa7e23b0efdbe5eb0b4871220bbe6ea1f54d1cf1010de8d01fbb",
+      "package": "nginx",
+      "version": "1.22.1-9+deb12u10",
+      "architecture": "arm64",
+      "urls": [
+        "https://security.debian.org/debian-security/pool/updates/main/n/nginx/nginx_1.22.1-9%2bdeb12u10_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/passwd_1%3a4.13+dfsg1-1+deb12u2_arm64.deb",
+      "size": 947048,
+      "sha256": "680144df37766acb90253caaa9144cd00e78e0a76a2e171ecfb4277ec231922e",
+      "package": "passwd",
+      "version": "1:4.13+dfsg1-1+deb12u2",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/s/shadow/passwd_4.13%2bdfsg1-1%2bdeb12u2_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/perl-base_5.36.0-7+deb12u4_arm64.deb",
+      "size": 1477684,
+      "sha256": "03d979b849a1a0a8955eee28b988dbc25a407fd3a0581df5c94e6ae7bcc01ddf",
+      "package": "perl-base",
+      "version": "5.36.0-7+deb12u4",
+      "architecture": "arm64",
+      "urls": [
+        "https://security.debian.org/debian-security/pool/updates/main/p/perl/perl-base_5.36.0-7%2bdeb12u4_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/perl-modules-5.36_5.36.0-7+deb12u4_all.deb",
+      "size": 2817356,
+      "sha256": "3ed38ffa8320e9bf7597cefa01b6a6ace4a08ccc77cdfd15ef7d8b711dea7166",
+      "package": "perl-modules-5.36",
+      "version": "5.36.0-7+deb12u4",
+      "architecture": "all",
+      "urls": [
+        "https://security.debian.org/debian-security/pool/updates/main/p/perl/perl-modules-5.36_5.36.0-7%2bdeb12u4_all.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/perl_5.36.0-7+deb12u4_arm64.deb",
+      "size": 239392,
+      "sha256": "b20b172eff2f1edef5c29ebb9fec09ceec5b32ca62aeb9b3700e7c71a58b5071",
+      "package": "perl",
+      "version": "5.36.0-7+deb12u4",
+      "architecture": "arm64",
+      "urls": [
+        "https://security.debian.org/debian-security/pool/updates/main/p/perl/perl_5.36.0-7%2bdeb12u4_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/tar_1.34+dfsg-1.2+deb12u1_arm64.deb",
+      "size": 817696,
+      "sha256": "04a945d4f24068f9d4c44294014ef5a33fc6179a57021978afc7d08358e13df3",
+      "package": "tar",
+      "version": "1.34+dfsg-1.2+deb12u1",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/t/tar/tar_1.34%2bdfsg-1.2%2bdeb12u1_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/usrmerge_37~deb12u1_all.deb",
+      "size": 13336,
+      "sha256": "8a25318213244f075b56363408c87a519ed8cef24b270c3d045ef35d695de13a",
+      "package": "usrmerge",
+      "version": "37~deb12u1",
+      "architecture": "all",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/u/usrmerge/usrmerge_37%7edeb12u1_all.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/zlib1g_1%3a1.2.13.dfsg-1_arm64.deb",
+      "size": 82744,
+      "sha256": "52b8b8a145bbe1956bba82034f77022cbef0c3d0885c9e32d9817a7932fe1913",
+      "package": "zlib1g",
+      "version": "1:1.2.13.dfsg-1",
+      "architecture": "arm64",
+      "urls": [
+        "https://deb.debian.org/debian/pool/main/z/zlib/zlib1g_1.2.13.dfsg-1_arm64.deb"
+      ]
+    },
+    {
+      "path": "workflow/host-debs/Packages",
+      "size": 90872,
+      "sha256": "528655bb62c6d5acda01d589813cc2301bdbd752ce438a65eeda594cd75f6082"
+    }
+  ],
+  "probe_packages": [
+    "libpaho-mqtt1.3",
+    "libcurl4",
+    "libssl3",
+    "libyaml-cpp0.7",
+    "libspdlog1.10",
+    "libfmt9",
+    "libstdc++6",
+    "libgcc-s1",
+    "libc6"
+  ],
+  "component_packages": [
+    "nginx",
+    "etcd-server",
+    "etcd-client"
+  ],
+  "component_disk_budget_bytes": 21474836480
+}
