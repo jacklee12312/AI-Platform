@@ -1,0 +1,124 @@
+{
+  "schema": 1,
+  "checked_at": "2026-10-15T03:42:35.350631+00:00",
+  "installer_version": "1.1.0",
+  "source_commit": "f8ca436177b7193d0e6eb38247e5d082329358f2",
+  "archive_sha256": "ef07ac9c1be8934f7a8567e2552ea295df141daff2babc746ad36cad8ddb32ae",
+  "launcher": "delivery/AI-Platform-1.1.0-linux-arm64/安装AI平台-1.1.0.run",
+  "launcher_bytes": 116076981,
+  "launcher_sha256": "e3e09e9caf5ada885dc2b4957e506882d05acfbe4c599ac14e3529fa5b2ed21e",
+  "automated_tests": {
+    "schema": 1,
+    "source_commit": "f8ca436177b7193d0e6eb38247e5d082329358f2",
+    "source_dirty": false,
+    "checked_at": "2026-10-15T03:20:38.458553+00:00",
+    "python": "3.14.4 (main, Aug 20 2026, 10:41:58) [GCC 15.2.0]",
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "target_hardware": "not_used",
+    "qt_platform": "offscreen",
+    "tests_run": 150,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": true
+  },
+  "real_arm64_program_checks": {
+    "source_commit": "f8ca436177b7193d0e6eb38247e5d082329358f2",
+    "source_dirty": false,
+    "target_hardware": "not_used",
+    "emulation": "QEMU ARM64 user mode",
+    "real_registration": "not_run",
+    "mqtt_platform_connection": "not_run",
+    "milvus_integration": "not_run",
+    "checks": {
+      "minio_arm64_version": true,
+      "minio_arm64_s3_authentication": true,
+      "minio_rejects_wrong_password": true,
+      "real_arm64_compose_config": true,
+      "compose_preserves_special_passwords": true,
+      "real_arm64_probe_loads": true,
+      "probe_accepts_json_yaml_config": true,
+      "probe_dependency_closure": true
+    },
+    "minio_version": "minio version RELEASE.2025-09-07T16-13-09Z (commit-id=07c3a429bfed433e49018cb0f78a52145d4bedeb)\nRuntime: go1.24.6 linux/arm64\nLicense: GNU AGPLv3 - https://www.gnu.org/licenses/agpl-3.0.html\nCopyright: 2015-2025 MinIO, Inc.",
+    "temporary_minio_stopped": true,
+    "temporary_probe_stopped": true,
+    "passed": true
+  },
+  "offline_image_import_checks": {
+    "source_commit": "f8ca436177b7193d0e6eb38247e5d082329358f2",
+    "source_dirty": false,
+    "environment": "isolated WSL Docker 29.7.2, overlay2, no network bridge, no containers started",
+    "checks": [
+      {
+        "component": "mysql",
+        "archive_sha256": "938aeaf5767d0a1a3d663b9b29f1bb666c3b25fbd7041b18157ac50e2728c9b0",
+        "image_config_id": "sha256:8aca36d040eba3cfafcd3b6cec800214e89f3789921bdcb3b967e8844145c27f",
+        "architecture": "arm64",
+        "passed": true
+      },
+      {
+        "component": "redis",
+        "archive_sha256": "47aee615d87c92daca5d97b84a3b48bb47e73d37bd4774a5f2f2ac85d024560a",
+        "image_config_id": "sha256:eae677c4b4cf3669522e2721e11a1527e1a56ca63b67963c73bb51555b55778b",
+        "architecture": "arm64",
+        "passed": true
+      },
+      {
+        "component": "paradedb",
+        "archive_sha256": "8482342af5f5faae7db97ed2bfba5ae95473ce2cbe6274afa10aae9e76869bf3",
+        "image_config_id": "sha256:ee7f8e62da798bf6517bf3e261d0bc0fb5b543ce123573e30e9331c67966087b",
+        "architecture": "arm64",
+        "passed": true
+      },
+      {
+        "component": "neo4j",
+        "archive_sha256": "7749cc7675a887c51426d0dc470f54e7b851fa6619a0f92e2ac87feaf9d6ef2e",
+        "image_config_id": "sha256:d1e4fe6df87b9e183d045cb0c10fcd94d45313a8599a8983fbfb4174eb1f0dc9",
+        "architecture": "arm64",
+        "passed": true
+      },
+      {
+        "component": "minio",
+        "archive_sha256": "04c2edcbd02684af5975677d78efb7b7098349ac4e3a22dbcc0e52f1213041ac",
+        "image_config_id": "sha256:8f08aee614800a237906bd48114d733e5ac5bfac4ccdf731f141b0e880d7a253",
+        "architecture": "arm64",
+        "passed": true
+      },
+      {
+        "component": "milvus",
+        "archive_sha256": "ac101c14c5a878a50a94180783f689603bd1773dbb88fe7742c6412232778992",
+        "image_config_id": "sha256:c6941d070fd4f68772bc56384cced7ccfd59d5e5a84ccfece39054fec986fcec",
+        "architecture": "arm64",
+        "passed": true
+      }
+    ],
+    "passed": true,
+    "temporary_daemon_stopped": true
+  },
+  "packed_linux_validation": {
+    "linux_extraction": true,
+    "signature_valid": true,
+    "installer_version": "1.1.0",
+    "resource_release_id": "ai-platform-installer-1.1.0-20261015",
+    "workflow_order": [
+      "probe",
+      "components",
+      "models"
+    ],
+    "worker_modules_importable": true,
+    "installation_started": false
+  },
+  "verified_archive_files": 341,
+  "minio": {
+    "image": "dappros/minio:RELEASE.2025-09-07T16-13-09Z",
+    "pinned": "dappros/minio@sha256:2f25127f784f002f1b98df5ae40cb1a67e0b8a877c90b6113c14b223a2ac65a5",
+    "manifest_digest": "sha256:2f25127f784f002f1b98df5ae40cb1a67e0b8a877c90b6113c14b223a2ac65a5",
+    "config_id": "sha256:8f08aee614800a237906bd48114d733e5ac5bfac4ccdf731f141b0e880d7a253"
+  },
+  "fresh_device_install": "not_run",
+  "platform_registration_and_mqtt": "not_run",
+  "complete_middleware_integration": "not_run",
+  "reboot": "not_run",
+  "validation_status": "candidate"
+}
