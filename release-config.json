@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "installer_version": "1.1.2",
-  "resource_release_id": "ai-platform-installer-1.1.2-20261015",
+  "installer_version": "1.2.0",
+  "resource_release_id": "ai-platform-installer-1.2.0-20261015",
   "release_date": "2026-10-15",
   "source_bundle": "installer-bundle",
-  "resources_root": "build/resources-1.1.2",
+  "resources_root": "build/resources-1.2.0",
   "target": "linux-arm64",
   "validation_status": "candidate"
 }

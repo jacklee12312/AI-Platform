@@ -8,8 +8,9 @@
 |---|---|
 | `installer-bundle/` | 稳定的安装器源码、签名资源清单与来源配置 |
 | `support-files/files/` | 历史已签名资源基线；保留原始字节 |
-| `platform-overlays/1.1.2/` | 本版平台修改及 ModelDeck 前端完整源码 |
-| `build/resources-1.1.2/` | 从基线和版本化修改生成的新签名资源，由外置依赖清单锁定 |
+| `platform-overlays/1.2.0/` | 当前 ModelDeck 前后端、宿主运维服务及完整前端源码 |
+| `platform-overlays/1.1.2/` | 已发布的 1.1.2 平台修改，保留原始内容 |
+| `build/resources-1.2.0/` | 从基线和版本化修改生成的新签名资源，由外置依赖清单锁定 |
 | `release-config.json` | 安装器版本、资源发行 ID、构建布局 |
 | `installer-bundle/catalog/workflow.json` | 受发行签名保护的探针、组件、镜像与依赖锁定清单 |
 | `external-assets.json` | 大型外置依赖的相对路径、大小和 SHA-256 |
@@ -50,10 +51,16 @@ Git 仓库本身不包含这些依赖；当前机器的本地文件已保留。�
 4. 检查交付记录，将版本标签指向 `releases/版本.json` 里的 `source_commit`；再单独提交发布记录。标签与包内提交号必须相同。
 5. 在兼容空白设备完成安装、推理和重启验收，再记录现场结果。候选状态不自动变成通过。
 
-当前只建立本地 Git 管理，尚未配置远端仓库和异机备份。Git 历史支持恢复源码；设备上的跨版本升级、迁移和回滚需要单独实现。
+当前只建立本地 Git 管理，尚未配置远端仓库和异机备份。Git 历史支持恢复源码；1.2.0 提供 1.1.2 管理中心专用升级入口及失败恢复，其他跨版本迁移仍需单独处理。
 
 制作新的 1.1 前置资源时，使用 `tools/prepare_workflow_resources.py` 和 WSL 中的 `tools/prepare_workflow_debs.py`，下载与构造归档，不安装宿主机软件。首次建立锁定之后默认复用锁定内容；更新来源需显式刷新并重新签名。`tools/finalize_workflow_release.py --key 项目外的原发布密钥路径` 校对原公钥、更新资源发行身份及摘要并签名。密钥不进入 Git 或交付包。
 
 本版先运行 `python tools/validate_component_sources.py` 核验六个组件的远端 ARM64 清单与配置，默认包不携带组件镜像。真实 ARM64 程序的开发验证入口为 WSL root 下的 `tools/validate_workflow_artifacts.py` 和 `tools/validate_component_archives.py`。前者以 QEMU 检查 ARM64 MinIO、Compose 和探针依赖，探针只访问不可用的 loopback 测试注册地址；后者仅在临时独立 Docker 中导入并校对六个离线镜像。它们不替代目标设备的真实注册、MQTT、全组件联通和重启验收。
 
 1.1.2 的资源准备：先在 `platform-overlays/1.1.2/modeldeck-frontend/` 按 package-lock.json 安装构建依赖并执行 `npm run build`，然后执行 `python tools/prepare_slim_release.py --key <工程外原受信任私钥路径>`。工具从 v1.1.1 资源基线生成 `build/resources-1.1.2/`，只移除已退役服务的镜像标签及独占层，保留 Kokoro 共享层，并生成新的资源发行 ID、摘要和签名。后端回归依赖安装到 WSL 的 `build/test-python/`，与原 Qt 测试依赖共用目录，不进入交付包。
+
+1.2.0 的模型来源由 `tools/prepare_ops_release.py` 从 1.1.2 签名目录、安装器来源映射及新代码生成，按设备卡数生成 ModelDeck 目录；使用原受信任私钥签名，不修改 1.1.2 资源。先构建 `platform-overlays/1.2.0/modeldeck-frontend/`，再执行 `python tools/prepare_ops_release.py --key <工程外原受信任私钥路径>` 和 `python tools/release.py sync-version`。
+
+1.2.0 新增发布门槛：`python tools/validate_model_supply.py` 实际验证 Harbor 断点下载及模型文件/资源包导入；`python tools/serve_modeldeck_preview.py --port 18713` 启动本机静态预览后，`python tools/validate_modeldeck_ui.py` 运行隔离 UI 合约测试。测试保留 `hardware_inference: not_run`，不能当作目标硬件已通过。平台镜像导入检查使用 WSL root 下的 `python3 tools/validate_component_archives.py --platform`。所有验证记录必须对应同一个干净源码提交。
+
+运行界面见交付包的 `validation/device-overview.png`、`components.png`、`model-supplement.png`；截图为隔离测试数据。已安装 1.1.2 的设备使用 `sudo sh 升级ModelDeck.sh` 先检查，确认检查结果后运行 `sudo sh 升级ModelDeck.sh --apply`。升级脚本仅替换校验通过的管理中心与运维服务文件，保留现场凭据、模型、数据库和 API Key。

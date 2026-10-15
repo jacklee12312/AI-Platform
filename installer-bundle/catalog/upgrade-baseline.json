@@ -1,0 +1,572 @@
+{
+  "version": "1.1.2",
+  "resources": [
+    {
+      "path": "payload/home/cix/gateway-admin/.dockerignore",
+      "size": 124,
+      "sha256": "0e7855041deadc85fe91f391757889b4567d67e2ae0dfb15a6188b31ca5e48df",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/.env.example",
+      "size": 467,
+      "sha256": "f868cda6023f34725f4c1ffc252c355dc6e49db5a6535eb46bfda86e772b3c6a",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/BATCH_TASKS.md",
+      "size": 5729,
+      "sha256": "4c187513d52a080e34ad80c1446480b7d9e2c6f895eadfa0e35e65d5fd2eb810",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/Dockerfile",
+      "size": 592,
+      "sha256": "a268208c970fcbb942b4c6ffbe54d239877f5d4347c3ee2b0e05433fed515a3c",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/Dockerfile.agent",
+      "size": 210,
+      "sha256": "881a567b281502523a3033304eed7c51286e533a37d0d3ac1ee9c04dab643d89",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/README.md",
+      "size": 11984,
+      "sha256": "b12399793547b070778c7fb7036d1f0d0b9c06d207108f9cae1b8679331246f5",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/admin_app/__init__.py",
+      "size": 40,
+      "sha256": "bef99c7ba771852fbef6df03de281c29d03cb0ff8c5d54e504fbcf0efda3f64c",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/admin_app/api_reference.py",
+      "size": 39591,
+      "sha256": "2f74a4bd791b529b8cb16eac9bd1c2f74662c6f6356d462e76d5ad1d966305aa",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/admin_app/audit.py",
+      "size": 7740,
+      "sha256": "c7cf95ff818c3139ff17f54ac537f205770bcfcc1e0b0296106a3ded7068bb8c",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/admin_app/batch_api.py",
+      "size": 8688,
+      "sha256": "cd3b02a080a3b1299fc2f51550ec51a32c1cb4d553c50b2f85c75797b2fe4136",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/admin_app/batch_engine.py",
+      "size": 11572,
+      "sha256": "bffc8b5c48f2117fcbacc13c47f3978886d95b5d999b388722abbd7201533199",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/admin_app/batch_media.py",
+      "size": 5107,
+      "sha256": "1133684744b815529bd7557acfbcc65fb79a55b6a81c5fa5e046e076424c47ad",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/admin_app/batch_store.py",
+      "size": 18190,
+      "sha256": "c5dcedfc4fec47ef0d333d7715ed93aeee41655f4c5b77e7a3090577b484cdf6",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/admin_app/capabilities.py",
+      "size": 8304,
+      "sha256": "ff99ed078ac681f81861422c136a0dfd6709d0294ae85d44235ccff50631692a",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/admin_app/capability_catalog.json",
+      "size": 48194,
+      "sha256": "de0aee048fb720a73d71228082f6b37564965926abe533140cc44eeaae77d2d8",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/admin_app/capability_examples.py",
+      "size": 11984,
+      "sha256": "513c763393a457ffde50df99e58f69df9120cc754e4f36c2415c68bed8b8d515",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/admin_app/diagnostics.py",
+      "size": 4358,
+      "sha256": "3de413367fffac8a4088950e55e44daf557fef9d413a64cfa454f54d7fef02bc",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/admin_app/evaluation_api.py",
+      "size": 5943,
+      "sha256": "c3915478b57d7b09b383b6c9bfabe21adf0f6c1799d09c1be174c2ba1d08eeb8",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/admin_app/experience_api.py",
+      "size": 8259,
+      "sha256": "953eca43e3bbfb382bd50f7cd31ab98f2519cf5c73b03d08c7dc7bf1f1615560",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/admin_app/main.py",
+      "size": 36426,
+      "sha256": "80b355c4061f8483322031a307d8402a6156fec3541b39235e2db467e5f92e4e",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/admin_app/model_install_api.py",
+      "size": 3726,
+      "sha256": "c6abf26d3d818b7a71905abd48b4d8d747385632a205dc69ef83fe4286b0fd78",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/agent/__init__.py",
+      "size": 54,
+      "sha256": "93713ee965bbe05f72bf9d8c75097c77386f8edf818941b1d3707b8daf04f289",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/agent/configuration.py",
+      "size": 10071,
+      "sha256": "60aadf6dcf92f72bcfb2626605811acc7732cbf27dc5e678569eeec6ce8fd9b1",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/agent/device_recovery.py",
+      "size": 29767,
+      "sha256": "e91eeec12a57e92bc71ede7deb3fe0ac687cf70f65e4451c809ef53f4f73f8ac",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/agent/diagnostics.py",
+      "size": 16070,
+      "sha256": "7466e7b4b8af7bff95791954e75d33e54f8966295eda172133366750395260a5",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/agent/evaluation_api.py",
+      "size": 5935,
+      "sha256": "5b864f545ff64379e08d4c916f41bd84ac73b2e20456d7703172a51ed6f36ae0",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/agent/evaluation_cases.py",
+      "size": 6886,
+      "sha256": "14dd2b14250f042cac350cfdc2f2bbd83783e5a0f1ee927e6abf2d34407ae585",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/agent/evaluation_engine.py",
+      "size": 16527,
+      "sha256": "120935b70662518bb8aa5c80498c8df01ea5ba9688fc0ec1823dc4c77f75722e",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/agent/evaluation_runtime.py",
+      "size": 29774,
+      "sha256": "125a41c2cbc93e20a617af2fc9f99b9889701f315ffafea00c4b7962e7fd3c26",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/agent/evaluation_store.py",
+      "size": 10306,
+      "sha256": "d6a22649921a4a02c9ba6001877cc922e69794e65fb5e7e51c4199aa5c90c876",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/agent/faults.py",
+      "size": 1876,
+      "sha256": "0af589f760a25d674e8f4bf203b286c346270d81b6797f93f56f1ab1d2b31a84",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/agent/main.py",
+      "size": 40109,
+      "sha256": "be21abdc6ef738c25c11a7aa55a094800c8bb50faf53de6b97804a00e332b32e",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/agent/model_api.py",
+      "size": 8052,
+      "sha256": "4a293652933b9acdbf2a482d0e2975232f9694986f95cc40ffd67454dd851a51",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/agent/model_catalog.json",
+      "size": 30005,
+      "sha256": "954740c27345094547f96fde4eb4b5ad2e781bb0d87e7e1977178b9880059110",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/agent/model_install.py",
+      "size": 17601,
+      "sha256": "0d2bebb8987cfa8ba04d7b3f7c04715aa520c6b38e7a314ed2f8d064e1502794",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/agent/model_runtime.py",
+      "size": 14623,
+      "sha256": "ea65b5d9c2c09e1418c9c19f87a57171e52b1b5b5a2823d395739ebb0720b1fb",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/agent/model_store.py",
+      "size": 15152,
+      "sha256": "314d3d2258cbb2ab0a47798f60b992a4d7e4b3f7d793b610d73b12c30d115240",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/agent/registry.py",
+      "size": 6760,
+      "sha256": "9d01d1bfeea06c87c8713cf99a3d6dc4017bf73d227bc2c5e3e5c9baaf5e854c",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/agent/runtime_baseline.json",
+      "size": 9758,
+      "sha256": "b7d08ff5971d9a17ccd06e6a07714b03029ba77c3bb0015801e0f5262bcebf37",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/agent/runtime_probes.py",
+      "size": 5580,
+      "sha256": "ac00459200e52ac529d286660ab42a12d6acc5075ddf5605a647fab23ba8ecaa",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/agent/runtime_safety.py",
+      "size": 10384,
+      "sha256": "74ff00e04a9809266354efa6bd326fc2b1e82f5f6a4022d2dbd78934e0047ac5",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/compose.yaml",
+      "size": 3767,
+      "sha256": "ff1fe22009011d90be69acee2c20ff5028f3c0bb07a06fb69685fd820ac0b959",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/hash_password.py",
+      "size": 1001,
+      "sha256": "b742c13437c35051954b93c3d45fe8e79bcc8d76fc208a2c69a9c7cd9dd39685",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/provision_env.py",
+      "size": 1852,
+      "sha256": "b03a3785daf5c3ea228c94956bae525dd77005fbde023b061c947a78dc91e834",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/requirements-batch.txt",
+      "size": 44,
+      "sha256": "2c133bfb535aa750397404be1801b90f4e3ee04e054db544f5a6ca72d9f52196",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/requirements.txt",
+      "size": 47,
+      "sha256": "c450be2e9101842e04ae6b42e18967e8114fc667e22d1e57806c0c818b365f43",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/runtime_config_acceptance.py",
+      "size": 5989,
+      "sha256": "8a0fc25713b910b75cc339de3decca4b0231a7b3350b770eced27b675bd43c90",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/smoke_test.py",
+      "size": 3619,
+      "sha256": "e5b4ef4e5e77676b438a993860260577bec31eec0f0ba30efde02e3b5ab71213",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/startup_verify.py",
+      "size": 9825,
+      "sha256": "7b6541e77addfedc7cf6203a1b97071a8b61c3ef0d5c9057db8b2f01cce73963",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/systemd/gateway-admin.service",
+      "size": 632,
+      "sha256": "54e922cd1aa23dac222c66c6b88744f11f7c57a2c50fd68c118c48b4538b20da",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/systemd/modeldeck-startup-verify.service",
+      "size": 609,
+      "sha256": "8e64ef2f8dc92cd7f1b7505f9b223e59f80eabc09396483864fcfe2739109d9a",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/tests/diagnostics_fixture.py",
+      "size": 4851,
+      "sha256": "7d4e09437cc44c4158074877102935bbe1023d9aa0432deb642f01a91f08d10a",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/tests/evaluation_fixture.py",
+      "size": 3808,
+      "sha256": "bf086fddbbbe57536d0f95dfcb6797251f1b2661d04237141053e399ba6f0b4b",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/tests/experience_fixture.py",
+      "size": 2164,
+      "sha256": "5ee9900e32741eb768c9b93986229be81141a17f28ab0ac3827edbac778320d4",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/tests/live_key_access_acceptance.py",
+      "size": 9489,
+      "sha256": "d00142c7f4965c3b1e5e594129f1b4f675bab33c1526222e70115a8eaa968bcc",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/tests/live_s07_s08_acceptance.py",
+      "size": 13108,
+      "sha256": "da8cccbafba96b89de281ac11d0a9fb1a1dd49def33d5abb1ec5c998fc6f42a3",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/tests/model_install_fixture.py",
+      "size": 2706,
+      "sha256": "01a5d9b0323c4e11e8b4254d17d7487234f33ec134cfae5c311e5d21bd686607",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/tests/serve_audit_fixture.py",
+      "size": 10574,
+      "sha256": "322db48356c98496cddc42ebba2109179e61eece45015ef577ecd014fdae692a",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/tests/test_admin.py",
+      "size": 14854,
+      "sha256": "9d693f622f7b7cd4cf47ec73fa98194457d8a09ae006b27e0973f2334309ac9a",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/tests/test_api_reference.py",
+      "size": 6404,
+      "sha256": "38da9f4c2ab1db9ec00b088749a88e7fe3cc35c5ae7ed6e765e9965e43141822",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/tests/test_audit.py",
+      "size": 16999,
+      "sha256": "444d838eb5837c6229c930f4baeef312e3a2e86c3333ef8ec22da5f45a78ad51",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/tests/test_audit_process.py",
+      "size": 3733,
+      "sha256": "5ad47692d3cbd6cab59072742b517e3ba7d5b1bb8d64b4ed75038bc972ea7976",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/tests/test_batches.py",
+      "size": 23416,
+      "sha256": "27ee7188f3b26595517d57b627eac1863713fe3d61d59154f6ddfebccde85246",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/tests/test_capabilities.py",
+      "size": 12498,
+      "sha256": "9b1ef31d266124ced4a8382d820d27ab9358fe596f1cffa32f2f284cd0be4fea",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/tests/test_device_recovery.py",
+      "size": 7692,
+      "sha256": "9b2031cf50013ffbe3110cfbbc7716683ec9abcb8321f9ae67aff8c575f0d42b",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/tests/test_diagnostics.py",
+      "size": 8555,
+      "sha256": "68a9c1188063e051cb466638fdf832eba8759fe90a5ee99dd620842230e1beb8",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/tests/test_evaluation_agent_api.py",
+      "size": 5405,
+      "sha256": "9ef53b0878766c7327ec8bbf7f40fcd13bcdf1eace79762e5669f3e66c652178",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/tests/test_evaluation_api.py",
+      "size": 5924,
+      "sha256": "126ca70f727a8466d44edcd4a54e00d0a06a45bd63db9fbdb37ab92db285bf0d",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/tests/test_evaluation_engine.py",
+      "size": 37274,
+      "sha256": "6962ed166ecdfac72719895429b775889e48d1ef8143edfe52421a84e8cd7270",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/tests/test_evaluation_runtime.py",
+      "size": 27195,
+      "sha256": "5ab689a1137a0a70320345fe833edc57851568fea2dc474853ea5af6fb4b27cf",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/tests/test_experience_api.py",
+      "size": 7708,
+      "sha256": "29ac6191afcf266f36b8f74122a10ef27f38292879120ca6aa08540cb992bf46",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/tests/test_formal_release.py",
+      "size": 3665,
+      "sha256": "0c847843fe95fe2c33af98e59e83be3ae95b5d3f979c0a6d58695002e2746c2a",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/tests/test_mode_switch.py",
+      "size": 5396,
+      "sha256": "dc3c817ada929b31e570f95212b9b4e7e34469935e673fe96269752169017ca1",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/tests/test_model_install.py",
+      "size": 18841,
+      "sha256": "1ac7a1ffff30997563889c85a0a57b3ee7a93cabfdf74ae6b87cd50df56df671",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/tests/test_request_monitor.py",
+      "size": 2038,
+      "sha256": "82093e08dbcd06100aec72dc1d1e545e2cc47ae658687df3fff23dff7b47f10e",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/tests/test_runtime_safety.py",
+      "size": 7976,
+      "sha256": "354f58e7a7e42a35abdec3fa54027c46f71bd8025e9127a1bf0dba1581e6763d",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/tests/test_service_readiness.py",
+      "size": 1947,
+      "sha256": "b456bec0a7d8f1e43b3ce0917cd83ad6c2b4f8b59857b455627992c7dd3a37a9",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "payload/home/cix/gateway-admin/tests/test_startup_verify.py",
+      "size": 3893,
+      "sha256": "68e92d55ae95f295d88b778ac32ac7bb34942d07c3f1ca79b0beb52c82382fd4",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "variants/single/gateway-admin/admin_app/capability_catalog.json",
+      "size": 46910,
+      "sha256": "1b86558ec1110c8899076eebf9655f94ff54228818c9504b231338c897123e0c",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "variants/single/gateway-admin/agent/model_catalog.json",
+      "size": 27839,
+      "sha256": "80c4d49dde2038107d0bba14bfbda76d6d3eea0ff27d2d22781a90d263aebacc",
+      "category": "platform",
+      "models": []
+    },
+    {
+      "path": "variants/single/gateway-admin/agent/runtime_baseline.json",
+      "size": 9308,
+      "sha256": "3d4a6ba8c8534ac07d5726c67df641bf6e28026a48f72c451666b048e6c4f189",
+      "category": "platform",
+      "models": []
+    }
+  ]
+}

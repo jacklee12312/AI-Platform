@@ -227,6 +227,7 @@ def build(root, online=False):
         workflow_lock=read(inside(root,spec['source_bundle'])/'catalog/workflow.json')
         image_report='component-sources.json' if workflow_lock.get('image_acquisition','').startswith('on-demand') else 'component-archives.json'
         required_reports=['workflow-artifacts.json',image_report]
+        if version=='1.2.0':required_reports+=['model-supply.json','modeldeck-ui.json']
         if workflow_lock.get('image_acquisition','').startswith('on-demand'):required_reports.append('platform-images.json')
         for name in required_reports:
             path=root/'build/validation'/name
@@ -268,6 +269,9 @@ def build(root, online=False):
         target = inside(assembled / 'support-files/files', row['path'])
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(source, target)
+    if (bundle / 'tools/upgrade_modeldeck.py').is_file():
+        upgrade = '#!/bin/sh\nset -eu\ncd -- "$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"\n' + 'work=$(mktemp -d /var/tmp/modeldeck-upgrade.XXXXXX)\n' + f'python3 "./{launcher.name}" --extract-only "$work/bundle"\n' + 'exec python3 "$work/bundle/tools/upgrade_modeldeck.py" --bundle "$work/bundle" --resources "$PWD/support-files/files" "$@"\n'
+        (assembled / '升级ModelDeck.sh').write_text(upgrade, encoding='utf-8', newline='\n')
     shutil.copyfile(bundle / '安装AI平台.desktop', assembled / '安装AI平台.desktop')
     (assembled / '启动安装.sh').write_text('#!/bin/sh\nset -eu\ncd -- "$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"\nexec python3 "./' + launcher.name + '" "$@"\n', encoding='utf-8', newline='\n')
     readme = (root / 'tools/templates/README.md.in').read_text(encoding='utf-8').replace('@VERSION@', version).replace('@DELIVERY_DIR@', delivery.name)
@@ -277,6 +281,9 @@ def build(root, online=False):
     write(assembled / 'validation/tests.json', tests)
     shutil.copyfile(root / 'build/validation/tests.log', assembled / 'validation/tests.log')
     for report in workflow_reports:shutil.copyfile(report,assembled/'validation'/report.name)
+    if version=='1.2.0':
+        for name in read(root/'build/validation/modeldeck-ui.json').get('screenshots',[]):
+            shutil.copyfile(root/'build/validation'/name,assembled/'validation'/name)
     for relative in ['workflow-settings.example.json','docs/1.1安装流程.md']:
         source=bundle/relative
         if source.is_file():shutil.copyfile(source,assembled/source.name)

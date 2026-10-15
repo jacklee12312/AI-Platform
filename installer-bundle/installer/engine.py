@@ -279,6 +279,15 @@ class Installer:
 
     def systemd(self):
         self.guard_units();self.base.setup_units()
+        source=self.resources/'systemd/modeldeck-ops.service'
+        if source.is_file():
+            target=Path('/etc/systemd/system/modeldeck-ops.service')
+            no_symlink_parents(target,Path('/'))
+            if target.exists() and (target.is_symlink() or sha256(target)!=sha256(source)):
+                raise RuntimeError('已有 ModelDeck 运维服务定义不同，不覆盖')
+            shutil.copyfile(source,target);target.chmod(0o644)
+            self.command('systemctl','daemon-reload')
+            self.command('systemctl','enable','--now','modeldeck-ops.service')
 
     def docker(self):
         if self.runtime_is_pinned():
@@ -294,7 +303,7 @@ class Installer:
             done+=source.lstat().st_size
             new+=action=='created';reused+=action=='reused'
             self.update('已'+('复用：' if action=='reused' else '安装：')+str(target),done/max(1,total))
-        for relative in ['modeldeck-models','modeldeck-runtime','cix_telecom_projects/cosyvoice-vllm-staging/logs']:
+        for relative in ['modeldeck-models','modeldeck-runtime','model-imports','cix_telecom_projects/cosyvoice-vllm-staging/logs']:
             path=self.home/relative;no_symlink_parents(path/'placeholder',self.home)
             node=self.home
             for part in path.relative_to(self.home).parts:

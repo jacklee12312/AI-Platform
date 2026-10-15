@@ -1,0 +1,31 @@
+import { expect, test } from '@playwright/test'
+
+test.skip(process.env.MODELDECK_LIVE_READONLY !== '1', 'explicit read-only box UI verification only')
+
+test('deployed Key and resource controls render and open without changing any policies', async ({ page, baseURL }) => {
+  expect(baseURL).toBe('http://192.168.133.1:17780')
+  const errors: string[] = []
+  page.on('pageerror', error => errors.push(error.message))
+  await page.setViewportSize({ width: 1440, height: 1000 })
+  await page.goto('/usage')
+  await page.getByLabel('管理员密码').fill(process.env.MODELDECK_ADMIN_PASSWORD!)
+  await page.getByRole('button', { name: '进入管理台' }).click()
+  await page.getByRole('link', { name: 'Key 与用量' }).click()
+  await expect(page.getByRole('heading', { name: '网关资源控制' })).toBeVisible()
+  await expect(page.getByRole('button', { name: '新建 API Key' })).toBeEnabled()
+  await expect(page.getByLabel('显示已撤销', { exact: false })).not.toBeChecked()
+  await page.screenshot({ path: '../../output/outputs/key-access-20260907/ui-live-overview.png' })
+  await page.getByRole('button', { name: '配置并发上限' }).click()
+  const resources = page.getByRole('dialog', { name: '配置并发上限' })
+  await expect(resources.getByLabel('网关总并发')).toHaveValue('0')
+  await expect(resources.getByLabel('copaw-flash-9b 并发上限', { exact: true })).toHaveValue('0')
+  await page.screenshot({ path: '../../output/outputs/key-access-20260907/ui-live-resources.png' })
+  await resources.getByRole('button', { name: '取消', exact: true }).click()
+  await page.getByRole('button', { name: '新建 API Key' }).click()
+  const create = page.getByRole('dialog', { name: '新建 API Key' })
+  await expect(create.getByLabel('每日推理请求额度')).toHaveValue('0')
+  await expect(create.getByLabel('每月已知 Token 预警线')).toBeVisible()
+  await page.screenshot({ path: '../../output/outputs/key-access-20260907/ui-live-key-form.png' })
+  await create.getByRole('button', { name: '取消', exact: true }).click()
+  expect(errors).toEqual([])
+})
