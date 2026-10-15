@@ -360,7 +360,8 @@ def main():
         if candidate and candidate.is_file():
             os.environ['PATH'] = str(candidate.parent) + os.pathsep + os.environ.get('PATH', '')
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('command', choices=['check', 'test', 'build', 'verify', 'assets', 'sync-version'])
+    parser.add_argument('command', choices=['check', 'test', 'build', 'deb', 'verify', 'assets', 'sync-version'])
+    parser.add_argument('--deb-revision', default='1', help='Debian packaging revision; immutable once published')
     parser.add_argument('--online', action='store_true', help='Read-only remote manifest checks; no model weight download')
     parser.add_argument('--path', type=Path, help='Delivery directory for verify; external asset store for assets')
     args = parser.parse_args()
@@ -377,6 +378,9 @@ def main():
         subprocess.run([sys.executable, '-B', str(ROOT / 'tools/run_tests.py')], env=env, check=True)
     elif args.command == 'build':
         build(ROOT, args.online)
+    elif args.command == 'deb':
+        from debian import build as build_debian
+        build_debian(ROOT, args.deb_revision)
     elif args.command == 'verify':
         if not args.path:
             parser.error('verify requires --path')

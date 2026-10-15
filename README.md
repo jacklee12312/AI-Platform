@@ -64,3 +64,5 @@ Git 仓库本身不包含这些依赖；当前机器的本地文件已保留。�
 1.2.0 新增发布门槛：`python tools/validate_model_supply.py` 实际验证 Harbor 断点下载及模型文件/资源包导入；`python tools/serve_modeldeck_preview.py --port 18713` 启动本机静态预览后，`python tools/validate_modeldeck_ui.py` 运行隔离 UI 合约测试。测试保留 `hardware_inference: not_run`，不能当作目标硬件已通过。平台镜像导入检查使用 WSL root 下的 `python3 tools/validate_component_archives.py --platform`。所有验证记录必须对应同一个干净源码提交。
 
 运行界面见交付包的 `validation/device-overview.png`、`components.png`、`model-supplement.png`；截图为隔离测试数据。已安装 1.1.2 的设备使用 `sudo sh 升级ModelDeck.sh` 先检查，确认检查结果后运行 `sudo sh 升级ModelDeck.sh --apply`。升级脚本仅替换校验通过的管理中心与运维服务文件，保留现场凭据、模型、数据库和 API Key。
+
+Debian 原生交付使用 `python tools/release.py deb --deb-revision 1`。它从已发布且逐文件验证的 1.2.0 交付制作 `ai-platform-installer_1.2.0-1_arm64.deb`，保留原签名资源，单独记录封装与原资源提交；不覆盖原 `.tar.gz`。先提交封装源码并对该干净提交执行 `test` 和 `check --online`，再构建 `.deb`。后续封装改动递增 `--deb-revision`，发布记录为 `releases/deb-版本-修订.json`，标签 `deb-v版本-修订` 指向记录中的封装 `source_commit`。应用安装到 `/opt/ai-platform-installer/版本/`，由系统应用菜单启动，用户来源设置独立保存在用户配置目录。图形使用和卸载说明见 [Debian 使用说明](tools/templates/DEBIAN-README.md)。
