@@ -1,0 +1,92 @@
+{
+  "schema": 1,
+  "installer_version": "1.1.2",
+  "resource_release_id": "ai-platform-installer-1.1.2-20261015",
+  "source_commit": "88549a2f9fe46b6e075a8168c0ef2500f8223e55",
+  "recorded_at": "2026-10-15T07:31:56.843153+00:00",
+  "validation_status": "candidate",
+  "archive": "delivery/AI-Platform-1.1.2-linux-arm64.tar.gz",
+  "archive_sha256": "34be36eaaf79acd4da3b7f2c38a6843984f499eb1da9f93b1f02d7ca7cd9d10b",
+  "archive_bytes": 3693379724,
+  "previous_archive_bytes": 5706243972,
+  "bytes_saved": 2012864248,
+  "reduction_percent": 35.27,
+  "automated_tests": 191,
+  "automated_tests_passed": true,
+  "ui_tests": 2,
+  "ui_tests_passed": true,
+  "tested_ui_matches_signed_archive": true,
+  "modeldeck_configuration_apply_smoke": {
+    "passed": true,
+    "agent_imports": true,
+    "admin_imports": true,
+    "configuration_applies_and_roundtrips": true,
+    "models": 25,
+    "docker_or_target_hardware_used": false,
+    "source_commit": "88549a2f9fe46b6e075a8168c0ef2500f8223e55"
+  },
+  "platform_images": {
+    "count": 10,
+    "actual_isolated_docker_import_passed": true,
+    "config_architecture_and_all_layers_verified": true,
+    "temporary_daemon_stopped": true,
+    "kokoro_shared_layers_preserved": true
+  },
+  "middleware": {
+    "default_archives_bundled": false,
+    "pinned_remote_arm64_manifests_verified": 6,
+    "existing_image_and_local_archive_supported": true,
+    "full_remote_layer_download": "not_run",
+    "full_middleware_integration": "not_run"
+  },
+  "arm64_emulation": {
+    "minio_arm64_version": true,
+    "minio_arm64_s3_authentication": true,
+    "minio_rejects_wrong_password": true,
+    "real_arm64_compose_config": true,
+    "compose_preserves_special_passwords": true,
+    "real_arm64_probe_loads": true,
+    "probe_accepts_json_yaml_config": true,
+    "probe_dependency_closure": true
+  },
+  "packed_linux_launcher": {
+    "passed": true,
+    "source_commit": "88549a2f9fe46b6e075a8168c0ef2500f8223e55",
+    "source_dirty": false,
+    "real_linux_launcher_extraction": true,
+    "sealed_app_verified": true,
+    "signed_catalog_verified": true,
+    "models": 25,
+    "platform_images": 10,
+    "retired_services_rejected": true,
+    "probe_components_models_order": true,
+    "existing_probe_reuse": true,
+    "milvus_dependencies": true,
+    "target_hardware_used": false
+  },
+  "resources_baseline_preserved": true,
+  "trusted_public_key_unchanged": true,
+  "trusted_public_key_sha256": "2372e0f4636aad17b6a7bae4ccea27056ca43c3ffaa24563e588f4e889b88fe5",
+  "remote_model_checks": {
+    "passed": 27,
+    "total": 29,
+    "blocked": [
+      {
+        "key": "qwen36-2-model",
+        "repository": "aistore/qwen3.6-35b-a3b-2",
+        "passed": false,
+        "detail": "仓库 aistore/qwen3.6-35b-a3b-2:v1 尚未上传完成或标签不存在（HTTP 404）"
+      },
+      {
+        "key": "qwen36-2-mmproj",
+        "repository": "aistore/qwen3.6-35b-a3b-2",
+        "passed": false,
+        "detail": "仓库 aistore/qwen3.6-35b-a3b-2:v1 尚未上传完成或标签不存在（HTTP 404）"
+      }
+    ]
+  },
+  "fresh_device_install": "not_run",
+  "actual_registration_mqtt": "not_run",
+  "accelerator_inference": "not_run",
+  "reboot": "not_run"
+}
