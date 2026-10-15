@@ -125,7 +125,10 @@ class CatalogTests(unittest.TestCase):
     def test_actual_catalog_signed_and_harbor_sources_configured(self):
         c=artifacts.load_catalog(BUNDLE);config=artifacts.source_config(BUNDLE)
         self.assertEqual(len(c['models']),25);self.assertEqual(c['image_count'],10)
-        self.assertEqual(len([r for r in c['resources'] if r['category']=='models']),57)
+        self.assertEqual(len([r for r in c['resources'] if r['category']=='models']),56)
+        fixture=next(r for r in c['resources'] if r['path'].endswith('/sensevoice/model/test_wavs/zh.wav'))
+        self.assertEqual(fixture['category'],'platform')
+        self.assertEqual(fixture['sha256'],'b77f1794fe374a0ba1ee1dc458bfaf9349496cbbfc32780c50ba3c5a7ad8e373')
         self.assertFalse(any(config['base_urls'].values()))
         qwen_urls={path:urls for path,urls in config['file_urls'].items() if 'qwen3.8-27b/' in path}
         self.assertEqual(len(qwen_urls),0)

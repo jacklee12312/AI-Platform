@@ -21,8 +21,10 @@ class SelectionTests(unittest.TestCase):
     def test_cosyvoice_keeps_only_shared_test_audio(self):
         subset=selected_catalog(self.catalog,['cosyvoice3-0.5b'],2)
         rows=[r for r in subset['resources'] if r['category']=='models']
-        self.assertEqual(len(rows),2)
-        self.assertTrue(any(r['path'].endswith('/sensevoice/model/test_wavs/zh.wav') for r in rows))
+        self.assertEqual(len(rows),1)
+        fixtures=[r for r in subset['resources'] if r['path'].endswith('/sensevoice/model/test_wavs/zh.wav')]
+        self.assertEqual(len(fixtures),1)
+        self.assertEqual(fixtures[0]['category'],'platform')
         self.assertFalse(any('/sensevoice/model/' in r['path'] and not r['path'].endswith('/test_wavs/zh.wav') for r in rows))
     def test_unknown_duplicate_and_cpu_only_rejected(self):
         for values in [['not-in-release'],['copaw-flash-9b','copaw-flash-9b'],['sensevoice'],[]]:
