@@ -1,0 +1,223 @@
+{
+  "schema": 1,
+  "installer_version": "1.2.0",
+  "validation_status": "candidate",
+  "source_commit": "f3604b1292357640f5a3e3f851a29050a1d1c1c3",
+  "archive": "delivery/AI-Platform-1.2.0-linux-arm64.tar.gz",
+  "archive_bytes": 3733429084,
+  "archive_sha256": "0b3a955ada8130572f67235ee48b6d9714d615d57328566f6b1adf25c613f7a2",
+  "development_checks_passed": true,
+  "automated_tests": 217,
+  "ui_contract_tests": 3,
+  "verified_archive_files": 422,
+  "actual_harbor_download_and_import": {
+    "schema": 1,
+    "source_commit": "f3604b1292357640f5a3e3f851a29050a1d1c1c3",
+    "source_dirty": false,
+    "checked_at": 1792053752.160235,
+    "checks": {
+      "actual_harbor_resumed_blob_download": true,
+      "actual_raw_weight_import": true,
+      "actual_harbor_archive_import_and_all_files_verified": true,
+      "main_model_and_mmproj_present": true
+    },
+    "network_responses": [
+      {
+        "range_requested": null,
+        "status": 200,
+        "blob": false
+      },
+      {
+        "range_requested": "bytes=1048576-",
+        "status": 206,
+        "blob": true
+      }
+    ],
+    "passed": true,
+    "hardware_inference": "not_run",
+    "full_catalog_download": "not_run",
+    "scope": "actual network and filesystem, no simulated registry"
+  },
+  "component_source_checks": {
+    "source_commit": "f3604b1292357640f5a3e3f851a29050a1d1c1c3",
+    "source_dirty": false,
+    "checks": [
+      {
+        "component": "mysql",
+        "pinned": "mysql@sha256:677727326431d3a51a71bb2af925c2de40782d806a4f8439930d861cd3515f61",
+        "architecture": "arm64",
+        "passed": true
+      },
+      {
+        "component": "redis",
+        "pinned": "redis@sha256:7e180df929e2aa87c71fd61838e7775ebab7e7e7a08e438045fbeaa123960320",
+        "architecture": "arm64",
+        "passed": true
+      },
+      {
+        "component": "paradedb",
+        "pinned": "paradedb/paradedb@sha256:19f4731c9b88c86e602622a84f7ce2d74f06ba3e3d04ebab0e6024d2fe9d938b",
+        "architecture": "arm64",
+        "passed": true
+      },
+      {
+        "component": "neo4j",
+        "pinned": "neo4j@sha256:a58f3320cb0112b71df549bbebe42b75236b0dd365df551d1bf16c127f8414f7",
+        "architecture": "arm64",
+        "passed": true
+      },
+      {
+        "component": "minio",
+        "pinned": "dappros/minio@sha256:2f25127f784f002f1b98df5ae40cb1a67e0b8a877c90b6113c14b223a2ac65a5",
+        "architecture": "arm64",
+        "passed": true
+      },
+      {
+        "component": "milvus",
+        "pinned": "milvusdb/milvus@sha256:35669c22159e69d5197bfdb5b760bba4ae8eabe0a6bb0142abdc8eb2416d1ce1",
+        "architecture": "arm64",
+        "passed": true
+      }
+    ],
+    "passed": true,
+    "full_layer_download": "not_run"
+  },
+  "platform_image_imports": {
+    "source_commit": "f3604b1292357640f5a3e3f851a29050a1d1c1c3",
+    "source_dirty": false,
+    "environment": "isolated WSL Docker 29.7.2, overlay2, no network bridge, no containers started",
+    "checks": [
+      {
+        "component": "ai-model-gateway:0.9.0",
+        "archive_sha256": "a68e47710fbfe9bd1651d7213b120c0345719146882afe4454e4f23b5fcda623",
+        "image_config_id": "sha256:ba8cb25d77de1bbdb765853963bbbcf3b1d501350bc33495f0a0e52e9e077c73",
+        "architecture": "arm64",
+        "passed": true
+      },
+      {
+        "component": "cix-cv-noe:1.0.0",
+        "archive_sha256": "a68e47710fbfe9bd1651d7213b120c0345719146882afe4454e4f23b5fcda623",
+        "image_config_id": "sha256:c3ccfb207525da54cac954afd3ad852fe2fe894b5460d1e79a7d1f719075967b",
+        "architecture": "arm64",
+        "passed": true
+      },
+      {
+        "component": "gateway-admin-agent:0.5.0",
+        "archive_sha256": "a68e47710fbfe9bd1651d7213b120c0345719146882afe4454e4f23b5fcda623",
+        "image_config_id": "sha256:30d819e4f5cdb16310dd4b94b0dfb55b93567950e4b4deea69a34c5bdc24f076",
+        "architecture": "arm64",
+        "passed": true
+      },
+      {
+        "component": "gateway-admin:0.7.0",
+        "archive_sha256": "a68e47710fbfe9bd1651d7213b120c0345719146882afe4454e4f23b5fcda623",
+        "image_config_id": "sha256:9b2161921ab8199668c9504df1d8cb02732fd62c84794788f8b217c5bba4de57",
+        "architecture": "arm64",
+        "passed": true
+      },
+      {
+        "component": "houmo-hliellama-xh2:2.1.1",
+        "archive_sha256": "a68e47710fbfe9bd1651d7213b120c0345719146882afe4454e4f23b5fcda623",
+        "image_config_id": "sha256:ce94451d654d98524caccc6d8b96c6dbb978e8d8a69b35812a6b87d386f455b3",
+        "architecture": "arm64",
+        "passed": true
+      },
+      {
+        "component": "houmo-hliellama-xh2:2.2.3-xunfei-spark",
+        "archive_sha256": "a68e47710fbfe9bd1651d7213b120c0345719146882afe4454e4f23b5fcda623",
+        "image_config_id": "sha256:0dd014e83b0f8c00409dbc22ecc37edb2ac2fca4cf68bca073c2e80dd687c086",
+        "architecture": "arm64",
+        "passed": true
+      },
+      {
+        "component": "houmo-hlievllm-cosyvoice:1.4.0",
+        "archive_sha256": "a68e47710fbfe9bd1651d7213b120c0345719146882afe4454e4f23b5fcda623",
+        "image_config_id": "sha256:57e6d316813d27d53bba23f220cceb112230057da89ae4345414e1ec3c5a7985",
+        "architecture": "arm64",
+        "passed": true
+      },
+      {
+        "component": "kokoro-cix:0.2.0",
+        "archive_sha256": "a68e47710fbfe9bd1651d7213b120c0345719146882afe4454e4f23b5fcda623",
+        "image_config_id": "sha256:94c2f64971bdd1017403ac39ed3d2e274713b25e4cffa6cfd8f02f831590b11b",
+        "architecture": "arm64",
+        "passed": true
+      },
+      {
+        "component": "matcha-tts-cpu:0.2.0",
+        "archive_sha256": "a68e47710fbfe9bd1651d7213b120c0345719146882afe4454e4f23b5fcda623",
+        "image_config_id": "sha256:ec63efa609896e8151c102cb0ba31ed60f45417b6268dc0c64159c55c20dbaca",
+        "architecture": "arm64",
+        "passed": true
+      },
+      {
+        "component": "sensevoice-cpu:0.1.0",
+        "archive_sha256": "a68e47710fbfe9bd1651d7213b120c0345719146882afe4454e4f23b5fcda623",
+        "image_config_id": "sha256:27a4502a871dd4975dc3eb13656a91f155cd2a674bc72fb021d8726071bac2fc",
+        "architecture": "arm64",
+        "passed": true
+      }
+    ],
+    "passed": true,
+    "temporary_daemon_stopped": true
+  },
+  "arm64_qemu_prerequisites": {
+    "source_commit": "f3604b1292357640f5a3e3f851a29050a1d1c1c3",
+    "source_dirty": false,
+    "target_hardware": "not_used",
+    "emulation": "QEMU ARM64 user mode",
+    "real_registration": "not_run",
+    "mqtt_platform_connection": "not_run",
+    "milvus_integration": "not_run",
+    "checks": {
+      "minio_arm64_version": true,
+      "minio_arm64_s3_authentication": true,
+      "minio_rejects_wrong_password": true,
+      "real_arm64_compose_config": true,
+      "compose_preserves_special_passwords": true,
+      "real_arm64_probe_loads": true,
+      "probe_accepts_json_yaml_config": true,
+      "probe_dependency_closure": true
+    },
+    "minio_version": "minio version RELEASE.2025-09-07T16-13-09Z (commit-id=07c3a429bfed433e49018cb0f78a52145d4bedeb)\nRuntime: go1.24.6 linux/arm64\nLicense: GNU AGPLv3 - https://www.gnu.org/licenses/agpl-3.0.html\nCopyright: 2015-2025 MinIO, Inc.",
+    "temporary_minio_stopped": true,
+    "temporary_probe_stopped": true,
+    "passed": true
+  },
+  "ui_contract_scope": "local Chrome UI contract tests with simulated API; hardware and Docker not used",
+  "linux_packed_entry": {
+    "passed": true,
+    "source_commit": "f3604b1292357640f5a3e3f851a29050a1d1c1c3",
+    "source_dirty": true,
+    "real_linux_launcher_extraction": true,
+    "sealed_app_verified": true,
+    "signed_catalog_verified": true,
+    "models": 25,
+    "platform_images": 10,
+    "retired_services_rejected": true,
+    "probe_components_models_order": true,
+    "existing_probe_reuse": true,
+    "milvus_dependencies": true,
+    "target_hardware_used": false
+  },
+  "packed_check_worktree_note": "Only the newly generated releases/1.2.0.json was untracked; all source files still matched the tested build commit.",
+  "source_files_unchanged_since_build": true,
+  "known_remote_blockers": [
+    {
+      "key": "qwen36-2-model",
+      "repository": "aistore/qwen3.6-35b-a3b-2",
+      "passed": false,
+      "detail": "仓库 aistore/qwen3.6-35b-a3b-2:v1 尚未上传完成或标签不存在（HTTP 404）"
+    },
+    {
+      "key": "qwen36-2-mmproj",
+      "repository": "aistore/qwen3.6-35b-a3b-2",
+      "passed": false,
+      "detail": "仓库 aistore/qwen3.6-35b-a3b-2:v1 尚未上传完成或标签不存在（HTTP 404）"
+    }
+  ],
+  "physical_arm64_fresh_install": "not_run",
+  "physical_hardware_inference": "not_run",
+  "physical_1_1_2_upgrade": "not_run",
+  "physical_reboot": "not_run"
+}

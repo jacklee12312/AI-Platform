@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "installer_version": "1.2.0",
+  "resource_release_id": "ai-platform-installer-1.2.0-20261015",
+  "source_commit": "f3604b1292357640f5a3e3f851a29050a1d1c1c3",
+  "source_tag": "v1.2.0",
+  "build_time": "2026-10-15T08:40:59+00:00",
+  "validation_status": "candidate",
+  "sources_sha256": "7c4e7efe5475bfcfcc48a88a283f5ff5cf9317564da8847f95cc76c642d67bcb",
+  "catalog_sha256": "dc7ebe18e7012d8f85653d878c63278e0648b007694eb25d3001201407f52b3b",
+  "external_assets_lock_sha256": "d6100745e4fbf7630fd8fd95f37526ab46fc0cffcd30cd20c79e4961d574ab01",
+  "test_report_sha256": "a280c10338a53b0a524fcd9d375e8b87cfcc5cddcf382abe0506dcd41a0e2d3d",
+  "release_config_sha256": "e27594bee68d377b6a4eb203c33bd385197e1a7e37b1cda129ee46add974ddf3",
+  "model_weights_in_distribution": false,
+  "archive": "delivery/AI-Platform-1.2.0-linux-arm64.tar.gz",
+  "archive_bytes": 3733429084,
+  "archive_sha256": "0b3a955ada8130572f67235ee48b6d9714d615d57328566f6b1adf25c613f7a2",
+  "distribution": "delivery/AI-Platform-1.2.0-linux-arm64",
+  "verified_archive_files": 422,
+  "automated_tests": 217,
+  "blocked_remote_models": [
+    "qwen36-2-model",
+    "qwen36-2-mmproj"
+  ],
+  "fresh_device_acceptance": "not_run"
+}
