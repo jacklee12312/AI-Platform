@@ -20,6 +20,23 @@ debian, entry = load('debian'), load('debian_entry')
 
 
 class DebianTests(unittest.TestCase):
+    def test_code_overlay_preserves_signed_resources_and_rejects_resource_changes(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder);source=root/'source';reference=root/'reference'
+            for base in (source,reference):
+                (base/'catalog').mkdir(parents=True)
+                (base/'catalog/signed.json').write_bytes(b'exact signed bytes')
+                (base/'sources.json').write_bytes(b'{}')
+                (base/'installer').mkdir()
+                (base/'installer/probe.py').write_bytes(b'old code')
+            (source/'installer/probe.py').write_bytes(b'fixed code')
+            debian.overlay_bundle(source,reference,root/'output')
+            self.assertEqual((root/'output/installer/probe.py').read_bytes(),b'fixed code')
+            self.assertEqual((root/'output/catalog/signed.json').read_bytes(),b'exact signed bytes')
+            (source/'catalog/signed.json').write_bytes(b'changed bytes')
+            with self.assertRaisesRegex(RuntimeError,'cannot change immutable'):
+                debian.overlay_bundle(source,reference,root/'must-not-exist')
+            self.assertFalse((root/'must-not-exist').exists())
     def test_real_dpkg_extracts_owned_files_with_modes_and_reproducible_bytes(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)

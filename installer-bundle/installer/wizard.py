@@ -133,7 +133,8 @@ class Wizard(QWidget):
         if self.workflow_enabled:self.refresh_probe_detection()
         try:self.device_count=detect_device_count() if not preview else None
         except RuntimeError:self.device_count=None
-        self.setWindowTitle(PRODUCT);self.resize(1120,760);self.setMinimumSize(1000,700)
+        revision=self.release.get('debian_revision')
+        self.setWindowTitle(PRODUCT+(' · Debian 修订 '+str(revision) if revision else ''));self.resize(1120,760);self.setMinimumSize(1000,700)
         outer=QHBoxLayout(self);outer.setContentsMargins(0,0,0,0);outer.setSpacing(0)
         sidebar=QFrame();sidebar.setObjectName('sidebar');sidebar.setFixedWidth(238);sl=QVBoxLayout(sidebar);sl.setContentsMargins(25,32,20,24)
         sl.addWidget(label('AI PLATFORM','brand'));sl.addSpacing(8);sl.addWidget(label('AI 平台\n安装向导','sideTitle'));sl.addSpacing(28)
@@ -602,7 +603,9 @@ class Wizard(QWidget):
             return
         if status in ['running','paused','failed'] and self.page_index!=5 and not self.editing_sources:self.show_page(5)
         self.stage_title.setText(dict(STEPS).get(current,'安装任务'))
-        self.progress.setValue(int(float(state.get('percent',0))*10));self.percent.setText(f"{state.get('percent',0):g}% · {'执行中' if status=='running' else '已暂停' if status=='paused' else '未完成'}")
+        if current=='integration' and state.get('probe_skipped'):self.stage_title.setText('联检组件库和模型平台')
+        if current=='components' and state.get('probe_skipped'):self.stage_title.setText('安装所选组件库并检查健康状态')
+        self.progress.setValue(int(float(state.get('percent',0))*10));self.percent.setText(f"{state.get('percent',0):g}% · {'执行中' if status=='running' else '已暂停' if status=='paused' else '安装失败'}")
         self.detail.setText(state.get('message',''));self.log.setPlainText('\n'.join(x['time']+'  '+x['message'] for x in state.get('events',[])));self.log.verticalScrollBar().setValue(self.log.verticalScrollBar().maximum())
         t=state.get('transfer',{})
         self.transfer.setText(f"资源准备：{t.get('ready_bytes',0)/1e9:.2f} / {t.get('total_bytes',0)/1e9:.2f} GB；当前文件 {t.get('file_bytes',0)/1e6:.1f} / {t.get('file_total',0)/1e6:.1f} MB" if t else '全部资源准备完成后才进入部署，验收通过后才显示完成。')

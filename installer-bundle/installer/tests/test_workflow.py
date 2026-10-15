@@ -89,6 +89,14 @@ class WorkflowTests(unittest.TestCase):
         self.assertTrue(workflow.mqtt_connected('MQTT connected to broker:1883'))
         self.assertFalse(workflow.mqtt_connected('MQTT connected to broker:1883\nMQTT connection lost, cause=timeout'))
         self.assertTrue(workflow.mqtt_connected('MQTT connected to broker:1883\nMQTT disconnected\nMQTT connected to broker:1883'))
+    def test_mqtt_journal_uses_monotonic_time_for_either_display_order(self):
+        entries=[{'__MONOTONIC_TIMESTAMP':'10','MESSAGE':'MQTT connect failed, rc=-1'},
+                 {'__MONOTONIC_TIMESTAMP':'20','MESSAGE':'MQTT connected to broker:1883'}]
+        for rows in (entries,list(reversed(entries))):
+            self.assertTrue(workflow.mqtt_journal_connected('\n'.join(map(json.dumps,rows))))
+        entries.append({'__MONOTONIC_TIMESTAMP':'30','MESSAGE':'MQTT connection lost'})
+        self.assertFalse(workflow.mqtt_journal_connected('\n'.join(map(json.dumps,reversed(entries)))))
+        self.assertFalse(workflow.mqtt_journal_connected('not journal JSON'))
     def test_probe_console_redacts_registration_and_broker_credentials(self):
         text='Registration payload: {"bindActivateToken":"fixture-secret-123","mqttPassword":"broker-secret","owner":"fixture"}'
         cleaned=probe_runner.redact_line(text,('fixture-secret-123',))
@@ -132,15 +140,19 @@ class WorkflowTests(unittest.TestCase):
             before=(root/'probe.yaml').read_bytes()
             with self.assertRaisesRegex(RuntimeError,'project'):adapter.binding()
             self.assertEqual(before,(root/'probe.yaml').read_bytes())
-    def test_probe_gate_needs_live_mqtt_even_when_cache_and_http_are_healthy(self):
+    def test_new_probe_gate_requires_registration_and_latest_mqtt_without_http(self):
         with tempfile.TemporaryDirectory() as folder:
             root=Path(folder);common.atomic_json(root/'registration.yaml',{'device_id':'fixture'})
             def run(args,**kw):
-                text='active' if args[1]=='is-active' else 'f'*32 if args[0]=='systemctl' else 'MQTT connected to broker:1883\nMQTT connection lost, cause=timeout'
+                text='active' if args[1]=='is-active' else 'f'*32 if args[0]=='systemctl' else '\n'.join(map(json.dumps,events))
                 return SimpleNamespace(returncode=0,stdout=text)
             adapter=probe.Probe(SimpleNamespace(settings=settings(),run=run),config_root=root)
-            with mock.patch('probe.urllib.request.build_opener') as opener:
-                self.assertFalse(adapter.ready());opener.assert_not_called()
+            events=[{'__MONOTONIC_TIMESTAMP':'20','MESSAGE':'MQTT connected to broker:1883'},
+                    {'__MONOTONIC_TIMESTAMP':'10','MESSAGE':'MQTT connect failed'}]
+            with mock.patch('urllib.request.build_opener',side_effect=AssertionError('probe has no HTTP health endpoint')):
+                self.assertTrue(adapter.ready())
+                events.append({'__MONOTONIC_TIMESTAMP':'30','MESSAGE':'MQTT connection lost'})
+                self.assertFalse(adapter.ready())
     def test_workflow_digest_and_minio_pin_are_enforced(self):
         lock=common.read_json(BUNDLE/'catalog/workflow.json')
         with tempfile.TemporaryDirectory() as folder:
@@ -301,10 +313,11 @@ class AutomaticProbeTests(unittest.TestCase):
                 client=settings()['probe'] if appeared_late else {}
                 client=dict(client,mode='auto',reuse_existing=not appeared_late)
                 flow=SimpleNamespace(settings={'probe':client},owner=SimpleNamespace(state={},event=mock.Mock()),
-                                     lock={'probe':{'binary_sha256':common.sha256(binary)}},host_packages=mock.Mock(),asset=mock.Mock())
+                                     lock={'probe':{'binary_sha256':'a different build'}},host_packages=mock.Mock(),asset=mock.Mock())
                 adapter=probe.Probe(flow,config_root=config,binary=binary,unit_root=root/'units')
-                with mock.patch.object(adapter,'activate') as activate:
-                    adapter.install();activate.assert_called_once()
+                with mock.patch.object(adapter,'activate') as activate,mock.patch('probe.sha256',side_effect=AssertionError('external probe must not be hashed')),mock.patch('probe.read_probe_config',side_effect=AssertionError('private probe configuration must not be read')):
+                    adapter.install();adapter.enable_collectors();activate.assert_not_called()
+                self.assertTrue(flow.owner.state['probe_skipped']);self.assertNotIn('probe_passed',flow.owner.state)
                 self.assertEqual((config/'probe.yaml').read_bytes(),before)
                 self.assertEqual(adapter.binding()['register']['project'],'original-project')
                 self.assertEqual(probe.Probe(flow,config_root=config,binary=binary).binding()['register']['project'],'original-project')
@@ -322,6 +335,16 @@ class AutomaticProbeTests(unittest.TestCase):
         flow=SimpleNamespace(settings={'probe':{'mode':'auto','reuse_existing':True}},owner=SimpleNamespace(state={}))
         with mock.patch('probe.detect_probe',return_value=False),self.assertRaisesRegex(RuntimeError,'已缺失'):
             probe.Probe(flow).install()
+    def test_installer_owned_partial_probe_is_resumed_instead_of_skipped(self):
+        flow=SimpleNamespace(settings={'probe':{'mode':'auto','reuse_existing':False}},owner=SimpleNamespace(state={'probe_owned':True}))
+        with mock.patch('probe.detect_probe',return_value=True):
+            self.assertFalse(probe.Probe(flow).skip_existing())
+        self.assertFalse(flow.owner.state['probe_skipped'])
+    def test_finish_leaves_external_probe_untouched(self):
+        obj=object.__new__(workflow.Workflow);obj.owner=SimpleNamespace(state={'probe_skipped':True},event=mock.Mock())
+        with mock.patch('components.Components') as component,mock.patch('probe.Probe') as adapter:
+            obj.finish();component.return_value.acceptance.assert_called_once();adapter.assert_not_called()
+        self.assertTrue(obj.owner.state['workflow_passed'])
 
 
 class StageIntegrationTests(unittest.TestCase):
@@ -338,6 +361,17 @@ class StageIntegrationTests(unittest.TestCase):
                 with self.assertRaisesRegex(RuntimeError,'MQTT'):obj.run()
             acquire.assert_not_called();obj.workflow.components.assert_not_called()
             self.assertEqual(obj.state['completed'],[])
+    def test_external_probe_stage_and_its_installation_notice_are_skipped(self):
+        with ExitStack() as stack:
+            obj=self.fixture(stack);order=[]
+            def skip():obj.state['probe_skipped']=True;return True
+            obj.workflow=SimpleNamespace(settings=settings(),skip_existing_probe=skip,
+                probe=mock.Mock(side_effect=AssertionError('external probe touched')),
+                components=lambda:order.append('components'),finish=lambda:order.append('integration'))
+            obj.run();obj.workflow.probe.assert_not_called()
+            self.assertEqual(order,['components','integration'])
+            self.assertIn('probe',obj.state['completed']);self.assertTrue(obj.state['probe_skipped'])
+            self.assertFalse(any('安装探针' in item['message'] for item in obj.state['events']))
     def test_failed_component_can_resume_but_probe_is_rechecked(self):
         with ExitStack() as stack:
             obj=self.fixture(stack);order=[]

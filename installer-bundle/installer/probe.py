@@ -7,10 +7,9 @@ import re
 import shutil
 import socket
 import subprocess
-import urllib.request
 
 from common import atomic_json, atomic_text, copy_atomic, no_symlink_parents, sha256
-from workflow import REGISTER_FIELDS, mqtt_connected
+from workflow import REGISTER_FIELDS, mqtt_journal_connected
 
 
 def detect_probe(binary=Path('/usr/local/bin/data-probe'), config_root=Path('/etc/data-probe'),
@@ -127,19 +126,32 @@ class Probe:
         if not re.fullmatch('[0-9a-f]{32}', invocation):
             return False
         logs = self.flow.run(['journalctl', '_SYSTEMD_INVOCATION_ID=' + invocation,
-                              '--no-pager', '--output=cat', '--lines=2000',
-                              '--grep=MQTT connected to|MQTT disconnected|MQTT connection lost|MQTT connect failed']).stdout
-        if not mqtt_connected(logs):
+                              '--no-pager', '--output=json', '--lines=2000',
+                              '--grep=MQTT connected to|MQTT disconnected|MQTT connection lost|MQTT connect failed|MQTTAsync_connect failed|MQTT connect called with existing client handle']).stdout
+        if not mqtt_journal_connected(logs):
             return False
-        # The probe's HTTP endpoint alone cannot prove registration or MQTT connectivity.
-        opener=urllib.request.build_opener(urllib.request.ProxyHandler({}))
-        with opener.open('http://127.0.0.1:9090/health', timeout=4) as response:
-            if response.status != 200:
-                return False
+        # The vendor probe exposes POST /api/report, not GET /health.
         registration.chmod(0o600)
         return True
 
+    def skip_existing(self):
+        """Presence means hands off: do not inspect or manage an external probe."""
+        existing = detect_probe(self.binary, self.config_root,
+                                (self.unit_root, Path('/lib/systemd/system'), Path('/usr/lib/systemd/system')))
+        owned = self.flow.owner.state.get('probe_owned') is True
+        if not existing and self.settings.get('reuse_existing') and not owned:
+            raise RuntimeError('自动识别时存在的探针已缺失；请恢复原探针后继续，不以空配置重新注册')
+        skipped = existing and not owned
+        self.flow.owner.state['probe_skipped'] = skipped
+        if skipped:
+            self.automatic_reuse = True
+            self.settings['reuse_existing'] = True
+            self.flow.owner.state.pop('probe_passed', None)
+        return skipped
+
     def install(self):
+        if self.skip_existing():
+            return
         existing = detect_probe(self.binary, self.config_root,
                                 (self.unit_root, Path('/lib/systemd/system'), Path('/usr/lib/systemd/system')))
         owned = self.flow.owner.state.get('probe_owned') is True
@@ -245,6 +257,8 @@ class Probe:
             if active.stdout.strip()=='active':self.flow.run(['systemctl','restart','data-probe'])
 
     def enable_collectors(self):
+        if self.flow.owner.state.get('probe_skipped'):
+            return
         config = self.binding()
         gateway = config.get('gateway', {})
         if gateway.get('url') not in (None, '', 'http://127.0.0.1:17700'):

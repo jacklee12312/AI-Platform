@@ -449,6 +449,11 @@ class Installer:
             actions={'acquire':self.acquire,'verify':self.verify,'prepare':self.prepare,'conflicts':self.conflicts,'docker':self.docker,'payload':self.payload,'credentials':self.credentials,'images':lambda:self.base.images(self.manifest),'systemd':self.systemd,'start':self.start,'acceptance':self.acceptance}
             actions.update(probe=self.probe,components=self.components,integration=self.integration)
             for name,title in STEPS:
+                if name=='probe' and self.workflow and getattr(self.workflow,'skip_existing_probe',lambda:False)():
+                    if name not in self.state['completed']:self.state['completed'].append(name)
+                    continue
+                if name=='integration' and self.state.get('probe_skipped'):title='联检组件库和模型平台'
+                if name=='components' and self.state.get('probe_skipped'):title='安装所选组件库并检查健康状态'
                 self.current=name;self.pause_point();self.update(title,0,force=True)
                 # Always revalidate the resource source and file conflicts on resume.
                 if name=='credentials' and name in self.state['completed']:

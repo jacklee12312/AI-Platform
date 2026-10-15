@@ -135,6 +135,16 @@ def mqtt_connected(log):
     return connected
 
 
+def mqtt_journal_connected(log):
+    """Journal display order can be reversed; use this invocation's monotonic clock."""
+    try:
+        records = [json.loads(line) for line in log.splitlines() if line.strip()]
+        records.sort(key=lambda row: int(row['__MONOTONIC_TIMESTAMP']))
+        return mqtt_connected('\n'.join(row['MESSAGE'] for row in records))
+    except (ValueError, TypeError, KeyError):
+        return False
+
+
 class Workflow:
     def __init__(self, installer):
         self.owner = installer
@@ -259,6 +269,10 @@ class Workflow:
         from probe import Probe
         Probe(self).install()
 
+    def skip_existing_probe(self):
+        from probe import Probe
+        return Probe(self).skip_existing()
+
     def components(self):
         from components import Components
         self.docker()
@@ -268,6 +282,8 @@ class Workflow:
         from components import Components
         from probe import Probe
         Components(self).acceptance()
-        Probe(self).enable_collectors()
+        if not self.owner.state.get('probe_skipped'):
+            Probe(self).enable_collectors()
         self.owner.state['workflow_passed'] = True
-        self.owner.event('探针、组件库及模型阶段均已通过本次安装检查')
+        self.owner.event('所选组件库及模型平台检查通过' if self.owner.state.get('probe_skipped')
+                         else '探针、组件库及模型阶段均已通过本次安装检查')

@@ -9,6 +9,7 @@ import subprocess
 import sys
 import tarfile
 import tempfile
+from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
 
 
@@ -37,15 +38,17 @@ def write_ar(output, members, epoch):
 
 def pack(output, files, control, epoch, work):
     """Explicit tar ownership and modes work identically on Windows and Linux."""
-    data_path, control_path = work / 'data.tar.gz', work / 'control.tar.gz'
+    # Resources are already compressed; a raw data.tar adds about 1% and avoids
+    # spending minutes recompressing every unchanged image/runtime on each fix.
+    data_path, control_path = work / 'data.tar', work / 'control.tar.gz'
     directories = set()
     for name in files:
         path = PurePosixPath(name)
         if path.is_absolute() or '..' in path.parts or '\\' in name:
             raise RuntimeError('Invalid package path: ' + name)
         directories.update(p.as_posix() for p in path.parents if p.as_posix() != '.')
-    with data_path.open('wb') as raw, gzip.GzipFile(fileobj=raw, mode='wb', filename='', mtime=epoch, compresslevel=1) as zipped:
-        with tarfile.open(fileobj=zipped, mode='w|', format=tarfile.GNU_FORMAT) as archive:
+    with data_path.open('wb') as raw:
+        with tarfile.open(fileobj=raw, mode='w|', format=tarfile.GNU_FORMAT) as archive:
             for name in sorted(directories):
                 info = tarfile.TarInfo('./' + name)
                 info.type, info.mode, info.mtime = tarfile.DIRTYPE, 0o755, epoch
@@ -64,7 +67,27 @@ def pack(output, files, control, epoch, work):
                 add_bytes(archive, name, content, epoch, mode)
     binary = work / 'debian-binary'
     binary.write_bytes(b'2.0\n')
-    write_ar(output, [('debian-binary', binary), ('control.tar.gz', control_path), ('data.tar.gz', data_path)], epoch)
+    write_ar(output, [('debian-binary', binary), ('control.tar.gz', control_path), ('data.tar', data_path)], epoch)
+
+
+def overlay_bundle(source, reference, destination):
+    """Use tested current installer code while preserving the base resource bytes."""
+    for prefix in ('catalog', 'gui-runtime', 'support-files'):
+        def inventory(root):
+            result = {}
+            for path in (root / prefix).rglob('*'):
+                if path.is_symlink():
+                    raise RuntimeError('Immutable bundle resources cannot contain symlinks')
+                if path.is_file():
+                    with path.open('rb') as stream:
+                        result[path.relative_to(root).as_posix()] = hashlib.file_digest(stream, 'sha256').hexdigest()
+            return result
+        if inventory(source) != inventory(reference):
+            raise RuntimeError('Debian code revision cannot change immutable bundle resources: ' + prefix)
+    if (source / 'sources.json').read_bytes() != (reference / 'sources.json').read_bytes():
+        raise RuntimeError('Debian code revision must preserve the base source routing')
+    shutil.copytree(source, destination, ignore=shutil.ignore_patterns('__pycache__', '*.pyc',
+                                                                   'installer-manifest.json', 'SHA256SUMS'))
 
 
 def metadata(version, package_version, date):
@@ -124,11 +147,24 @@ def build(root, revision='1'):
         raise RuntimeError('Debian package must wrap the current resource release')
     epoch = int(release.git(root, 'show', '-s', '--format=%ct', commit))
     work = Path(tempfile.mkdtemp(prefix=f'deb-{package_version}-', dir=root / 'build'))
-    bundle = work / 'bundle'
+    reference = work / 'base-bundle'
     launcher = delivery / f'安装AI平台-{version}.run'
-    subprocess.run([sys.executable, '-B', str(launcher), '--extract-only', str(bundle)], check=True)
-    if release.read(bundle / 'release.json')['source_commit'] != base['source_commit']:
+    subprocess.run([sys.executable, '-B', str(launcher), '--extract-only', str(reference)], check=True)
+    if release.read(reference / 'release.json')['source_commit'] != base['source_commit']:
         raise RuntimeError('Extracted bundle does not belong to the base release')
+    preflight = release.read(root / 'build/validation/preflight.json')
+    if preflight.get('source_commit') != commit or not preflight.get('signed_catalog_verified'):
+        raise RuntimeError('Run release.py check --online against this exact source commit')
+    bundle = work / 'bundle'
+    overlay_bundle(root / config['source_bundle'], reference, bundle)
+    metadata_release = release.read(reference / 'release.json')
+    metadata_release.update(source_commit=commit, debian_revision=revision,
+                            resource_source_commit=base['source_commit'],
+                            built_at=datetime.fromtimestamp(epoch, timezone.utc).isoformat())
+    metadata_release['validation']['automated_tests'] = str(tests['tests_run']) + ' passed'
+    release.write(bundle / 'release.json', metadata_release)
+    subprocess.run([sys.executable, '-B', str(bundle / 'tools/seal_installer.py'),
+                    '--bundle', str(bundle)], check=True)
     prefix = f'opt/ai-platform-installer/{version}'
     files = {prefix + '/bundle/' + p.relative_to(bundle).as_posix(): (p, 0o644)
              for p in bundle.rglob('*') if p.is_file()}
@@ -148,13 +184,14 @@ def build(root, revision='1'):
     files[prefix + '/debian_entry.py'] = (root / 'tools/debian_entry.py', 0o644)
     files['usr/bin/ai-platform-installer'] = (
         f'#!/bin/sh\nexec /usr/bin/python3 -B /{prefix}/debian_entry.py "$@"\n'.encode(), 0o755)
-    desktop, appstream = metadata(version, package_version, config['release_date'])
+    desktop, appstream = metadata(version, package_version, datetime.fromtimestamp(epoch, timezone.utc).date().isoformat())
     files['usr/share/applications/com.ai-platform.Installer.desktop'] = (desktop, 0o644)
     files['usr/share/metainfo/com.ai-platform.Installer.metainfo.xml'] = (appstream, 0o644)
     files['usr/share/doc/ai-platform-installer/README.md'] = (root / 'tools/templates/DEBIAN-README.md', 0o644)
     provenance = {'schema': 1, 'package': 'ai-platform-installer', 'package_version': package_version,
                   'architecture': 'arm64', 'source_commit': commit, 'installer_version': version,
-                  'resource_release_id': base['resource_release_id'], 'payload_source_commit': base['source_commit'],
+                  'resource_release_id': base['resource_release_id'], 'payload_source_commit': commit,
+                  'resource_source_commit': base['source_commit'], 'code_overlay': True,
                   'base_archive_sha256': base_record['archive_sha256'],
                   'base_delivery_checksums_sha256': release.digest(delivery / 'SHA256SUMS'),
                   'catalog_sha256': base['catalog_sha256'], 'test_report_sha256': release.digest(root / 'build/validation/tests.json'),
