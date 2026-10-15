@@ -24,7 +24,8 @@ class WizardTests(unittest.TestCase):
         self.library=Path(self.temporary.name)/'AI-Platform-Model-Library'
         (self.library/'files').mkdir(parents=True)
         (self.library/'model-library.json').write_text(json.dumps({'release_id':self.w.release['release_id'],'files':[]}))
-        self.w.sources['local_roots'].append(str(self.library));self.w.refresh_library_hint()
+        # A developer's real sibling model library must not precede this fixture.
+        self.w.sources['local_roots']=['@bundle/support-files',str(self.library)];self.w.refresh_library_hint()
     def tearDown(self):
         self.w.preview=True;self.w.pending=False;self.w.close();self.w.deleteLater();APP.processEvents();self.temporary.cleanup()
 
