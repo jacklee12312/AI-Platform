@@ -1,0 +1,148 @@
+{
+  "schema": 1,
+  "installer_version": "1.1.1",
+  "source_commit": "f0e1b779ade41ba71222277016ce7343c4cdd0cc",
+  "source_tag": "v1.1.1",
+  "validation_status": "candidate",
+  "source_tested_clean": true,
+  "automated_tests": {
+    "schema": 1,
+    "source_commit": "f0e1b779ade41ba71222277016ce7343c4cdd0cc",
+    "source_dirty": false,
+    "checked_at": "2026-10-15T06:13:36.981852+00:00",
+    "python": "3.14.4 (main, Aug 20 2026, 10:41:58) [GCC 15.2.0]",
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "target_hardware": "not_used",
+    "qt_platform": "offscreen",
+    "tests_run": 183,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": true
+  },
+  "workflow_artifact_validation": {
+    "source_commit": "f0e1b779ade41ba71222277016ce7343c4cdd0cc",
+    "source_dirty": false,
+    "target_hardware": "not_used",
+    "emulation": "QEMU ARM64 user mode",
+    "real_registration": "not_run",
+    "mqtt_platform_connection": "not_run",
+    "milvus_integration": "not_run",
+    "checks": {
+      "minio_arm64_version": true,
+      "minio_arm64_s3_authentication": true,
+      "minio_rejects_wrong_password": true,
+      "real_arm64_compose_config": true,
+      "compose_preserves_special_passwords": true,
+      "real_arm64_probe_loads": true,
+      "probe_accepts_json_yaml_config": true,
+      "probe_dependency_closure": true
+    },
+    "minio_version": "minio version RELEASE.2025-09-07T16-13-09Z (commit-id=07c3a429bfed433e49018cb0f78a52145d4bedeb)\nRuntime: go1.24.6 linux/arm64\nLicense: GNU AGPLv3 - https://www.gnu.org/licenses/agpl-3.0.html\nCopyright: 2015-2025 MinIO, Inc.",
+    "temporary_minio_stopped": true,
+    "temporary_probe_stopped": true,
+    "passed": true
+  },
+  "offline_component_validation": {
+    "source_commit": "f0e1b779ade41ba71222277016ce7343c4cdd0cc",
+    "source_dirty": false,
+    "environment": "isolated WSL Docker 29.7.2, overlay2, no network bridge, no containers started",
+    "checks": [
+      {
+        "component": "mysql",
+        "archive_sha256": "938aeaf5767d0a1a3d663b9b29f1bb666c3b25fbd7041b18157ac50e2728c9b0",
+        "image_config_id": "sha256:8aca36d040eba3cfafcd3b6cec800214e89f3789921bdcb3b967e8844145c27f",
+        "architecture": "arm64",
+        "passed": true
+      },
+      {
+        "component": "redis",
+        "archive_sha256": "47aee615d87c92daca5d97b84a3b48bb47e73d37bd4774a5f2f2ac85d024560a",
+        "image_config_id": "sha256:eae677c4b4cf3669522e2721e11a1527e1a56ca63b67963c73bb51555b55778b",
+        "architecture": "arm64",
+        "passed": true
+      },
+      {
+        "component": "paradedb",
+        "archive_sha256": "8482342af5f5faae7db97ed2bfba5ae95473ce2cbe6274afa10aae9e76869bf3",
+        "image_config_id": "sha256:ee7f8e62da798bf6517bf3e261d0bc0fb5b543ce123573e30e9331c67966087b",
+        "architecture": "arm64",
+        "passed": true
+      },
+      {
+        "component": "neo4j",
+        "archive_sha256": "7749cc7675a887c51426d0dc470f54e7b851fa6619a0f92e2ac87feaf9d6ef2e",
+        "image_config_id": "sha256:d1e4fe6df87b9e183d045cb0c10fcd94d45313a8599a8983fbfb4174eb1f0dc9",
+        "architecture": "arm64",
+        "passed": true
+      },
+      {
+        "component": "minio",
+        "archive_sha256": "04c2edcbd02684af5975677d78efb7b7098349ac4e3a22dbcc0e52f1213041ac",
+        "image_config_id": "sha256:8f08aee614800a237906bd48114d733e5ac5bfac4ccdf731f141b0e880d7a253",
+        "architecture": "arm64",
+        "passed": true
+      },
+      {
+        "component": "milvus",
+        "archive_sha256": "ac101c14c5a878a50a94180783f689603bd1773dbb88fe7742c6412232778992",
+        "image_config_id": "sha256:c6941d070fd4f68772bc56384cced7ccfd59d5e5a84ccfece39054fec986fcec",
+        "architecture": "arm64",
+        "passed": true
+      }
+    ],
+    "passed": true,
+    "temporary_daemon_stopped": true
+  },
+  "packaged_linux_validation": {
+    "schema": 1,
+    "installer_version": "1.1.1",
+    "source_commit": "f0e1b779ade41ba71222277016ce7343c4cdd0cc",
+    "environment": "WSL Linux x86_64; packaged pure-Python backend; no installation started",
+    "target_hardware": "not_used",
+    "checks": {
+      "linux_extract_only": true,
+      "sealed_app_files": true,
+      "signed_catalog_and_workflow": true,
+      "exact_packaged_version_and_commit": true,
+      "three_stage_order": true,
+      "existing_probe_without_registration_fields": true,
+      "missing_probe_requires_installation_fields": true,
+      "milvus_dependency_selection": true
+    },
+    "passed": true
+  },
+  "distribution_validation": {
+    "verified_archive_files": 341,
+    "archive_bytes": 5706243972,
+    "archive_sha256": "7956fe003da5cbeeecf80fd80590426234afdc7977bcce58b67e02dfd4012090",
+    "signed_catalog_verified": true,
+    "original_1_0_0_archive_verified": true
+  },
+  "remote_model_validation": {
+    "passed": 28,
+    "total": 30,
+    "blocked": [
+      {
+        "key": "qwen36-2-model",
+        "repository": "aistore/qwen3.6-35b-a3b-2",
+        "passed": false,
+        "detail": "仓库 aistore/qwen3.6-35b-a3b-2:v1 尚未上传完成或标签不存在（HTTP 404）"
+      },
+      {
+        "key": "qwen36-2-mmproj",
+        "repository": "aistore/qwen3.6-35b-a3b-2",
+        "passed": false,
+        "detail": "仓库 aistore/qwen3.6-35b-a3b-2:v1 尚未上传完成或标签不存在（HTTP 404）"
+      }
+    ]
+  },
+  "target_device_acceptance": {
+    "fresh_install": "not_run",
+    "real_probe_registration": "not_run",
+    "real_mqtt_connection": "not_run",
+    "full_selected_component_integration": "not_run",
+    "hardware_inference": "not_run",
+    "reboot": "not_run"
+  }
+}
