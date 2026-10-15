@@ -172,12 +172,19 @@ class Components:
             self.flow.run(['systemctl', 'restart', 'etcd'])
         self.flow.run(['nginx', '-t'])
         self.flow.run(['systemctl', 'enable', '--now', 'nginx', 'etcd'])
+        self.flow.wait(self.nginx_healthy, 'Nginx 服务与 80 端口检查')
         self.flow.wait(self.etcd_healthy, 'etcd 健康检查')
         self.flow.owner.event('Nginx 与 etcd 服务检查通过')
 
     def etcd_healthy(self):
         status, body = http('http://127.0.0.1:2379/health')
         return status == 200 and json.loads(body).get('health') in (True, 'true')
+
+    def nginx_healthy(self):
+        active=self.flow.run(['systemctl','is-active','--quiet','nginx'],check=False)
+        if active.returncode:return False
+        if self.flow.run(['nginx','-t'],check=False).returncode:return False
+        with socket.create_connection(('127.0.0.1',80),timeout=4):return True
 
     def image(self, name):
         row = self.images[name]
@@ -267,7 +274,10 @@ class Components:
         self.export_connections()
 
     def acceptance(self):
-        self.flow.run(['systemctl', 'is-active', '--quiet', 'docker', 'nginx', 'etcd'])
+        # systemctl with several units succeeds if ANY is active; check each required unit.
+        for service in ['docker','nginx','etcd']:
+            self.flow.run(['systemctl','is-active','--quiet',service])
+        if not self.nginx_healthy():raise RuntimeError('Nginx 最终服务或端口检查失败')
         if not self.etcd_healthy():
             raise RuntimeError('etcd 最终健康检查失败')
         for name in PORTS:

@@ -122,6 +122,14 @@ class WorkflowTests(unittest.TestCase):
             with mock.patch.object(adapter,'inspect',return_value=None),mock.patch('components.check_ports'):
                 with self.assertRaisesRegex(RuntimeError,'已有 mysql 数据'):adapter.preflight()
             self.assertEqual((data/'ibdata1').read_bytes(),b'preserve')
+    def test_inactive_nginx_cannot_pass_when_other_services_are_active(self):
+        def run(args,**kwargs):
+            if args[-1]=='nginx':raise RuntimeError('nginx inactive')
+            return SimpleNamespace(returncode=0,stdout='active')
+        lock=common.read_json(BUNDLE/'catalog/workflow.json')
+        adapter=components.Components(SimpleNamespace(settings=settings(),lock=lock,run=run))
+        with mock.patch.object(adapter,'etcd_healthy',return_value=True),mock.patch.object(adapter,'healthy',return_value=True):
+            with self.assertRaisesRegex(RuntimeError,'nginx inactive'):adapter.acceptance()
     def test_subprocess_failure_does_not_publish_secret_stderr(self):
         obj=object.__new__(workflow.Workflow)
         obj.settings=settings()
