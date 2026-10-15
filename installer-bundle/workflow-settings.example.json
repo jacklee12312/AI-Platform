@@ -1,7 +1,7 @@
 {
   "probe": {
+    "mode": "auto",
     "platform_url": "http://36.111.34.121:15433",
-    "reuse_existing": false,
     "owner": "",
     "project": "",
     "city": "",

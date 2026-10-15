@@ -1,14 +1,43 @@
-"""Install or explicitly reuse the pinned probe, then gate on registration and MQTT."""
+"""Detect, reuse or install the pinned probe; gate on registration and MQTT."""
 from pathlib import Path
 import json
 import os
+import platform
 import re
 import shutil
 import socket
+import subprocess
 import urllib.request
 
 from common import atomic_json, atomic_text, copy_atomic, no_symlink_parents, sha256
 from workflow import REGISTER_FIELDS, mqtt_connected
+
+
+def detect_probe(binary=Path('/usr/local/bin/data-probe'), config_root=Path('/etc/data-probe'),
+                 unit_roots=(Path('/etc/systemd/system'), Path('/lib/systemd/system'), Path('/usr/lib/systemd/system'))):
+    """Read-only presence detection; never read private registration information in the GUI."""
+    for path in (Path(binary), Path(config_root), *(Path(root)/'data-probe.service' for root in unit_roots)):
+        try:
+            path.lstat()
+            return True
+        except FileNotFoundError:
+            pass
+        except PermissionError:
+            # A private installation is present even when its files are not readable by the desktop user.
+            return True
+    if platform.system() != 'Linux' or not shutil.which('systemctl'):
+        return False
+    try:
+        result = subprocess.run(['systemctl', 'show', 'data-probe.service', '-p', 'LoadState', '--value'],
+                                capture_output=True, text=True, timeout=5)
+    except (OSError, subprocess.SubprocessError) as exc:
+        raise RuntimeError('无法自动识别本机探针，请确认 systemd 可用后重试') from exc
+    state = result.stdout.strip()
+    if state == 'not-found':
+        return False
+    if state in ('loaded', 'masked', 'error', 'bad-setting', 'merged', 'stub'):
+        return True
+    raise RuntimeError('无法自动识别本机探针，请确认 systemd 可用后重试')
 
 
 def read_probe_config(path):
@@ -70,14 +99,17 @@ class Probe:
         self.flow = workflow;self.settings = workflow.settings['probe']
         self.config_root = Path(config_root);self.binary = Path(binary);self.unit_root = Path(unit_root)
         self.config = self.config_root / 'probe.yaml'
+        self.automatic_reuse = self.settings.get('mode') == 'auto' and self.settings.get('reuse_existing') is True
 
     def binding(self):
         if self.config.is_symlink() or not self.config.is_file():
             raise RuntimeError('已有探针缺少有效配置文件')
         config = read_probe_config(self.config)
-        if config.get('platform', {}).get('url', '').rstrip('/') != self.settings['platform_url']:
+        if not isinstance(config, dict):
+            raise RuntimeError('已有探针配置格式不正确，请修复现有探针后继续')
+        if not self.automatic_reuse and config.get('platform', {}).get('url', '').rstrip('/') != self.settings['platform_url']:
             raise RuntimeError('已有探针绑定了其他平台，不自动重新注册')
-        for field in REGISTER_FIELDS:
+        for field in (() if self.automatic_reuse else REGISTER_FIELDS):
             if config.get('register', {}).get(field) != self.settings[field]:
                 raise RuntimeError('已有探针注册信息与本次设置不一致：' + field)
         if config.get('local_server', {}).get('port') != 9090:
@@ -108,8 +140,16 @@ class Probe:
         return True
 
     def install(self):
-        existing = os.path.lexists(self.binary) or os.path.lexists(self.config)
+        existing = detect_probe(self.binary, self.config_root,
+                                (self.unit_root, Path('/lib/systemd/system'), Path('/usr/lib/systemd/system')))
         owned = self.flow.owner.state.get('probe_owned') is True
+        if self.settings.get('mode') == 'auto':
+            # Recheck at the mutation boundary; a probe that appeared after the GUI check must be preserved.
+            self.automatic_reuse = existing and not owned
+            if self.automatic_reuse:
+                self.settings['reuse_existing'] = True
+            if not existing and self.settings.get('reuse_existing') and not owned:
+                raise RuntimeError('自动识别时存在的探针已缺失；请恢复原探针后继续，不以空配置重新注册')
         complete=self.binary.is_file() and self.config.is_file()
         for target in [self.config_root,self.binary,self.config]:
             no_symlink_parents(target,Path('/'))
@@ -117,14 +157,14 @@ class Probe:
         if existing and (complete or not owned):
             if self.binary.is_symlink() or not self.binary.is_file() or sha256(self.binary) != self.flow.lock['probe']['binary_sha256']:
                 raise RuntimeError('已有探针版本与锁定的 1.1.2 不兼容，不自动覆盖')
-            if not owned and not self.settings['reuse_existing']:
+            if not owned and not self.automatic_reuse and not self.settings['reuse_existing']:
                 raise RuntimeError('检测到已有探针；请明确选择复用并填写与其一致的设备注册信息')
             self.binding()
             self.config_root.chmod(0o700);self.config.chmod(0o600)
             registration=self.config_root/'registration.yaml'
             if registration.is_symlink():raise RuntimeError('探针注册缓存不能是链接')
             if registration.is_file():registration.chmod(0o600)
-            self.flow.owner.event('复用已存在且注册信息一致的探针')
+            self.flow.owner.event('自动复用本机已有探针，保留原注册信息' if self.automatic_reuse else '复用已存在且注册信息一致的探针')
         else:
             if self.settings['reuse_existing'] and not owned:
                 raise RuntimeError('选择了复用探针，但本机尚未安装探针')
@@ -162,6 +202,9 @@ class Probe:
                         raise RuntimeError('已有探针服务文件冲突：' + target.name)
                 else:
                     copy_atomic(source/src,target,Path('/'),mode=0o755 if target.suffix=='.sh' else 0o644)
+        self.activate()
+
+    def activate(self):
         # All ReadWritePaths in the vendor service must exist before systemd starts it.
         for directory in ['/data', '/opt', '/srv', '/mnt', '/var/log/data-probe']:
             path = Path(directory);no_symlink_parents(path, Path('/'))

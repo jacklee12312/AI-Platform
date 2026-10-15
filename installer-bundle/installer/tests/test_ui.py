@@ -31,6 +31,46 @@ class WizardTests(unittest.TestCase):
     def test_preview_never_dispatches(self):
         with mock.patch('wizard.QProcess') as process:self.w.dispatch('install');process.assert_not_called()
 
+    def test_existing_probe_hides_registration_and_needs_no_fields(self):
+        with mock.patch('wizard.detect_probe',return_value=True):
+            self.w.show_page(3)
+            for field in self.w.probe_fields.values():field.clear()
+            self.assertTrue(self.w.probe_install_panel.isHidden())
+            self.assertTrue(self.w.probe_detection_notice.isHidden())
+            self.assertNotIn('探针',self.w.subtitle.text())
+            self.assertEqual(self.w.collect_workflow_settings()['probe'],{'mode':'auto','reuse_existing':True})
+            self.w.show_page(4)
+            self.assertNotIn('探针',self.w.confirm_overview.layout().itemAt(0).widget().text())
+            self.assertNotIn('设备注册',self.w.consent.text())
+        self.assertFalse(hasattr(self.w,'reuse_probe'))
+    def test_missing_probe_is_visible_and_registration_is_mandatory(self):
+        with mock.patch('wizard.detect_probe',return_value=False):
+            self.w.show_page(3);self.assertFalse(self.w.probe_install_panel.isHidden())
+            self.w.probe_fields['bindActivateToken'].clear()
+            self.w.password.setText('fixture-password-123');self.w.password2.setText('fixture-password-123')
+            with mock.patch('wizard.QMessageBox.warning') as warning:
+                self.w.go_next();warning.assert_called_once()
+            self.assertEqual(self.w.page_index,3)
+            self.w.probe_fields['bindActivateToken'].setText('fixture-registration-secret');self.w.go_next()
+            self.assertEqual(self.w.page_index,4);self.assertIn('必需探针',self.w.consent.text())
+    def test_probe_detection_changes_reset_consent_and_reveal_required_form(self):
+        with mock.patch('wizard.detect_probe',return_value=True):self.w.show_page(3)
+        self.w.consent.setChecked(True)
+        with mock.patch('wizard.detect_probe',return_value=False):self.w.refresh_probe_detection()
+        self.assertFalse(self.w.probe_install_panel.isHidden());self.assertFalse(self.w.consent.isChecked())
+    def test_detection_error_blocks_installation_instead_of_assuming_absence(self):
+        with mock.patch('wizard.detect_probe',side_effect=RuntimeError('无法自动识别本机探针')):
+            self.w.show_page(3);self.assertFalse(self.w.probe_detection_notice.isHidden())
+            with self.assertRaisesRegex(ValueError,'无法自动识别'):self.w.collect_workflow_settings()
+    def test_existing_probe_import_accepts_only_component_settings(self):
+        value={'components':{'selected':['mysql'],'mysql_password':'fixture-password-123'}}
+        with tempfile.TemporaryDirectory() as folder:
+            path=Path(folder)/'onsite.json';path.write_text(json.dumps(value))
+            with mock.patch('wizard.detect_probe',return_value=True),mock.patch('wizard.QFileDialog.getOpenFileName',return_value=(str(path),'')),mock.patch('wizard.QMessageBox.warning') as warning:
+                self.w.import_workflow_settings();warning.assert_not_called()
+                self.assertEqual(self.w.collect_workflow_settings()['probe'],{'mode':'auto','reuse_existing':True})
+        self.assertEqual(self.w.component_selection(),['mysql'])
+
     def test_components_default_to_none_and_need_no_passwords(self):
         self.assertEqual(self.w.component_selection(),[])
         self.assertTrue(all(not check.isChecked() for check in self.w.component_checks.values()))

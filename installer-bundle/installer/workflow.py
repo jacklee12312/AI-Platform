@@ -73,31 +73,42 @@ def workflow_assets(lock):
             *(row['archive'] for row in lock['images'] if row.get('archive'))]
 
 
-def validate_settings(data):
+def validate_settings(data, *, probe_installed=None):
     if not isinstance(data, dict) or not isinstance(data.get('probe'), dict) or not isinstance(data.get('components'), dict):
         raise ValueError('请填写探针接入信息和组件库密码，或导入完整安装配置')
     probe = data['probe'];components = data['components']
+    automatic = probe.get('mode') == 'auto'
+    if probe.get('mode') not in (None, 'auto'):
+        raise ValueError('探针安装模式无效')
+    if automatic and probe_installed is None:
+        from probe import detect_probe
+        probe_installed = detect_probe()
     requested = requested_components(components)
     selected = resolved_components(components)
     result = {'probe': {}, 'components': {'selected': requested}}
-    url = probe.get('platform_url', '').strip()
-    parsed = urlsplit(url)
-    if parsed.scheme not in ('http', 'https') or not parsed.hostname or parsed.username or parsed.password or parsed.query or parsed.fragment:
-        raise ValueError('探针平台地址应为 HTTP/HTTPS 地址，不包含账号或查询参数')
-    result['probe']['platform_url'] = url.rstrip('/')
-    reuse = probe.get('reuse_existing', False)
-    if type(reuse) is not bool:
-        raise ValueError('探针复用选项应为布尔值')
-    result['probe']['reuse_existing'] = reuse
-    for key in REGISTER_FIELDS:
-        value = probe.get(key, '')
-        if not isinstance(value, str) or not value.strip() or len(value) > 256 or any(x in value for x in '\r\n\x00'):
-            raise ValueError('请完整填写探针设备注册信息：' + key)
-        result['probe'][key] = value.strip()
-    token = probe.get('bindActivateToken', '')
-    if not isinstance(token, str) or len(token) > 8192 or (not reuse and not token.strip()) or any(x in token for x in '\r\n\x00'):
-        raise ValueError('新安装探针需要有效的接入令牌；复用已注册探针时可留空')
-    result['probe']['bindActivateToken'] = token.strip()
+    if automatic:
+        result['probe'] = {'mode': 'auto', 'reuse_existing': bool(probe_installed)}
+    if not automatic or not probe_installed:
+        url = probe.get('platform_url', '')
+        if not isinstance(url, str):
+            raise ValueError('探针平台地址应为 HTTP/HTTPS 地址')
+        url=url.strip();parsed = urlsplit(url)
+        if parsed.scheme not in ('http', 'https') or not parsed.hostname or parsed.username or parsed.password or parsed.query or parsed.fragment:
+            raise ValueError('未检测到探针，必须填写有效的平台地址并安装探针')
+        result['probe']['platform_url'] = url.rstrip('/')
+        reuse = False if automatic else probe.get('reuse_existing', False)
+        if type(reuse) is not bool:
+            raise ValueError('探针复用选项应为布尔值')
+        result['probe']['reuse_existing'] = reuse
+        for key in REGISTER_FIELDS:
+            value = probe.get(key, '')
+            if not isinstance(value, str) or not value.strip() or len(value) > 256 or any(x in value for x in '\r\n\x00'):
+                raise ValueError('请完整填写探针设备注册信息：' + key)
+            result['probe'][key] = value.strip()
+        token = probe.get('bindActivateToken', '')
+        if not isinstance(token, str) or len(token) > 8192 or (not reuse and not token.strip()) or any(x in token for x in '\r\n\x00'):
+            raise ValueError('未检测到可复用探针，安装探针必须填写有效接入令牌')
+        result['probe']['bindActivateToken'] = token.strip()
     for key in PASSWORD_FIELDS:
         if key.removesuffix('_password') not in selected:
             continue
@@ -129,7 +140,10 @@ class Workflow:
         self.owner = installer
         self.lock = load_workflow(installer.bundle, installer.catalog)
         self.request_path = installer.root / 'private/request.json'
-        self.settings = validate_settings(read_json(self.request_path).get('workflow'))
+        saved = read_json(self.request_path).get('workflow')
+        # The root bridge recorded the presence decision. The probe stage checks it again before any writes.
+        installed = saved.get('probe', {}).get('reuse_existing') if isinstance(saved, dict) else None
+        self.settings = validate_settings(saved, probe_installed=installed)
         self.directory = installer.root / 'private/workflow'
         no_symlink_parents(self.directory, installer.root)
         if self.directory.is_symlink():
@@ -142,7 +156,7 @@ class Workflow:
                                    capture_output=True, timeout=timeout)
         if check and completed.returncode:
             from probe_runner import redact_line
-            values=[self.settings['probe']['bindActivateToken'],*self.settings['components'].values()]
+            values=[self.settings['probe'].get('bindActivateToken',''),*self.settings['components'].values()]
             values=[v for v in values if isinstance(v,str) and v]
             values+= [v.replace('$','$$') for v in values]
             detail=redact_line((completed.stderr or completed.stdout)[-3000:],values)

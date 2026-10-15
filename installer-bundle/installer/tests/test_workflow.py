@@ -31,6 +31,15 @@ def settings():
 
 
 class WorkflowTests(unittest.TestCase):
+    def test_automatic_existing_probe_requires_no_registration_fields_or_token(self):
+        value={'probe':{'mode':'auto','bindActivateToken':'unused-client-secret'},'components':{'selected':[]}}
+        self.assertEqual(workflow.validate_settings(value,probe_installed=True),
+                         {'probe':{'mode':'auto','reuse_existing':True},'components':{'selected':[]}})
+    def test_automatic_missing_probe_cannot_be_skipped_with_a_reuse_flag(self):
+        value=settings();value['probe'].update(mode='auto',reuse_existing=True,bindActivateToken='')
+        with self.assertRaisesRegex(ValueError,'接入令牌'):workflow.validate_settings(value,probe_installed=False)
+        value['probe']['bindActivateToken']='fixture-registration-secret'
+        self.assertFalse(workflow.validate_settings(value,probe_installed=False)['probe']['reuse_existing'])
     def test_every_component_subset_resolves_dependencies_and_limits_credentials(self):
         lock=common.read_json(BUNDLE/'catalog/workflow.json')
         names=list(workflow.COMPONENTS)
@@ -256,6 +265,63 @@ class ComponentSelectionExecutionTests(unittest.TestCase):
             self.assertFalse(fetched&{'nginx','nginx-common','etcd-server','etcd-client'})
             install=obj.run.call_args.args[0]
             self.assertEqual(install[-1],'libpaho-mqtt1.3='+next(r['version'] for r in obj.lock['host_packages'] if r.get('package')=='libpaho-mqtt1.3'))
+
+
+class AutomaticProbeTests(unittest.TestCase):
+    def test_detection_checks_markers_without_reading_private_configuration(self):
+        for marker in ['binary','config','unit']:
+            with self.subTest(marker=marker),tempfile.TemporaryDirectory() as folder:
+                root=Path(folder);binary=root/'data-probe';config=root/'config';units=root/'units';units.mkdir()
+                if marker=='binary':binary.write_bytes(b'fixture')
+                elif marker=='config':config.mkdir(mode=0o700)
+                else:(units/'data-probe.service').write_text('[Service]')
+                with mock.patch('probe.Path.read_text',side_effect=AssertionError('must not read private data')),mock.patch('probe.subprocess.run') as run:
+                    self.assertTrue(probe.detect_probe(binary,config,(units,)));run.assert_not_called()
+    def test_inaccessible_installation_counts_as_present(self):
+        with mock.patch('probe.Path.lstat',side_effect=[FileNotFoundError(),PermissionError()]),mock.patch('probe.subprocess.run') as run:
+            self.assertTrue(probe.detect_probe());run.assert_not_called()
+    def test_systemd_presence_and_absence_are_distinguished(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder)
+            for state,expected in [('not-found',False),('loaded',True),('masked',True),('bad-setting',True)]:
+                with self.subTest(state=state),mock.patch('probe.platform.system',return_value='Linux'),mock.patch('probe.shutil.which',return_value='/bin/systemctl'),mock.patch('probe.subprocess.run',return_value=SimpleNamespace(returncode=0,stdout=state)):
+                    self.assertEqual(probe.detect_probe(root/'binary',root/'config',(root/'units',)),expected)
+    def test_unknown_detection_state_is_not_treated_as_an_absent_probe(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder)
+            with mock.patch('probe.platform.system',return_value='Linux'),mock.patch('probe.shutil.which',return_value='/bin/systemctl'),mock.patch('probe.subprocess.run',return_value=SimpleNamespace(returncode=1,stdout='')):
+                with self.assertRaisesRegex(RuntimeError,'无法自动识别'):probe.detect_probe(root/'binary',root/'config',(root/'units',))
+    def test_existing_probe_keeps_original_binding_without_client_registration_fields(self):
+        for appeared_late in (False,True):
+            with self.subTest(appeared_late=appeared_late),tempfile.TemporaryDirectory() as folder:
+                root=Path(folder);binary=root/'data-probe';binary.write_bytes(b'pinned-fixture-binary')
+                config=root/'config';config.mkdir();original=probe.make_config(settings()['probe'])
+                original['register']['project']='original-project'
+                common.atomic_json(config/'probe.yaml',original);before=(config/'probe.yaml').read_bytes()
+                client=settings()['probe'] if appeared_late else {}
+                client=dict(client,mode='auto',reuse_existing=not appeared_late)
+                flow=SimpleNamespace(settings={'probe':client},owner=SimpleNamespace(state={},event=mock.Mock()),
+                                     lock={'probe':{'binary_sha256':common.sha256(binary)}},host_packages=mock.Mock(),asset=mock.Mock())
+                adapter=probe.Probe(flow,config_root=config,binary=binary,unit_root=root/'units')
+                with mock.patch.object(adapter,'activate') as activate:
+                    adapter.install();activate.assert_called_once()
+                self.assertEqual((config/'probe.yaml').read_bytes(),before)
+                self.assertEqual(adapter.binding()['register']['project'],'original-project')
+                self.assertEqual(probe.Probe(flow,config_root=config,binary=binary).binding()['register']['project'],'original-project')
+                flow.host_packages.assert_not_called();flow.asset.assert_not_called()
+    def test_absent_probe_enters_required_installation_before_models(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder);value=settings();value['probe'].update(mode='auto',reuse_existing=False)
+            flow=SimpleNamespace(settings=value,owner=SimpleNamespace(state={}),lock={'probe_packages':['fixture-library']},
+                                 host_packages=mock.Mock(side_effect=RuntimeError('required probe install reached')))
+            adapter=probe.Probe(flow,config_root=root/'config',binary=root/'binary',unit_root=root/'units')
+            with mock.patch('probe.detect_probe',return_value=False),mock.patch('probe.socket.socket'),self.assertRaisesRegex(RuntimeError,'required probe install reached'):
+                adapter.install()
+            flow.host_packages.assert_called_once_with(['fixture-library'])
+    def test_probe_removed_after_privileged_detection_cannot_be_silently_skipped(self):
+        flow=SimpleNamespace(settings={'probe':{'mode':'auto','reuse_existing':True}},owner=SimpleNamespace(state={}))
+        with mock.patch('probe.detect_probe',return_value=False),self.assertRaisesRegex(RuntimeError,'已缺失'):
+            probe.Probe(flow).install()
 
 
 class StageIntegrationTests(unittest.TestCase):

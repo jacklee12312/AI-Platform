@@ -55,7 +55,11 @@ def dispatch(args,bundle):
         saved_request={'admin_password':request['admin_password'],'release_id':release['release_id'],'sources':config,'selected_models':selected,'device_count':device_count}
         if catalog.get('workflow_sha256'):
             from workflow import validate_settings
-            saved_request['workflow']=validate_settings(request.get('workflow'))
+            from probe import detect_probe
+            settings=request.get('workflow')
+            if not isinstance(settings,dict):raise ValueError('缺少安装配置')
+            settings=dict(settings,probe=dict(settings.get('probe') or {},mode='auto'))
+            saved_request['workflow']=validate_settings(settings,probe_installed=detect_probe())
         atomic_json(request_path,saved_request)
     elif not saved or not request_path.exists():raise RuntimeError('没有可继续的完整任务记录')
     else:
