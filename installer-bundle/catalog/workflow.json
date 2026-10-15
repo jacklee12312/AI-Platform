@@ -1395,5 +1395,6 @@
     "etcd-server",
     "etcd-client"
   ],
-  "component_disk_budget_bytes": 21474836480
+  "component_disk_budget_bytes": 21474836480,
+  "image_acquisition": "on-demand-pinned-registry-or-local-import"
 }

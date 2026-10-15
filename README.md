@@ -7,7 +7,9 @@
 | 路径 | 用途 |
 |---|---|
 | `installer-bundle/` | 稳定的安装器源码、签名资源清单与来源配置 |
-| `support-files/files/` | 已签名平台代码和配套资源；文本源码保留原始字节 |
+| `support-files/files/` | 历史已签名资源基线；保留原始字节 |
+| `platform-overlays/1.1.2/` | 本版平台修改及 ModelDeck 前端完整源码 |
+| `build/resources-1.1.2/` | 从基线和版本化修改生成的新签名资源，由外置依赖清单锁定 |
 | `release-config.json` | 安装器版本、资源发行 ID、构建布局 |
 | `installer-bundle/catalog/workflow.json` | 受发行签名保护的探针、组件、镜像与依赖锁定清单 |
 | `external-assets.json` | 大型外置依赖的相对路径、大小和 SHA-256 |
@@ -52,4 +54,6 @@ Git 仓库本身不包含这些依赖；当前机器的本地文件已保留。�
 
 制作新的 1.1 前置资源时，使用 `tools/prepare_workflow_resources.py` 和 WSL 中的 `tools/prepare_workflow_debs.py`，下载与构造归档，不安装宿主机软件。首次建立锁定之后默认复用锁定内容；更新来源需显式刷新并重新签名。`tools/finalize_workflow_release.py --key 项目外的原发布密钥路径` 校对原公钥、更新资源发行身份及摘要并签名。密钥不进入 Git 或交付包。
 
-真实 ARM64 程序的开发验证入口为 WSL root 下的 `tools/validate_workflow_artifacts.py` 和 `tools/validate_component_archives.py`。前者以 QEMU 检查 ARM64 MinIO、Compose 和探针依赖，探针只访问不可用的 loopback 测试注册地址；后者仅在临时独立 Docker 中导入并校对六个离线镜像。它们不替代目标设备的真实注册、MQTT、全组件联通和重启验收。
+本版先运行 `python tools/validate_component_sources.py` 核验六个组件的远端 ARM64 清单与配置，默认包不携带组件镜像。真实 ARM64 程序的开发验证入口为 WSL root 下的 `tools/validate_workflow_artifacts.py` 和 `tools/validate_component_archives.py`。前者以 QEMU 检查 ARM64 MinIO、Compose 和探针依赖，探针只访问不可用的 loopback 测试注册地址；后者仅在临时独立 Docker 中导入并校对六个离线镜像。它们不替代目标设备的真实注册、MQTT、全组件联通和重启验收。
+
+1.1.2 的资源准备：先在 `platform-overlays/1.1.2/modeldeck-frontend/` 按 package-lock.json 安装构建依赖并执行 `npm run build`，然后执行 `python tools/prepare_slim_release.py --key <工程外原受信任私钥路径>`。工具从 v1.1.1 资源基线生成 `build/resources-1.1.2/`，只移除已退役服务的镜像标签及独占层，保留 Kokoro 共享层，并生成新的资源发行 ID、摘要和签名。后端回归依赖安装到 WSL 的 `build/test-python/`，与原 Qt 测试依赖共用目录，不进入交付包。

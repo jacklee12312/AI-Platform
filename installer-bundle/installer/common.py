@@ -9,11 +9,11 @@ PRODUCT='AI 平台安装器 · '+VERSION
 STATE_ROOT=Path('/var/lib/ai-platform-installer')
 PUBLIC_STATE=STATE_ROOT/'public/status.json'
 UNIT='ai-platform-install.service'
-STEPS=[('verify','校验所选资源'),('prepare','展开配套运行时'),('conflicts','检查文件冲突与可复用模型'),('docker','配置容器基础环境'),('payload','安装所选模型与项目文件'),('credentials','配置账号与独立密钥'),('images','导入配套 12 个镜像'),('systemd','配置开机自启'),('start','启动平台与所选服务'),('acceptance','依次验收所选模型')]
+STEPS=[('verify','校验所选资源'),('prepare','展开配套运行时'),('conflicts','检查文件冲突与可复用模型'),('docker','配置容器基础环境'),('payload','安装所选模型与项目文件'),('credentials','配置账号与独立密钥'),('images','导入配套平台镜像'),('systemd','配置开机自启'),('start','启动平台与所选服务'),('acceptance','依次验收所选模型')]
 STEPS.insert(0,('acquire','准备资源：缓存、本地源与远端下载'))
 STEPS[0:0]=[('probe','第一阶段：安装探针，完成注册和 MQTT 连接'),('components','第二阶段：安装组件库并检查健康状态')]
 STEPS.append(('integration','联检探针、组件库和模型平台'))
-CORE_DIRS=['houmo-docker-deployment','ai-model-gateway','gateway-admin','cv_deploy','sensevoice-cpu','kokoro-cix','matcha-tts-cpu','qwen3guard-stream-cpu','ballot-reader','modeldeck-models']
+CORE_DIRS=['houmo-docker-deployment','ai-model-gateway','gateway-admin','cv_deploy','sensevoice-cpu','kokoro-cix','matcha-tts-cpu','modeldeck-models']
 ACCELERATOR_MODELS={'copaw':'copaw-flash-9b','spark-x1':'spark-x1-4b','qwen38':'qwen3.8-27b','qwen36':'qwen3.6-35b-a3b','qwen-vl':'qwen3-vl-8b','glm-ocr':'glm-ocr-0.9b','bge-m3':'bge-m3','reranker':'bge-reranker-v2-m3','cosyvoice':'cosyvoice3-0.5b'}
 DEVICE1_NODES=tuple('/dev/xh2a_'+name for name in (
     'fast_memory_device1','i2c_device1','ipu1','memory_allocator_device1_ddr',
@@ -46,9 +46,9 @@ def validate_acceptance(result,run_id,models):
     if result.get('run_id')!=run_id:raise RuntimeError('验收报告不是本次运行生成，不能作为安装成功依据')
     if result.get('passed') is not True or result.get('scope')!='all-modes':raise RuntimeError('全模型验收未通过')
     if set(result.get('registry_models',[]))!=set(models):raise RuntimeError('验收报告的模型清单不完整')
-    expected={'containers-and-autostart','active-accelerator-real-inference','authenticated-gateway-registry','ballot-gateway-36-selections','restore-mode:copaw','gateway-sse-and-usage'}
+    expected={'containers-and-autostart','active-accelerator-real-inference','authenticated-gateway-registry','restore-mode:copaw','gateway-sse-and-usage'}
     expected.update('accelerator-mode:'+m for m in ACCELERATOR_MODELS)
-    expected.update('inference:'+m for m in set(models)-set(ACCELERATOR_MODELS.values())-{'democratic-eval-v1'})
+    expected.update('inference:'+m for m in set(models)-set(ACCELERATOR_MODELS.values()))
     checks=result.get('checks',[])
     names=[c.get('name') for c in checks]
     if len(names)!=len(set(names)) or set(names)!=expected or any(c.get('passed') is not True for c in checks):
@@ -168,11 +168,12 @@ def quick_checks(bundle,selected_models=None,selected_components=None):
     try:
         modular=(bundle/'catalog/release-catalog.json').exists()
         m=read_json(bundle/'catalog/platform-manifest.json' if modular else resources/'manifests/manifest.json');release=read_json(bundle/'release.json')
-        ok=len(m['models'])==27 and len(m['images'])==12 and m['status']=='complete-artifacts'
-        row('发行范围',ok,'27 个可选模型及服务（Qwen3.6 仅双卡） · 12 个 ARM64 配套镜像')
+        ok=bool(m['models'] and m['images']) and len(set(m['models']))==len(m['models']) and m['status']=='complete-artifacts'
+        row('发行范围',ok,f"{len(m['models'])} 个可选模型及服务（Qwen3.6 仅双卡） · {len(m['images'])} 个 ARM64 配套镜像")
         if modular:
             from artifacts import load_catalog
             catalog=load_catalog(bundle)
+            if set(catalog['models'])!=set(m['models']) or catalog['image_count']!=len(m['images']):raise RuntimeError('平台范围与签名发行清单不一致')
             row('发行签名',True,'Ed25519 签名通过；安装前仍逐文件校验内容')
             if catalog.get('workflow_sha256'):
                 from workflow import COMPONENTS,load_workflow,resolved_components

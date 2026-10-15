@@ -222,6 +222,7 @@ class Components:
             else:
                 if config['mode'] == 'local-only':
                     raise RuntimeError('本地组件镜像缺失：' + name)
+                self.flow.owner.event('正在联网拉取所选组件 ' + name + '（固定 ARM64 摘要，可重新运行继续）')
                 self.flow.run(['docker', 'pull', '--platform=linux/arm64', row['pinned']], timeout=1800)
             current = self.flow.run(['docker', 'image', 'inspect', row['config_id']])
         info = json.loads(current.stdout)[0]

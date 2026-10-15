@@ -17,7 +17,7 @@ class SelectionTests(unittest.TestCase):
         self.assertEqual(len([r for r in subset['resources'] if r['category']=='models']),1)
         self.assertEqual(len([r for r in subset['resources'] if r['category']!='models']),
                          len([r for r in self.catalog['resources'] if r['category']!='models']))
-        self.assertEqual(len(self.catalog['models']),27)  # Parent is immutable.
+        self.assertEqual(len(self.catalog['models']),25)  # Parent is immutable.
     def test_cosyvoice_keeps_only_shared_test_audio(self):
         subset=selected_catalog(self.catalog,['cosyvoice3-0.5b'],2)
         rows=[r for r in subset['resources'] if r['category']=='models']

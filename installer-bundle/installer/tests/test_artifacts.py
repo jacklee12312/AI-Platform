@@ -114,28 +114,25 @@ class CatalogTests(unittest.TestCase):
         self.assertEqual(config['local_roots'][0],'@bundle/support-files')
         self.assertTrue(all(Path(root).is_absolute() for root in config['local_roots'][1:]))
         auxiliary=[row for row in catalog['resources'] if row['path'] in {
-            'payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/LICENSE',
-            'payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/README.md',
-            'payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/generation_config.json',
             'payload/home/cix/cix_telecom_projects/sensevoice/model/test_wavs/zh.wav',
         }]
-        self.assertEqual(len(auxiliary),4)
+        self.assertEqual(len(auxiliary),1)
         with tempfile.TemporaryDirectory() as directory:
             plan=artifacts.plan_sources(BUNDLE,{'resources':auxiliary},config,Path(directory))
         self.assertTrue(plan['ready'])
-        self.assertEqual([row['source'] for row in plan['rows']],['local']*4)
+        self.assertEqual([row['source'] for row in plan['rows']],['local']*1)
 
     def test_actual_catalog_signed_and_harbor_sources_configured(self):
         c=artifacts.load_catalog(BUNDLE);config=artifacts.source_config(BUNDLE)
-        self.assertEqual(len(c['models']),27);self.assertEqual(c['image_count'],12)
-        self.assertEqual(len([r for r in c['resources'] if r['category']=='models']),68)
+        self.assertEqual(len(c['models']),25);self.assertEqual(c['image_count'],10)
+        self.assertEqual(len([r for r in c['resources'] if r['category']=='models']),57)
         self.assertFalse(any(config['base_urls'].values()))
         qwen_urls={path:urls for path,urls in config['file_urls'].items() if 'qwen3.8-27b/' in path}
         self.assertEqual(len(qwen_urls),0)
         self.assertTrue(all(len(urls)==1 and urls[0].startswith('https://llmoss.houmoai.com/') for urls in qwen_urls.values()))
-        self.assertEqual(len(config['oci_artifacts']),30)
+        self.assertEqual(len(config['oci_artifacts']),29)
         remote={p for s in config['oci_artifacts'].values() for p in s['files']}
-        self.assertEqual(len(remote),64)
+        self.assertEqual(len(remote),56)
         self.assertIn('cosyvoice3-0.5b',config['oci_artifacts'])
         self.assertIn('spark-x1-4b',config['oci_artifacts'])
         self.assertTrue(config['oci_artifacts']['spark-x1-4b']['manifest_digest'].startswith('sha256:'))

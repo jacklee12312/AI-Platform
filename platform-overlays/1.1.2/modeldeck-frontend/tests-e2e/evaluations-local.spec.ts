@@ -1,0 +1,80 @@
+import { expect, test, type Page } from '@playwright/test'
+import { readFile } from 'node:fs/promises'
+
+test.skip(process.env.MODELDECK_EVALUATION_FIXTURE !== '1', 'local real task engine with simulated models only')
+test.use({ trace: 'off', video: 'off' })
+
+async function start(page: Page) {
+  await page.getByRole('button', { name: '确认并开始评测', exact: true }).click()
+  await expect(page.getByRole('dialog')).toBeVisible()
+  await expect(page.getByRole('button', { name: '开始真实推理', exact: true })).toBeDisabled()
+  await page.getByRole('dialog').getByRole('checkbox').check()
+  await page.getByRole('button', { name: '开始真实推理', exact: true }).click()
+  await expect(page.getByRole('dialog')).not.toBeVisible()
+  await expect(page.locator('[data-run-id]').first()).toBeVisible()
+  return (await page.locator('[data-run-id]').first().getAttribute('data-run-id'))!
+}
+
+test('evaluation UI persists progress, reports failure, exports, and cooperatively cancels', async ({ page, baseURL }, info) => {
+  expect(baseURL).toBe('http://127.0.0.1:18784')
+  const errors: string[] = [], mutations: string[] = []
+  page.on('pageerror', error => errors.push(error.message))
+  page.on('request', request => { if (request.method() === 'POST') mutations.push(new URL(request.url()).pathname) })
+  page.on('dialog', dialog => dialog.accept())
+  await page.setViewportSize({ width: 1440, height: 1000 })
+  await page.goto('/evaluations')
+  await page.getByLabel('管理员密码').fill('audit-test-password')
+  await page.getByRole('button', { name: '进入管理台' }).click()
+  await page.getByRole('link', { name: '自检与评测', exact: true }).click()
+  await expect(page.locator('[data-model-id]')).toHaveCount(23)
+  await expect(page.getByLabel('选择模型 qwen3.8-27b', { exact: true })).toBeDisabled()
+  await page.getByLabel('选择模型 bge-m3', { exact: true }).check()
+  await page.getByLabel('选择模型 bge-reranker-v2-m3', { exact: true }).check()
+  const id = await start(page)
+  await page.reload()
+  await expect(page.locator(`[data-run-id="${id}"] [data-verdict]`)).toHaveText('未通过', { timeout: 20000 })
+  await expect(page.locator('#evaluation-detail-title')).toBeVisible()
+  await expect(page.locator('.evaluation-result-head')).toContainText('已结束')
+  await expect(page.locator('.evaluation-result-head [data-verdict]')).toHaveText('未通过')
+  const download = page.waitForEvent('download')
+  await page.getByRole('link', { name: '导出 JSON', exact: true }).click()
+  const report = JSON.parse(await readFile((await (await download).path())!, 'utf8'))
+  expect(report.id).toBe(id)
+  expect(report.verdict).toBe('failed')
+  expect(report.summary).toMatchObject({ total: 2, passed: 1, failed: 1 })
+  expect(report.cases[0].input_sha256).toMatch(/^[a-f0-9]{64}$/)
+  await page.screenshot({ path: info.outputPath('evaluation-desktop.png'), fullPage: true })
+  await page.getByRole('button', { name: '全选当前可用', exact: true }).click()
+  const cancelledId = await start(page)
+  await page.getByRole('button', { name: '取消后续用例', exact: true }).click()
+  await expect(page.locator(`[data-run-id="${cancelledId}"]`)).toContainText('已取消', { timeout: 20000 })
+  await expect(page.locator(`[data-run-id="${cancelledId}"] [data-verdict]`)).not.toHaveText('全部通过')
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.screenshot({ path: info.outputPath('evaluation-mobile.png'), fullPage: true })
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBeTruthy()
+  expect(mutations.filter(path => path === '/api/evaluations')).toHaveLength(2)
+  expect(mutations.filter(path => /restart|mode-switch|model-install\/actions|recovery/.test(path))).toEqual([])
+  expect(errors).toEqual([])
+})
+
+test('lost submission response reconciles the saved ID without resubmitting', async ({ page, baseURL }) => {
+  expect(baseURL).toBe('http://127.0.0.1:18784')
+  let posts = 0
+  await page.route('**/api/evaluations', async route => {
+    if (route.request().method() !== 'POST') return route.continue()
+    posts++
+    const response = await route.fetch()
+    expect(response.ok()).toBeTruthy()
+    await route.abort('connectionreset')
+  })
+  await page.goto('/evaluations')
+  await page.getByLabel('管理员密码').fill('audit-test-password')
+  await page.getByRole('button', { name: '进入管理台' }).click()
+  await page.getByRole('link', { name: '自检与评测', exact: true }).click()
+  await page.getByLabel('选择模型 bge-m3', { exact: true }).check()
+  await start(page)
+  await expect(page.getByText('已按保存的请求 ID 找到评测，继续查看该任务。', { exact: true })).toBeVisible()
+  await page.reload()
+  await expect(page.locator('.evaluation-result-head [data-verdict]')).toHaveText('全部通过', { timeout: 20000 })
+  expect(posts).toBe(1)
+})

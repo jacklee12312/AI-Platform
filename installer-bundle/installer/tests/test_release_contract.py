@@ -11,12 +11,12 @@ BUNDLE=Path(__file__).resolve().parents[2]
 class ReleaseContractTests(unittest.TestCase):
     def setUp(self):
         self.models=json.loads((BUNDLE/'catalog/platform-manifest.json').read_text())['models']
-        names={'containers-and-autostart','active-accelerator-real-inference','authenticated-gateway-registry','ballot-gateway-36-selections','restore-mode:copaw','gateway-sse-and-usage'}
+        names={'containers-and-autostart','active-accelerator-real-inference','authenticated-gateway-registry','restore-mode:copaw','gateway-sse-and-usage'}
         names.update('accelerator-mode:'+m for m in common.ACCELERATOR_MODELS)
-        names.update('inference:'+m for m in set(self.models)-set(common.ACCELERATOR_MODELS.values())-{'democratic-eval-v1'})
+        names.update('inference:'+m for m in set(self.models)-set(common.ACCELERATOR_MODELS.values()))
         self.report={'run_id':'this-run','scope':'all-modes','passed':True,'registry_models':self.models,'checks':[{'name':n,'passed':True} for n in sorted(names)]}
     def test_complete_report_passes(self):
-        self.assertEqual(len(self.report['checks']),32)
+        self.assertEqual(len(self.report['checks']),30)
         common.validate_acceptance(self.report,'this-run',self.models)
     def test_incomplete_stale_false_or_duplicate_report_rejected(self):
         mutations=[lambda r:r.update(run_id='old-run'),lambda r:r.update(scope='active-mode-and-cpu'),lambda r:r.update(passed=False),lambda r:r.update(registry_models=self.models[:-1]),lambda r:r['checks'].pop(),lambda r:r['checks'].append(r['checks'][0]),lambda r:r['checks'][0].update(passed=False)]

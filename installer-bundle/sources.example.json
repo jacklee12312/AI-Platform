@@ -24,17 +24,6 @@
     "payload/home/cix/cix_telecom_projects/houmo-HLIELLama-xh2/models/copaw_flash_9b_w4a8_128k_b1_1chip_2cores_v1.3.0/HiModel-Copaw-flash-9b-p256-128K-b1-2core-1d-xh2-v1.3.0-20260427015847.gguf": [],
     "payload/home/cix/cix_telecom_projects/qwen3-vl-8b/HiModel_xh2_qwen3-vl_8b_256_32k_b1_1chip_2cores_v1.3.0_20260615.gguf": [],
     "payload/home/cix/cix_telecom_projects/qwen3-vl-8b/mmproj_xh2_qwen3-vl_8b_2cores_vit_448x448_v1.3.0_20260615.gguf": [],
-    "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/LICENSE": [],
-    "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/README.md": [],
-    "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/config.json": [],
-    "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/configuration_qwen3.py": [],
-    "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/generation_config.json": [],
-    "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/merges.txt": [],
-    "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/model.safetensors": [],
-    "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/modeling_qwen3_guard.py": [],
-    "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/tokenizer.json": [],
-    "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/tokenizer_config.json": [],
-    "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/vocab.json": [],
     "payload/home/cix/cix_telecom_projects/sensevoice/model/model.int8.onnx": [],
     "payload/home/cix/cix_telecom_projects/sensevoice/model/silero_vad.onnx": [],
     "payload/home/cix/cix_telecom_projects/sensevoice/model/test_wavs/zh.wav": [],
@@ -300,25 +289,6 @@
       "format": "blob",
       "files": {
         "payload/home/cix/cix_telecom_projects/HiModel_xh2_bge-reranker-v2-m3-0.5b_0.5k_b10_1chip_2cores_v1.4.0_20260720.gguf": null
-      }
-    },
-    "qwen3guard-stream-0.6b": {
-      "registry": "http://36.111.34.121:15436",
-      "repository": "aistore/qwen3guard-stream-0.6b",
-      "reference": "v1",
-      "manifest_digest": "sha256:f21474f9efab8877a20fdda063c75fc938415b57300c725663c416b5ffbc3dda",
-      "blob_digest": "sha256:7486e8411212b9fd4da57f43d18c7bd2ae884d77520842bb6cd595f3c934fe84",
-      "blob_size": 942326840,
-      "format": "tar+gzip",
-      "files": {
-        "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/config.json": "qwen3guard-stream-0.6b/config.json",
-        "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/configuration_qwen3.py": "qwen3guard-stream-0.6b/configuration_qwen3.py",
-        "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/merges.txt": "qwen3guard-stream-0.6b/merges.txt",
-        "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/model.safetensors": "qwen3guard-stream-0.6b/model.safetensors",
-        "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/modeling_qwen3_guard.py": "qwen3guard-stream-0.6b/modeling_qwen3_guard.py",
-        "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/tokenizer.json": "qwen3guard-stream-0.6b/tokenizer.json",
-        "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/tokenizer_config.json": "qwen3guard-stream-0.6b/tokenizer_config.json",
-        "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/vocab.json": "qwen3guard-stream-0.6b/vocab.json"
       }
     },
     "sensevoice": {

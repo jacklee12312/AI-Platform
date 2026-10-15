@@ -68,9 +68,9 @@ def load_workflow(bundle, catalog):
     return value
 
 
-def workflow_assets(lock):
+def workflow_assets(lock, *, include_images=True):
     return [lock['probe']['archive'], *lock.get('host_packages', []),
-            *(row['archive'] for row in lock['images'] if row.get('archive'))]
+            *(row['archive'] for row in lock['images'] if include_images and row.get('archive'))]
 
 
 def validate_settings(data, *, probe_installed=None):

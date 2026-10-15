@@ -2,6 +2,1506 @@
   "schema": 1,
   "files": [
     {
+      "path": "build/resources-1.1.2/README.md",
+      "bytes": 1027,
+      "sha256": "452913110365e0fe568c9b8c7db57ce1a39d99382546e3ca5502e664c4a51d29"
+    },
+    {
+      "path": "build/resources-1.1.2/VERSION",
+      "bytes": 68,
+      "sha256": "005cc686d0be57d6d73190b5b752cf6fa880d0bf0d33bdea793553ade89aa3cd"
+    },
+    {
+      "path": "build/resources-1.1.2/docker/arm64-bookworm/containerd.io_2.3.3-1~debian.12~bookworm_arm64.deb",
+      "bytes": 19099456,
+      "sha256": "2627d09156e863f57689664193e68c4f1c7fef57f7eab84ad39ae138cffb8857"
+    },
+    {
+      "path": "build/resources-1.1.2/docker/arm64-bookworm/docker-buildx-plugin_0.36.1-1~debian.12~bookworm_arm64.deb",
+      "bytes": 14717684,
+      "sha256": "58950ea4e5379cd5e75e2a5a8c873e2f9db548b200e2acfb191c5daa6aa4c7b9"
+    },
+    {
+      "path": "build/resources-1.1.2/docker/arm64-bookworm/docker-ce-cli_29.7.2-1~debian.12~bookworm_arm64.deb",
+      "bytes": 15293944,
+      "sha256": "3cb8d9313adcb6759656aad781a4d9be545a5587496953ecba620589376915eb"
+    },
+    {
+      "path": "build/resources-1.1.2/docker/arm64-bookworm/docker-ce_29.7.2-1~debian.12~bookworm_arm64.deb",
+      "bytes": 20527660,
+      "sha256": "36e2e5807cbd88635dfe5ac6f5fec60fa41c2d9d625ae089429055ce9ca88dd1"
+    },
+    {
+      "path": "build/resources-1.1.2/docker/arm64-bookworm/docker-compose-plugin_5.5.0-1~debian.12~bookworm_arm64.deb",
+      "bytes": 9408596,
+      "sha256": "6ed7bc67f1f03f447dd2416d633d1046388036de50fee95c4b8f3c1833d29adc"
+    },
+    {
+      "path": "build/resources-1.1.2/docs/安装说明.md",
+      "bytes": 12017,
+      "sha256": "b7f9cc458ab05902d193c5c9134efd529e53aaa49ab7c545f1a815f45c3c1c2a"
+    },
+    {
+      "path": "build/resources-1.1.2/docs/安装说明.pdf",
+      "bytes": 154401,
+      "sha256": "336a17e9ef06ae4ff76d09bd544ea4c4a772b6776af83872147dc56e103f1428"
+    },
+    {
+      "path": "build/resources-1.1.2/docs/安装说明.tex",
+      "bytes": 14764,
+      "sha256": "7be03216eae341a320be011c387ad21f586e7b54e13f024b27bedbf244ade9f3"
+    },
+    {
+      "path": "build/resources-1.1.2/images/all-arm64-images.tar.gz",
+      "bytes": 1890677089,
+      "sha256": "a68e47710fbfe9bd1651d7213b120c0345719146882afe4454e4f23b5fcda623"
+    },
+    {
+      "path": "build/resources-1.1.2/manifests/SHA256SUMS",
+      "bytes": 33813,
+      "sha256": "20021c15c4ccb233626479d9931f0024cc82cb089ac7f0e4b6199db0db2aa0f1"
+    },
+    {
+      "path": "build/resources-1.1.2/manifests/build-checks.json",
+      "bytes": 613,
+      "sha256": "81fb017a060ffeb36bc48d18c5bfef5cb8617a756ae9504b57ecb54ff8e43794"
+    },
+    {
+      "path": "build/resources-1.1.2/manifests/image-lock.json",
+      "bytes": 16956,
+      "sha256": "4edae6104fe93a46b45e5fde3fc4fe0f6a72d56c08520867e94de5c36ff30086"
+    },
+    {
+      "path": "build/resources-1.1.2/manifests/manifest.json",
+      "bytes": 19878,
+      "sha256": "2e2257d552507d01241bb2dab467c8267bb1be0eee434c7f3fa57ce52045ce5b"
+    },
+    {
+      "path": "build/resources-1.1.2/manifests/model-catalog.json",
+      "bytes": 34117,
+      "sha256": "0aacd2afc791659b584dc9257bdaea1fb2135d62a1bd272df17a6474b84b6a5c"
+    },
+    {
+      "path": "build/resources-1.1.2/manifests/source-provenance.json",
+      "bytes": 17147,
+      "sha256": "91dcdc3a7f4d739027ee06024cfbf3b0204324b5fc1883c777bf301c7db074d1"
+    },
+    {
+      "path": "build/resources-1.1.2/manifests/versions.json",
+      "bytes": 9780,
+      "sha256": "10a84e6333e4bd82d7a3d51431ffcaad68bc60badd3b5f98761490ff9fd2f14c"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/ai-model-gateway/.dockerignore",
+      "bytes": 67,
+      "sha256": "16cb3e91ff918ce8a930f51c1a5757e0f216f328d357e40bc9d1641e43837d9d"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/ai-model-gateway/Dockerfile",
+      "bytes": 576,
+      "sha256": "cd4a9196a559e1b7e4f8b3c67d8cdd9e277005d604e70e2ce7c82a357286a9af"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/ai-model-gateway/MODEL_PARAMETERS.md",
+      "bytes": 2057,
+      "sha256": "e0fa4454d7cc94b27e404e38511dbc011e3d1b6b4258e37b2d0a989b38b79a7b"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/ai-model-gateway/README.md",
+      "bytes": 8033,
+      "sha256": "4c663ea3f4de92a2244b82c551f0a52656a706b6025e34871cfe64e5dd692cc7"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/ai-model-gateway/STAGE3_ACCEPTANCE.md",
+      "bytes": 3396,
+      "sha256": "193570effec5619e0d0863610cdc716c4dc12163c9ca257c7c0f001223776018"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/ai-model-gateway/VALIDATION.md",
+      "bytes": 4133,
+      "sha256": "3604a68a9422df187719fcb95f7263580b1c68829e8f74cc70047a53bfb96afa"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/ai-model-gateway/app/__init__.py",
+      "bytes": 37,
+      "sha256": "f844798a03de28ebffc953bb5c6109a00e7bc7bae4f2ace9ccf26d4d02ceb9c5"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/ai-model-gateway/app/access.py",
+      "bytes": 14257,
+      "sha256": "cae02ea10ab61decc57b12b19ba5b86774853cc6ffe6f21392fbcb4818823f7c"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/ai-model-gateway/app/access_store.py",
+      "bytes": 5660,
+      "sha256": "823d49cb63d4676b687e2d68a99759c654ad9a62044031671c5df6400550ce25"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/ai-model-gateway/app/chat.py",
+      "bytes": 928,
+      "sha256": "d4b36ed930fa51ab43dc3c4483cf10e7e7b8876bd51a7b80057a3ffefa58c2c8"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/ai-model-gateway/app/config.py",
+      "bytes": 4895,
+      "sha256": "fc7c867b72660b1a7848b21209b177541d96f14e206b8f9c329fb102415f803c"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/ai-model-gateway/app/defaults.py",
+      "bytes": 816,
+      "sha256": "9c05736ffa7caac192f83bbfb148f2dc6af80de2f8c82127c62e5579b11c51e9"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/ai-model-gateway/app/errors.py",
+      "bytes": 680,
+      "sha256": "fbf53ed258bba9653ecd026290db7a7410d5f69888315d01aac985976467e4f2"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/ai-model-gateway/app/guard.py",
+      "bytes": 2923,
+      "sha256": "fcf62952e58d725de5e34d3f4ff233e00aa13cf6091343b2e70f9a76a06e72e3"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/ai-model-gateway/app/main.py",
+      "bytes": 60209,
+      "sha256": "97b5b55c2579010053da11ffe9929ad17a81d6bc622ac591826e0b4eabc7661f"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/ai-model-gateway/app/request_content.py",
+      "bytes": 3002,
+      "sha256": "e9efa768a778338a6adb5c58b68cf90320e0ef4841843011bd4dc8c2e79fd0a8"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/ai-model-gateway/app/request_diagnostics.py",
+      "bytes": 14961,
+      "sha256": "b26487c5936f468011be466876730d73ed2027088b0b4afed5deca80c0b34d67"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/ai-model-gateway/app/runtime_safety.py",
+      "bytes": 2825,
+      "sha256": "fe11da07258631845505fb9a260456c7110081ef71aa61202ef90bf042f009e1"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/ai-model-gateway/app/streaming.py",
+      "bytes": 902,
+      "sha256": "155d13024ce83f9e5a321acab050a6fae7b83593d58c1f337c96e798d465b643"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/ai-model-gateway/app/upstream.py",
+      "bytes": 4859,
+      "sha256": "6d3d18e9246a3a6bbb859810f4acbd64695647ccc336ae3bb3acd5805392d886"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/ai-model-gateway/app/usage.py",
+      "bytes": 27716,
+      "sha256": "e0c7e6c83ae55eb1ff5a0f8868181ae9c40afacd18a97701eb57f57cbb02a348"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/ai-model-gateway/app/usage_quality.py",
+      "bytes": 3812,
+      "sha256": "64254532e6fecf813e4aba041f865a9f13f33da2b787c945bd4e0124c9f5c536"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/ai-model-gateway/compose.yaml",
+      "bytes": 2176,
+      "sha256": "d5f2c13d6ee129bc1b280d8d0c557b91e5b768f45e9b6d70d7dc8aef00cd91d4"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/ai-model-gateway/config/models.json",
+      "bytes": 10718,
+      "sha256": "92ad5f6f35dd6eed91f155c4e4f108beba1126490245e70312cedf020a67f88d"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/ai-model-gateway/requirements.txt",
+      "bytes": 66,
+      "sha256": "b7db25932a037107f67b8f3dbad8d7749ffaed638eaba5b15f0e10f4ff917e90"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/ai-model-gateway/systemd/ai-model-gateway.service",
+      "bytes": 579,
+      "sha256": "032ec6f721d6bf8922ca5c4a4bc213e225e076ea14f5459bc0e80688a349c110"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/ai-model-gateway/tests/integration_acceptance.py",
+      "bytes": 7262,
+      "sha256": "6933267a6fc8516dfe8ab143cf99637a0925de53b236c1803b36ef754d51cc98"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/ai-model-gateway/tests/live_multikey_acceptance.py",
+      "bytes": 4750,
+      "sha256": "fecddcc04ab503318e1a2769fc05358a8d007a3e862aea10e1cf1cfc0bf398d0"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/ai-model-gateway/tests/resilience_acceptance.py",
+      "bytes": 3544,
+      "sha256": "c72c9c122a769703d47d671c99a267fae8a2b9b2bd91003b4580784e518a15ef"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/ai-model-gateway/tests/test_access_control.py",
+      "bytes": 17414,
+      "sha256": "6d4b49758ebb1b7f557f7e80df75e75907890dbe8da82ed417628c9bef5ea690"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/ai-model-gateway/tests/test_active_requests.py",
+      "bytes": 6457,
+      "sha256": "562e8c7e2cede182944529846eb90c0d887e5687705b68c97e5da8616e6dfaa8"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/ai-model-gateway/tests/test_core.py",
+      "bytes": 12386,
+      "sha256": "ec4425a16fd20ab96d83f0b225498b4bd184fc4fa2215b609c38fb945fb56335"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/ai-model-gateway/tests/test_model_installation_state.py",
+      "bytes": 1481,
+      "sha256": "80245a9e648d7ce904f6eaeb0463b7db6d62f51dc10f80573678b93101073743"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/ai-model-gateway/tests/test_request_cancellation.py",
+      "bytes": 7101,
+      "sha256": "2ce359f138446400a91977dd426ae9734731fd89ee03584084a627d84a497af0"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/ai-model-gateway/tests/test_request_diagnostics.py",
+      "bytes": 9989,
+      "sha256": "5d463903a85152102d93f99451714afd7c2bd8320f1b93986c7db6f6c907561d"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/ai-model-gateway/tests/test_runtime_safety.py",
+      "bytes": 4264,
+      "sha256": "ce60185c31c037abdf83e826aca7a3e272c8a98372ba31b3582b55350880df70"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/ai-model-gateway/tests/test_usage_reconciliation.py",
+      "bytes": 11988,
+      "sha256": "6bd45c2103f8d7124d6706e3c9ff10dbf22cfcc8c1de45fa5d5c4a2fa8fd531b"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/cix_telecom_projects/dual-core/qwen36_35B/chat_template.jinja",
+      "bytes": 7756,
+      "sha256": "a4aee8afcf2e0711942cf848899be66016f8d14a889ff9ede07bca099c28f715"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/cix_telecom_projects/dual-core/qwen36_35B/config.json",
+      "bytes": 3544,
+      "sha256": "5e4d7f74fec2f360eb9cfbfcd6ec0c4c76e684d3a11caaed259d9fd9bfbc7944"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/cix_telecom_projects/dual-core/qwen36_35B/configuration.json",
+      "bytes": 51,
+      "sha256": "2d4464e2ead06bc9bc718c781309ad1e7baded626d66e8dcdc8b469ba185faf0"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/cix_telecom_projects/dual-core/qwen36_35B/generation_config.json",
+      "bytes": 244,
+      "sha256": "4f25002776b741773666203dcea8f54619f177ace3ae483d311102092a4658e0"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/cix_telecom_projects/dual-core/qwen36_35B/merges.txt",
+      "bytes": 3353259,
+      "sha256": "a9d356d7bdf1ef4949e3e748e95b8e10ad9d4e2e838eddc38a0a7b6b94d1db8d"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/cix_telecom_projects/dual-core/qwen36_35B/model.safetensors.index.json",
+      "bytes": 187463,
+      "sha256": "d8d0b7ca4e61ae107e3e87a3ff21136b3ac7c789e64bb24267227ca804e04205"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/cix_telecom_projects/dual-core/qwen36_35B/preprocessor_config.json",
+      "bytes": 390,
+      "sha256": "27225450ac9c6529872ee1924fcb0962ff5634834f817040f444118116f4e516"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/cix_telecom_projects/dual-core/qwen36_35B/tokenizer.json",
+      "bytes": 12807982,
+      "sha256": "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/cix_telecom_projects/dual-core/qwen36_35B/tokenizer_config.json",
+      "bytes": 16710,
+      "sha256": "316230d6a809701f4db5ea8f8fc862bc3a6f3229c937c174e674ff3ca0a64ac8"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/cix_telecom_projects/dual-core/qwen36_35B/video_preprocessor_config.json",
+      "bytes": 385,
+      "sha256": "7768af27c1fafa9cc9011c1dc20067e03f8915e03b63504550e11d5066986d13"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/cix_telecom_projects/dual-core/qwen36_35B/vocab.json",
+      "bytes": 6722759,
+      "sha256": "ce99b4cb2983d118806ce0a8b777a35b093e2000a503ebde25853284c9dfa003"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/cv_deploy/README.md",
+      "bytes": 1448,
+      "sha256": "fa2cec7d6037cd5ae0a75588b2490f2accd8daae59c51c7992f13c25db7793ff"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/cv_deploy/VALIDATION.md",
+      "bytes": 2228,
+      "sha256": "8fa7788d1443d8ce33660cb72466c0083b55b9fb06e33feae884d16e32a71ada"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/cv_deploy/app/main.py",
+      "bytes": 24531,
+      "sha256": "d91c76845c7ed51206e67f5455f6df98cffcf0c0e31b3501a0aee9e536d81944"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/cv_deploy/compose.debug.yaml",
+      "bytes": 65,
+      "sha256": "b9017f175c05f07968e84f08e1492faae1523b11fa49d26d3742d9469b95c6c6"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/cv_deploy/compose.yaml",
+      "bytes": 625,
+      "sha256": "5e9100f051fa4d96e0731c554817d4fa00902a4223a4f82f848bd5c2b23b6fc2"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/cv_deploy/docker/Dockerfile",
+      "bytes": 458,
+      "sha256": "b8eb985201a3914aa26b2d8daba686aaf1a236e6a412889aa25f1c03b1e14008"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/cv_deploy/smoke/README.md",
+      "bytes": 444,
+      "sha256": "b78a1ac48c389e8ab62016e167a06d530cd9ed703b4959035d24f1156741a5a1"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/cv_deploy/smoke/test.jpg",
+      "bytes": 186803,
+      "sha256": "3d41bd603b1f5cccd36140f04285e5041fdeaf532e46a1382eae6ba1cef0ee6b"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/cv_deploy/smoke/test_mobilenet.py",
+      "bytes": 1382,
+      "sha256": "b980f68ee36356c6685ed5abe839c322226120ab97bb45dc39a12bbd2feafa5b"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/cv_deploy/test.jpg",
+      "bytes": 186803,
+      "sha256": "3d41bd603b1f5cccd36140f04285e5041fdeaf532e46a1382eae6ba1cef0ee6b"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/cv_deploy/test_api.ps1",
+      "bytes": 495,
+      "sha256": "2e97ee2d99047ec17bcaf9d57b76e1fcf842967a50d434ce3071cadaac9048cd"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/.dockerignore",
+      "bytes": 124,
+      "sha256": "0e7855041deadc85fe91f391757889b4567d67e2ae0dfb15a6188b31ca5e48df"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/.env.example",
+      "bytes": 467,
+      "sha256": "f868cda6023f34725f4c1ffc252c355dc6e49db5a6535eb46bfda86e772b3c6a"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/BATCH_TASKS.md",
+      "bytes": 5729,
+      "sha256": "4c187513d52a080e34ad80c1446480b7d9e2c6f895eadfa0e35e65d5fd2eb810"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/Dockerfile",
+      "bytes": 592,
+      "sha256": "a268208c970fcbb942b4c6ffbe54d239877f5d4347c3ee2b0e05433fed515a3c"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/Dockerfile.agent",
+      "bytes": 210,
+      "sha256": "881a567b281502523a3033304eed7c51286e533a37d0d3ac1ee9c04dab643d89"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/README.md",
+      "bytes": 11984,
+      "sha256": "b12399793547b070778c7fb7036d1f0d0b9c06d207108f9cae1b8679331246f5"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/admin_app/__init__.py",
+      "bytes": 40,
+      "sha256": "bef99c7ba771852fbef6df03de281c29d03cb0ff8c5d54e504fbcf0efda3f64c"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/admin_app/api_reference.py",
+      "bytes": 39591,
+      "sha256": "2f74a4bd791b529b8cb16eac9bd1c2f74662c6f6356d462e76d5ad1d966305aa"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/admin_app/audit.py",
+      "bytes": 7740,
+      "sha256": "c7cf95ff818c3139ff17f54ac537f205770bcfcc1e0b0296106a3ded7068bb8c"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/admin_app/batch_api.py",
+      "bytes": 8688,
+      "sha256": "cd3b02a080a3b1299fc2f51550ec51a32c1cb4d553c50b2f85c75797b2fe4136"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/admin_app/batch_engine.py",
+      "bytes": 11572,
+      "sha256": "bffc8b5c48f2117fcbacc13c47f3978886d95b5d999b388722abbd7201533199"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/admin_app/batch_media.py",
+      "bytes": 5107,
+      "sha256": "1133684744b815529bd7557acfbcc65fb79a55b6a81c5fa5e046e076424c47ad"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/admin_app/batch_store.py",
+      "bytes": 18190,
+      "sha256": "c5dcedfc4fec47ef0d333d7715ed93aeee41655f4c5b77e7a3090577b484cdf6"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/admin_app/capabilities.py",
+      "bytes": 8304,
+      "sha256": "ff99ed078ac681f81861422c136a0dfd6709d0294ae85d44235ccff50631692a"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/admin_app/capability_catalog.json",
+      "bytes": 48194,
+      "sha256": "de0aee048fb720a73d71228082f6b37564965926abe533140cc44eeaae77d2d8"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/admin_app/capability_examples.py",
+      "bytes": 11984,
+      "sha256": "513c763393a457ffde50df99e58f69df9120cc754e4f36c2415c68bed8b8d515"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/admin_app/diagnostics.py",
+      "bytes": 4358,
+      "sha256": "3de413367fffac8a4088950e55e44daf557fef9d413a64cfa454f54d7fef02bc"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/admin_app/evaluation_api.py",
+      "bytes": 5943,
+      "sha256": "c3915478b57d7b09b383b6c9bfabe21adf0f6c1799d09c1be174c2ba1d08eeb8"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/admin_app/experience_api.py",
+      "bytes": 8259,
+      "sha256": "953eca43e3bbfb382bd50f7cd31ab98f2519cf5c73b03d08c7dc7bf1f1615560"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/admin_app/main.py",
+      "bytes": 36426,
+      "sha256": "80b355c4061f8483322031a307d8402a6156fec3541b39235e2db467e5f92e4e"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/admin_app/model_install_api.py",
+      "bytes": 3726,
+      "sha256": "c6abf26d3d818b7a71905abd48b4d8d747385632a205dc69ef83fe4286b0fd78"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/agent/__init__.py",
+      "bytes": 54,
+      "sha256": "93713ee965bbe05f72bf9d8c75097c77386f8edf818941b1d3707b8daf04f289"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/agent/configuration.py",
+      "bytes": 10071,
+      "sha256": "60aadf6dcf92f72bcfb2626605811acc7732cbf27dc5e678569eeec6ce8fd9b1"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/agent/device_recovery.py",
+      "bytes": 29767,
+      "sha256": "e91eeec12a57e92bc71ede7deb3fe0ac687cf70f65e4451c809ef53f4f73f8ac"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/agent/diagnostics.py",
+      "bytes": 16070,
+      "sha256": "7466e7b4b8af7bff95791954e75d33e54f8966295eda172133366750395260a5"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/agent/evaluation_api.py",
+      "bytes": 5935,
+      "sha256": "5b864f545ff64379e08d4c916f41bd84ac73b2e20456d7703172a51ed6f36ae0"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/agent/evaluation_cases.py",
+      "bytes": 6886,
+      "sha256": "14dd2b14250f042cac350cfdc2f2bbd83783e5a0f1ee927e6abf2d34407ae585"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/agent/evaluation_engine.py",
+      "bytes": 16527,
+      "sha256": "120935b70662518bb8aa5c80498c8df01ea5ba9688fc0ec1823dc4c77f75722e"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/agent/evaluation_runtime.py",
+      "bytes": 29774,
+      "sha256": "125a41c2cbc93e20a617af2fc9f99b9889701f315ffafea00c4b7962e7fd3c26"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/agent/evaluation_store.py",
+      "bytes": 10306,
+      "sha256": "d6a22649921a4a02c9ba6001877cc922e69794e65fb5e7e51c4199aa5c90c876"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/agent/faults.py",
+      "bytes": 1876,
+      "sha256": "0af589f760a25d674e8f4bf203b286c346270d81b6797f93f56f1ab1d2b31a84"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/agent/main.py",
+      "bytes": 40109,
+      "sha256": "be21abdc6ef738c25c11a7aa55a094800c8bb50faf53de6b97804a00e332b32e"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/agent/model_api.py",
+      "bytes": 8052,
+      "sha256": "4a293652933b9acdbf2a482d0e2975232f9694986f95cc40ffd67454dd851a51"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/agent/model_catalog.json",
+      "bytes": 30005,
+      "sha256": "954740c27345094547f96fde4eb4b5ad2e781bb0d87e7e1977178b9880059110"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/agent/model_install.py",
+      "bytes": 17601,
+      "sha256": "0d2bebb8987cfa8ba04d7b3f7c04715aa520c6b38e7a314ed2f8d064e1502794"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/agent/model_runtime.py",
+      "bytes": 14623,
+      "sha256": "ea65b5d9c2c09e1418c9c19f87a57171e52b1b5b5a2823d395739ebb0720b1fb"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/agent/model_store.py",
+      "bytes": 15152,
+      "sha256": "314d3d2258cbb2ab0a47798f60b992a4d7e4b3f7d793b610d73b12c30d115240"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/agent/registry.py",
+      "bytes": 6760,
+      "sha256": "9d01d1bfeea06c87c8713cf99a3d6dc4017bf73d227bc2c5e3e5c9baaf5e854c"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/agent/runtime_baseline.json",
+      "bytes": 9758,
+      "sha256": "b7d08ff5971d9a17ccd06e6a07714b03029ba77c3bb0015801e0f5262bcebf37"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/agent/runtime_probes.py",
+      "bytes": 5580,
+      "sha256": "ac00459200e52ac529d286660ab42a12d6acc5075ddf5605a647fab23ba8ecaa"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/agent/runtime_safety.py",
+      "bytes": 10384,
+      "sha256": "74ff00e04a9809266354efa6bd326fc2b1e82f5f6a4022d2dbd78934e0047ac5"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/compose.yaml",
+      "bytes": 3767,
+      "sha256": "ff1fe22009011d90be69acee2c20ff5028f3c0bb07a06fb69685fd820ac0b959"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/hash_password.py",
+      "bytes": 1001,
+      "sha256": "b742c13437c35051954b93c3d45fe8e79bcc8d76fc208a2c69a9c7cd9dd39685"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/provision_env.py",
+      "bytes": 1852,
+      "sha256": "b03a3785daf5c3ea228c94956bae525dd77005fbde023b061c947a78dc91e834"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/requirements-batch.txt",
+      "bytes": 44,
+      "sha256": "2c133bfb535aa750397404be1801b90f4e3ee04e054db544f5a6ca72d9f52196"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/requirements.txt",
+      "bytes": 47,
+      "sha256": "c450be2e9101842e04ae6b42e18967e8114fc667e22d1e57806c0c818b365f43"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/runtime_config_acceptance.py",
+      "bytes": 5989,
+      "sha256": "8a0fc25713b910b75cc339de3decca4b0231a7b3350b770eced27b675bd43c90"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/smoke_test.py",
+      "bytes": 3619,
+      "sha256": "e5b4ef4e5e77676b438a993860260577bec31eec0f0ba30efde02e3b5ab71213"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/startup_verify.py",
+      "bytes": 9825,
+      "sha256": "7b6541e77addfedc7cf6203a1b97071a8b61c3ef0d5c9057db8b2f01cce73963"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/systemd/gateway-admin.service",
+      "bytes": 632,
+      "sha256": "54e922cd1aa23dac222c66c6b88744f11f7c57a2c50fd68c118c48b4538b20da"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/systemd/modeldeck-startup-verify.service",
+      "bytes": 609,
+      "sha256": "8e64ef2f8dc92cd7f1b7505f9b223e59f80eabc09396483864fcfe2739109d9a"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/tests/diagnostics_fixture.py",
+      "bytes": 4851,
+      "sha256": "7d4e09437cc44c4158074877102935bbe1023d9aa0432deb642f01a91f08d10a"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/tests/evaluation_fixture.py",
+      "bytes": 3808,
+      "sha256": "bf086fddbbbe57536d0f95dfcb6797251f1b2661d04237141053e399ba6f0b4b"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/tests/experience_fixture.py",
+      "bytes": 2164,
+      "sha256": "5ee9900e32741eb768c9b93986229be81141a17f28ab0ac3827edbac778320d4"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/tests/live_key_access_acceptance.py",
+      "bytes": 9489,
+      "sha256": "d00142c7f4965c3b1e5e594129f1b4f675bab33c1526222e70115a8eaa968bcc"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/tests/live_s07_s08_acceptance.py",
+      "bytes": 13108,
+      "sha256": "da8cccbafba96b89de281ac11d0a9fb1a1dd49def33d5abb1ec5c998fc6f42a3"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/tests/model_install_fixture.py",
+      "bytes": 2706,
+      "sha256": "01a5d9b0323c4e11e8b4254d17d7487234f33ec134cfae5c311e5d21bd686607"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/tests/serve_audit_fixture.py",
+      "bytes": 10574,
+      "sha256": "322db48356c98496cddc42ebba2109179e61eece45015ef577ecd014fdae692a"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/tests/test_admin.py",
+      "bytes": 14854,
+      "sha256": "9d693f622f7b7cd4cf47ec73fa98194457d8a09ae006b27e0973f2334309ac9a"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/tests/test_api_reference.py",
+      "bytes": 6404,
+      "sha256": "38da9f4c2ab1db9ec00b088749a88e7fe3cc35c5ae7ed6e765e9965e43141822"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/tests/test_audit.py",
+      "bytes": 16999,
+      "sha256": "444d838eb5837c6229c930f4baeef312e3a2e86c3333ef8ec22da5f45a78ad51"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/tests/test_audit_process.py",
+      "bytes": 3733,
+      "sha256": "5ad47692d3cbd6cab59072742b517e3ba7d5b1bb8d64b4ed75038bc972ea7976"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/tests/test_batches.py",
+      "bytes": 23416,
+      "sha256": "27ee7188f3b26595517d57b627eac1863713fe3d61d59154f6ddfebccde85246"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/tests/test_capabilities.py",
+      "bytes": 12498,
+      "sha256": "9b1ef31d266124ced4a8382d820d27ab9358fe596f1cffa32f2f284cd0be4fea"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/tests/test_device_recovery.py",
+      "bytes": 7692,
+      "sha256": "9b2031cf50013ffbe3110cfbbc7716683ec9abcb8321f9ae67aff8c575f0d42b"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/tests/test_diagnostics.py",
+      "bytes": 8555,
+      "sha256": "68a9c1188063e051cb466638fdf832eba8759fe90a5ee99dd620842230e1beb8"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/tests/test_evaluation_agent_api.py",
+      "bytes": 5405,
+      "sha256": "9ef53b0878766c7327ec8bbf7f40fcd13bcdf1eace79762e5669f3e66c652178"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/tests/test_evaluation_api.py",
+      "bytes": 5924,
+      "sha256": "126ca70f727a8466d44edcd4a54e00d0a06a45bd63db9fbdb37ab92db285bf0d"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/tests/test_evaluation_engine.py",
+      "bytes": 37274,
+      "sha256": "6962ed166ecdfac72719895429b775889e48d1ef8143edfe52421a84e8cd7270"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/tests/test_evaluation_runtime.py",
+      "bytes": 27195,
+      "sha256": "5ab689a1137a0a70320345fe833edc57851568fea2dc474853ea5af6fb4b27cf"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/tests/test_experience_api.py",
+      "bytes": 7708,
+      "sha256": "29ac6191afcf266f36b8f74122a10ef27f38292879120ca6aa08540cb992bf46"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/tests/test_formal_release.py",
+      "bytes": 3665,
+      "sha256": "0c847843fe95fe2c33af98e59e83be3ae95b5d3f979c0a6d58695002e2746c2a"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/tests/test_mode_switch.py",
+      "bytes": 5396,
+      "sha256": "dc3c817ada929b31e570f95212b9b4e7e34469935e673fe96269752169017ca1"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/tests/test_model_install.py",
+      "bytes": 18841,
+      "sha256": "1ac7a1ffff30997563889c85a0a57b3ee7a93cabfdf74ae6b87cd50df56df671"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/tests/test_request_monitor.py",
+      "bytes": 2038,
+      "sha256": "82093e08dbcd06100aec72dc1d1e545e2cc47ae658687df3fff23dff7b47f10e"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/tests/test_runtime_safety.py",
+      "bytes": 7976,
+      "sha256": "354f58e7a7e42a35abdec3fa54027c46f71bd8025e9127a1bf0dba1581e6763d"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/tests/test_service_readiness.py",
+      "bytes": 1947,
+      "sha256": "b456bec0a7d8f1e43b3ce0917cd83ad6c2b4f8b59857b455627992c7dd3a37a9"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/gateway-admin/tests/test_startup_verify.py",
+      "bytes": 3893,
+      "sha256": "68e92d55ae95f295d88b778ac32ac7bb34942d07c3f1ca79b0beb52c82382fd4"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/houmo-docker-deployment/.env.example",
+      "bytes": 123,
+      "sha256": "dc9781dbe52be43bbdacac8f72a115c1065a1032cfa569854922a3dd17030145"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/houmo-docker-deployment/README.md",
+      "bytes": 4406,
+      "sha256": "3e20e95669a86d9728bdfd69d2d1f7292d892b1ea8a8f17ca5874097ba919ee8"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/houmo-docker-deployment/benchmark-concurrent.sh",
+      "bytes": 1917,
+      "sha256": "25dd92a35ed1a6ee287509002b411d9d564d9f6694b790d9d6fc19e4bb856cfc"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/houmo-docker-deployment/build-glm-ocr-runtime-image.sh",
+      "bytes": 1294,
+      "sha256": "cfb1c714de52174f0b9c24991176f049bb1cecbce7255cd59a487858d003e7b2"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/houmo-docker-deployment/build-runtime-image.sh",
+      "bytes": 1156,
+      "sha256": "3ec51a5e2d2d73da84153de30f2a75eb37bf2be3dda2cdf871b2feff5acabe27"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/houmo-docker-deployment/compose.debug.yaml",
+      "bytes": 401,
+      "sha256": "d4ac936a4d1c9db401abc35a1b2f7ae8bbe154186be9e4d05868640376ca27c8"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/houmo-docker-deployment/compose.remote.current.yaml",
+      "bytes": 10705,
+      "sha256": "4b36d051f837de61231692eaa90a2e40cb47a7771c7e5d9bbf19deec7e480eb7"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/houmo-docker-deployment/compose.remote.yaml",
+      "bytes": 10705,
+      "sha256": "4b36d051f837de61231692eaa90a2e40cb47a7771c7e5d9bbf19deec7e480eb7"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/houmo-docker-deployment/compose.yaml",
+      "bytes": 20000,
+      "sha256": "71647ace86cee49dd717a280b82c5a80ba25ff708d11d94cf2642e1877e61bd9"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/houmo-docker-deployment/copaw-monitored-soak.py",
+      "bytes": 24751,
+      "sha256": "8c2dfcfd85529c90f46f2d59f3efa2654b34bb4e2e46c8da353ba7dd1fe74a55"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/houmo-docker-deployment/copaw-tool-compat.py",
+      "bytes": 19186,
+      "sha256": "2e432e0c0540efece04a9b6ce6ce350185f5061dac95745b6c10d1f6fcc24b13"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/houmo-docker-deployment/houmo-ai-modelctl.conf",
+      "bytes": 108,
+      "sha256": "038a8a46d1f3f47f17ec52221668dce1a71d030ab5c225807370a8df9cd5591b"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/houmo-docker-deployment/houmo-ai-qwen38-mode.conf",
+      "bytes": 196,
+      "sha256": "3fd13dcf2ca46bc775453e7ab67490f6bddb87d9e4579caeff5fb4adb2714b39"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/houmo-docker-deployment/houmo-ai.service",
+      "bytes": 459,
+      "sha256": "5c93594150dc627835383857518f3f146dfe547a5cde05eaa843fa9d7cf91cde"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/houmo-docker-deployment/llm-benchmark.py",
+      "bytes": 32703,
+      "sha256": "20c00e0db96b436bad7642a0bffb60b3980c7d4438120c3400fcd7da3c4e3cc8"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/houmo-docker-deployment/modelctl",
+      "bytes": 12618,
+      "sha256": "f50998146914d2ea9bcdb76733be8e96ea08762e6d4434a1a704c049528a3985"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/houmo-docker-deployment/npu_soak_monitor.py",
+      "bytes": 22004,
+      "sha256": "e582afd07c6780ba1c320d3aac8a047fd1d2ebbc60344fa87bb1e7c430ec5ca3"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/houmo-docker-deployment/qwen38-long-context-test.py",
+      "bytes": 29095,
+      "sha256": "ebea8d32b4ca235df18910473564cffb5cc284ae45fdd47668eabf4c1a607dca"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/houmo-docker-deployment/smoke-test.sh",
+      "bytes": 302,
+      "sha256": "29723523a979d9474278355a339a92715f8b891f18de733129586301be2c1734"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/houmo-docker-deployment/soak-test.sh",
+      "bytes": 2841,
+      "sha256": "55265196f6c753e1d941c591ca6179b69e56f85970c99caf4241072ff6745db9"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/houmo-docker-deployment/soak_report.py",
+      "bytes": 15343,
+      "sha256": "2946b274eb41cbb9b073d040810899ec0244bcfbf3bcb1f4957b7f2a08c5bd5e"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/kokoro-cix/Dockerfile",
+      "bytes": 1289,
+      "sha256": "c800611bcf7a23acdcd93980b6b7c6ef805c6b196c1775da1b110ffb2b89fe4e"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/kokoro-cix/app.py",
+      "bytes": 3979,
+      "sha256": "a1e3cfb4533fc7d29968ac79955ea4df2a7eeca97137be093a5c8bb626b61967"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/kokoro-cix/docker-compose.yml",
+      "bytes": 402,
+      "sha256": "4f752853b654ad6b8064c82ea3ae6fb39aeea322b5a3997a5a248ba410fc3869"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/kokoro-cix/requirements.txt",
+      "bytes": 52,
+      "sha256": "f485eda4bb8ab988c8e3dd1125f3b06e4159534c1140a1b1405cc10ca15f2433"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/kokoro-cix/runtime/kokoro/__init__.py",
+      "bytes": 311,
+      "sha256": "b8c00a65f383e7b3e3b5292d3dab4d71d8f3d79c68c9112c12e77066f186439c"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/kokoro-cix/runtime/kokoro/kokoro.py",
+      "bytes": 13424,
+      "sha256": "87231e4e683047c6c3a1f3fcd46c1e421f1a3c6bc86fc23e1bda832564f3a373"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/kokoro-cix/runtime/kokoro/pipeline.py",
+      "bytes": 18497,
+      "sha256": "ada49b458f85d022bb72296bcbb0aec84367cd91c51795c839549b2118f94007"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/kokoro-cix/runtime/npu_config.json",
+      "bytes": 1868,
+      "sha256": "9aca8ec665844f68da15691dcbfe06fcb056096b0458d5fffa505608b3d9e0fb"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/kokoro-cix/sample_request.json",
+      "bytes": 230,
+      "sha256": "41d3c7ac7cb2a3c2e7cbd20e1ae084ed689cc275989d2b5c5b6e6a3e840fcab9"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/matcha-tts-cpu/Dockerfile",
+      "bytes": 589,
+      "sha256": "d18ab21315de35824e174b487c179c2119adccad95fa3f0c55f47d6d12fc9e28"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/matcha-tts-cpu/README.md",
+      "bytes": 726,
+      "sha256": "59f237fe30063b056eccf3cba7d9b21a9e44c30f6eb93184c27991fd897035b8"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/matcha-tts-cpu/app.py",
+      "bytes": 5780,
+      "sha256": "66a0378ede0e25a0413a930a2136b0dddfcfc2aefbbac10052dfa269d5364aaa"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/matcha-tts-cpu/docker-compose.yml",
+      "bytes": 474,
+      "sha256": "0133a4c3b4521abc5a47b997242290064af17e34bf92a866ebe20da694e71692"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/matcha-tts-cpu/sample_request.json",
+      "bytes": 242,
+      "sha256": "b879e02e2b3bbbbffeaa7a68a25386aa4c3e6952f8cca6924428ee5f89f3a5e1"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/sensevoice-cpu/.dockerignore",
+      "bytes": 59,
+      "sha256": "d1083626e73bad5a2367679fe6ae99cbce70ddc9b93dc3fe8f21adbb0e82a52b"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/sensevoice-cpu/Dockerfile",
+      "bytes": 590,
+      "sha256": "41e814ce3128ff2fc90b820b8ba5f258eee5b1aee1772d38ee28a1e06d3a6b90"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/sensevoice-cpu/README.md",
+      "bytes": 1878,
+      "sha256": "e2fccb65bbee2ca6242a1720501157eef577808c9efc3c38460dfbbe324f929c"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/sensevoice-cpu/app/__init__.py",
+      "bytes": 30,
+      "sha256": "89cbec1f4c0ade4300adaf38d7230c1ff776e53cdf71dddb22ce94c88df6eb96"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/sensevoice-cpu/app/main.py",
+      "bytes": 18401,
+      "sha256": "4c6758d09031a541f988b03874946b7eaadd5bf35200e46bdc446271a2401db6"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/sensevoice-cpu/compose.yaml",
+      "bytes": 1403,
+      "sha256": "556fb70e6ee811b80d304ce41017543c7a31444c6e332191efde48a69c00ed30"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/sensevoice-cpu/requirements.txt",
+      "bytes": 110,
+      "sha256": "11302ce7be848c8aa84d5dc5635d5b841568e3e43026be910aab02a8846c8b49"
+    },
+    {
+      "path": "build/resources-1.1.2/payload/home/cix/sensevoice-cpu/tests/ws_smoke.py",
+      "bytes": 1354,
+      "sha256": "9978429451007236e4ebf8c49b3e93c9c039a7c81d6d9f887889b57f8cdec0de"
+    },
+    {
+      "path": "build/resources-1.1.2/runtime/cosyvoice-runtime.tar.gz",
+      "bytes": 863582280,
+      "sha256": "455b597be68337dcd4e0aeaba0764a4ece4a67a6885215b2e173dfe0a53f52db"
+    },
+    {
+      "path": "build/resources-1.1.2/runtime/host-libs.tar.gz",
+      "bytes": 469722,
+      "sha256": "43cfcfe5a4bbbda5bda6560d35fa9ddf5381f72625a213d6a5e4f6f38f7e6fd2"
+    },
+    {
+      "path": "build/resources-1.1.2/runtime/qwen36-vllm-runtime.tar.gz",
+      "bytes": 670416206,
+      "sha256": "ca83a3d8458900f77e086df72691bc8f0fbaf0163f9cfe9d1893800ea555bc03"
+    },
+    {
+      "path": "build/resources-1.1.2/runtime/qwen38-hliellama-2.2.0.tar.gz",
+      "bytes": 46675213,
+      "sha256": "a38023f4f53187b50a418bf979ec2eeda496c577c8f1f6bc6a76b1d9393b2bc2"
+    },
+    {
+      "path": "build/resources-1.1.2/runtime/ui-static.tar.gz",
+      "bytes": 136126,
+      "sha256": "e47e5b432ad1d3c18d8f4ed1485c47ac1360e30cd3635ec40f1304a80ed661b5"
+    },
+    {
+      "path": "build/resources-1.1.2/scripts/install.sh",
+      "bytes": 157,
+      "sha256": "1e1ad4a2f531bf5806b0c41207be284def1c66fb69b58e264ac7bfb4225c87bf"
+    },
+    {
+      "path": "build/resources-1.1.2/scripts/offline_install.py",
+      "bytes": 14685,
+      "sha256": "a802183bdc3313775ea504b4d9b89b033dc7f5d8744c9058307378d623694e10"
+    },
+    {
+      "path": "build/resources-1.1.2/scripts/verify-active-mode.py",
+      "bytes": 596,
+      "sha256": "1094b3ee287f51ee2b602d33a5f007e82f412e3fe9292475a0cecf9600ad60f5"
+    },
+    {
+      "path": "build/resources-1.1.2/scripts/verify.sh",
+      "bytes": 169,
+      "sha256": "42a70d602edb8bd0cc5cbba250dd03a7d0b5f7fc3d0074d9b5a7e953c053d60e"
+    },
+    {
+      "path": "build/resources-1.1.2/scripts/verify_runtime.py",
+      "bytes": 5730,
+      "sha256": "984413f4b6cf5cdba695274b3a6af6ea72428d2d7f77170a09b3b1e411b488f9"
+    },
+    {
+      "path": "build/resources-1.1.2/systemd/gateway-admin.service",
+      "bytes": 632,
+      "sha256": "54e922cd1aa23dac222c66c6b88744f11f7c57a2c50fd68c118c48b4538b20da"
+    },
+    {
+      "path": "build/resources-1.1.2/systemd/modeldeck-startup-verify.service",
+      "bytes": 609,
+      "sha256": "8e64ef2f8dc92cd7f1b7505f9b223e59f80eabc09396483864fcfe2739109d9a"
+    },
+    {
+      "path": "build/resources-1.1.2/tests/synthetic-ballot-expected.json",
+      "bytes": 120,
+      "sha256": "e6f35bb6d99932ecdf940ab91fe5fddf9dc5af5afc970dd60291affe2568ef56"
+    },
+    {
+      "path": "build/resources-1.1.2/variants/single/ai-model-gateway/config/models.json",
+      "bytes": 10233,
+      "sha256": "cce86822e3a3a7c4f7986433faa29386c181772b4a549241fab02f4187dc814a"
+    },
+    {
+      "path": "build/resources-1.1.2/variants/single/gateway-admin/admin_app/capability_catalog.json",
+      "bytes": 46910,
+      "sha256": "1b86558ec1110c8899076eebf9655f94ff54228818c9504b231338c897123e0c"
+    },
+    {
+      "path": "build/resources-1.1.2/variants/single/gateway-admin/agent/model_catalog.json",
+      "bytes": 27839,
+      "sha256": "80c4d49dde2038107d0bba14bfbda76d6d3eea0ff27d2d22781a90d263aebacc"
+    },
+    {
+      "path": "build/resources-1.1.2/variants/single/gateway-admin/agent/runtime_baseline.json",
+      "bytes": 9308,
+      "sha256": "3d4a6ba8c8534ac07d5726c67df641bf6e28026a48f72c451666b048e6c4f189"
+    },
+    {
+      "path": "build/resources-1.1.2/variants/single/houmo-docker-deployment/compose.yaml",
+      "bytes": 19352,
+      "sha256": "f407cbf1f6d0c274f263b5f6cb6ba35164b00c33490dd2f9decda3103fa0e99c"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/Packages",
+      "bytes": 90872,
+      "sha256": "528655bb62c6d5acda01d589813cc2301bdbd752ce438a65eeda594cd75f6082"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/adduser_3.134_all.deb",
+      "bytes": 183272,
+      "sha256": "c24fe4eb8e60d8632d72ed104cce7c92cff200847c897dc8ba764b6c47b519e0"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/debconf_1.5.82_all.deb",
+      "bytes": 121212,
+      "sha256": "74ab14194a3762b2fc717917dcfda42929ab98e3c59295a063344dc551cd7cc8"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/dpkg_1.21.23_arm64.deb",
+      "bytes": 1550216,
+      "sha256": "00b2b9d112ecbfe99d8f0c3de56dd33bc242f71c8ae51c3fd1e154ab2e2eb07a"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/etcd-client_3.4.23-4+b4_arm64.deb",
+      "bytes": 3988688,
+      "sha256": "3f1bcd6d47e2c9eaa274c5bb2f7b2ebc090226dc10dde00e13e32d0b03d137d7"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/etcd-server_3.4.23-4+b4_arm64.deb",
+      "bytes": 7620188,
+      "sha256": "821e59be145fa42bd72b3e003d275640947c3d824b4c06b1ed2a01a631d555a1"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/gcc-12-base_12.2.0-14+deb12u1_arm64.deb",
+      "bytes": 37624,
+      "sha256": "674cf6cba6d432bd200c45fe866c1652c7a53523cc2e7a613e05bc4abf7b5440"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/init-system-helpers_1.65.2+deb12u1_all.deb",
+      "bytes": 39020,
+      "sha256": "afab482524c64e4e256eb5cab43c1a96dc493ec476d94f19f1a5ec3de5fa0fef"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/iproute2_6.1.0-3_arm64.deb",
+      "bytes": 1008124,
+      "sha256": "58fad55c5a29be6c1e6301d0c572f2ac5e5962ff244e7da3784c1b29ffc6c6bf"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libacl1_2.3.1-3_arm64.deb",
+      "bytes": 30768,
+      "sha256": "2b0eef11a2e271e7355adaf1f6cbf8d2e83835ae1b6cf15165d59b8289c08342"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libaudit-common_1%3a3.0.9-1_all.deb",
+      "bytes": 10448,
+      "sha256": "17d0341ca6ce604ce59c296780ac2c2a24141a769823c50669af942c025e6591"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libaudit1_1%3a3.0.9-1_arm64.deb",
+      "bytes": 46104,
+      "sha256": "619606427a334cba955e0afb18bf4a636df4141d32ea474a79cc512b5ca358e7"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libbpf1_1%3a1.1.2-0+deb12u1_arm64.deb",
+      "bytes": 136376,
+      "sha256": "c9929839798e7d8e66b212f345ecf1653ba7f1a9e1b753d0eb67bd521b0b5511"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libbrotli1_1.0.9-2+b6_arm64.deb",
+      "bytes": 269124,
+      "sha256": "3137de7f71952e710ee9f0df05026b3c6f463be9369a502d57c7696732f1ed22"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libbsd0_0.11.7-2_arm64.deb",
+      "bytes": 115116,
+      "sha256": "ef00f132ddd268ee67d756998723ee18543db27ab34930c0a9f1cff75cf55382"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libbz2-1.0_1.0.8-5+b1_arm64.deb",
+      "bytes": 47452,
+      "sha256": "d3a96ece03326498b39ff093a76800dfcbcb1d4049d6ae6e9f6fa1aa7a590ad6"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libc6_2.36-9+deb12u14_arm64.deb",
+      "bytes": 2324660,
+      "sha256": "01f4330719fd4f65580e16ea5a0527f372fca750e8f588d26deaf09f2d3b1cf4"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libcap-ng0_0.8.3-1+b3_arm64.deb",
+      "bytes": 16428,
+      "sha256": "24e74ad29a37d2a3940b8977d11298a7afc77379ef414b561d79c64147d740e0"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libcap2-bin_1%3a2.66-4+deb12u3+b1_arm64.deb",
+      "bytes": 34452,
+      "sha256": "139adf54b27522e838f3ce895c10d27a5fb406809b7b12d477dd5c13d2b2d286"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libcap2_1%3a2.66-4+deb12u3+b1_arm64.deb",
+      "bytes": 27072,
+      "sha256": "b3a21ae1cef9c2f3fa340007100fb0aa934ab6a4d8aed131660de9713db2bb6e"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libcom-err2_1.47.0-2+b2_arm64.deb",
+      "bytes": 19928,
+      "sha256": "36c15f933a965b50f4c9558d792d9556934c84e532703935d8ae7e69dd3fa863"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libcrypt1_1%3a4.4.33-2_arm64.deb",
+      "bytes": 90044,
+      "sha256": "eea0ad76ea5eb507127fea0c291622ea4ecdbb71c4b9a8ed9c76ae33fc1a0127"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libcurl4_7.88.1-10+deb12u15_arm64.deb",
+      "bytes": 367496,
+      "sha256": "e54bdd269c960b643ded903c3dbde36fe5d4d5f5b6389b47a0344d4a711cf70a"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libdb5.3_5.3.28+dfsg2-1_arm64.deb",
+      "bytes": 625748,
+      "sha256": "344367608d622298a3d916f4cee3dc3173286f3b21f8f497ab21e7178ba930f9"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libelf1_0.188-2.1_arm64.deb",
+      "bytes": 172708,
+      "sha256": "32971952d8f5d563447bf275f24e26057500924da2d855c1edb53b0f0400bd11"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libffi8_3.4.4-1_arm64.deb",
+      "bytes": 20492,
+      "sha256": "80b5c36177dc0e29d531c7eddbed3cc7355cb490e49f8cfa5959572d161f27b3"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libfile-find-rule-perl_0.34-4~deb12u1_all.deb",
+      "bytes": 26736,
+      "sha256": "d941143c65e47eff192195ed1b8367d3d74e5a0de668fc5ae9d787383ec48c23"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libfmt9_9.1.0+ds1-2_arm64.deb",
+      "bytes": 106808,
+      "sha256": "7d4f191b968e33c491b252bae91b5f67737c01b8946bda98d1a13d4bac65a0f2"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libgcc-s1_12.2.0-14+deb12u1_arm64.deb",
+      "bytes": 34816,
+      "sha256": "576926b283613db80168ddf76380a3bd877602778cf0d226caa7bfbfa71eacf3"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libgdbm-compat4_1.23-3_arm64.deb",
+      "bytes": 47996,
+      "sha256": "acc13a12acbf3b17dbacc77e3c22c6c273a552150cd50fdc9bd70cdb5169af73"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libgdbm6_1.23-3_arm64.deb",
+      "bytes": 70948,
+      "sha256": "3c704feaf89c5f2709a76b84126ac8affe4ddff69dc0b91af0ca9910c7e75714"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libgmp10_2%3a6.2.1+dfsg1-1.1_arm64.deb",
+      "bytes": 537920,
+      "sha256": "9906387c1dd806518c915bd8616d072c741061d7fa26b222e52763456060b31a"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libgnutls30_3.7.9-2+deb12u7_arm64.deb",
+      "bytes": 1317844,
+      "sha256": "84f7f70084c9179d6670f4a6ebdf32adc36c6e4741a3a118104377e18cfa977f"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libgssapi-krb5-2_1.20.1-2+deb12u5_arm64.deb",
+      "bytes": 124152,
+      "sha256": "a00678963f692a929312968f19b77a61a8fc0011690d7dc909a8a2c4810fc7b3"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libhogweed6_3.8.1-2_arm64.deb",
+      "bytes": 323840,
+      "sha256": "e653a1a7e5a44be0f7b6443dc6ac865d2504e49149660fc253655245965e157f"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libidn2-0_2.3.3-1+b1_arm64.deb",
+      "bytes": 122396,
+      "sha256": "12a3efc056671bf1c1bed4c3444c2559c8d5e0c158a13316fc728f263b83ddc4"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libk5crypto3_1.20.1-2+deb12u5_arm64.deb",
+      "bytes": 79880,
+      "sha256": "8ae2c31cde0b3e6f80c573a495b0f90bf6d9efb4455d900728278bb54d9092e5"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libkeyutils1_1.6.3-2_arm64.deb",
+      "bytes": 8844,
+      "sha256": "aac46cb6faec4e737502b3c2290b7b02f8ba04e8accd5af7fd07934df0c867b1"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libkrb5-3_1.20.1-2+deb12u5_arm64.deb",
+      "bytes": 315528,
+      "sha256": "c3c7227f5db903a7a8b8936d47d1d79643edcda36365c4c992e1a96bcc2d4c7e"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libkrb5support0_1.20.1-2+deb12u5_arm64.deb",
+      "bytes": 32592,
+      "sha256": "3043fd4a54b945a1b503170749527f825dcfc7add2f8bf5abb4a329deeb48f4a"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libldap-2.5-0_2.5.13+dfsg-5_arm64.deb",
+      "bytes": 170832,
+      "sha256": "71e6ae4291a20db999c62cd0a4f30a92a799c46b99205d5e787d4acd7c343b91"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/liblzma5_5.4.1-1+deb12u2_arm64.deb",
+      "bytes": 199704,
+      "sha256": "36358d245f246234721e6c1c2ee5d11a46c1c877023c63f7570df02cd79964f5"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libmd0_1.0.4-2_arm64.deb",
+      "bytes": 29400,
+      "sha256": "99a8c7dd591fae9fb37d8bf8dfdffa850e207fa405b3198c5b24711a5f972381"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libmnl0_1.0.4-3_arm64.deb",
+      "bytes": 12116,
+      "sha256": "d63aafb6f2c07db8fcb135b00ff915baf72ef8a3397e773c9c24d67950c6a46c"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libnettle8_3.8.1-2_arm64.deb",
+      "bytes": 293748,
+      "sha256": "c945ff210df69cf7b95e935b8fa936e81c1c1f475355e3d5db83510b174f0cd6"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libnghttp2-14_1.52.0-1+deb12u3_arm64.deb",
+      "bytes": 68976,
+      "sha256": "7767833033739adb2e2e374f2c4b36134d9f36fcdfe8e2aab7029bf850146da9"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libnumber-compare-perl_0.03-3_all.deb",
+      "bytes": 6332,
+      "sha256": "cf95662e27037d92c582647400bb1ca7a6dfd2eb26eee5b968b23263cd4976dc"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libp11-kit0_0.24.1-2_arm64.deb",
+      "bytes": 326552,
+      "sha256": "d1f1f55023e9fc085b9ebfc9c4113d2d2dab2dc6b81a337f274b75c95ad8dc0a"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libpaho-mqtt1.3_1.3.12-1_arm64.deb",
+      "bytes": 142380,
+      "sha256": "d1573ac112ecf564dd27581d1a061fbc67ec4ac2b49bd41cf1a57039d531938b"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libpam-modules-bin_1.5.2-6+deb12u2_arm64.deb",
+      "bytes": 74980,
+      "sha256": "82dcd30add63288c86becb14edec0a0ba7df74b07c9267f5a4cb9a28d023d65e"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libpam-modules_1.5.2-6+deb12u2_arm64.deb",
+      "bytes": 285848,
+      "sha256": "f6a8cc6a384205fb5bce79a0261c1c1974d587f048cfb1f0d1d2ade8c2c1ae77"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libpam0g_1.5.2-6+deb12u2_arm64.deb",
+      "bytes": 90876,
+      "sha256": "f04916b56a3225cb109e1c283ebfb163524797a406148875a6871816dc8939cd"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libpcre2-8-0_10.42-1+deb12u2_arm64.deb",
+      "bytes": 230704,
+      "sha256": "8498d2c0bd6747dfc2fc6eec62774a86967079555f7043d5a7b78ee4efbbc0fb"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libperl5.36_5.36.0-7+deb12u4_arm64.deb",
+      "bytes": 4001524,
+      "sha256": "35013c8ce9c319abd608d27719d71ff5d2090002e5a424708df26c11d18bffb3"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libpsl5_0.21.2-1_arm64.deb",
+      "bytes": 58600,
+      "sha256": "90a68e4a6d9eb95abee32595762dbf67974f13c158e4ce4a05c7c2b54440db73"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/librtmp1_2.4+20151223.gitfa8646d.1-2+b2_arm64.deb",
+      "bytes": 59364,
+      "sha256": "a3a1a6e4b02bcd3254e932b1972ed744082fd7dd5cc1545eec3dd3d539ce6c93"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libsasl2-2_2.1.28+dfsg-10_arm64.deb",
+      "bytes": 58016,
+      "sha256": "61dcbb6560e2eb20bff256f1b445ac9af13aa61c6a6ae115ad8cb96c9c50ea38"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libsasl2-modules-db_2.1.28+dfsg-10_arm64.deb",
+      "bytes": 20820,
+      "sha256": "56d9c35ac6729b02f78900175557dd36bef26611dab89584f29da15631628869"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libselinux1_3.4-1+b6_arm64.deb",
+      "bytes": 68800,
+      "sha256": "29201edf23ebae40844d6c289afdb9bba52f927d55096ed1b1cd37e040135edc"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libsemanage-common_3.4-1_all.deb",
+      "bytes": 21632,
+      "sha256": "835f806c21ae25e39053bd3057051640341b0cf08e1db9746fd82e370d82fa30"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libsemanage2_3.4-1+b5_arm64.deb",
+      "bytes": 82628,
+      "sha256": "6d1958b29ac622d352e00f9de55d9de8aea12bd0c27dee8b522e052ace3c67bd"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libsepol2_3.4-2.1_arm64.deb",
+      "bytes": 246968,
+      "sha256": "22b0041a04af364f643ff2e7ff88eaaecdf0714dcfd253e8c99a6a952ae1fec6"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libspdlog1.10_1%3a1.10.0+ds-0.4_arm64.deb",
+      "bytes": 118568,
+      "sha256": "da8decc7f9cc620d5ac0f0beaac4c7d0d4a824702c8b8daf8f55191d675375a3"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libssh2-1_1.10.0-3+deb12u1_arm64.deb",
+      "bytes": 169420,
+      "sha256": "72db6dc64cb0dd4c8a6b0f1b998063338956a7b3eb8a27125beb27bee0d7cc46"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libssl3_3.0.22-1~deb12u1_arm64.deb",
+      "bytes": 1827612,
+      "sha256": "026105b99749b437b03d0de5b3a58c0cabefb9791bc6f9cf916d18691ee7519a"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libstdc++6_12.2.0-14+deb12u1_arm64.deb",
+      "bytes": 556608,
+      "sha256": "26e138c677a985775331373828a6c286c551ff397cb735d00e2383cb273d1cb2"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libtasn1-6_4.19.0-2+deb12u1_arm64.deb",
+      "bytes": 46040,
+      "sha256": "7e80513007e8a71b5e737d3307dedbb06712f9cfed05ec2fad6fc00de460cc5f"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libtext-glob-perl_0.11-3_all.deb",
+      "bytes": 7676,
+      "sha256": "b0f1a40c5b26f4e4c83a4f8e1768fcf50ae9aac84b7f807ccb38123b50396f64"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libtirpc-common_1.3.3+ds-1_all.deb",
+      "bytes": 14048,
+      "sha256": "3e3ef129b4bf61513144236e15e1b4ec57fa5ae3dc8a72137abdbefb7a63af85"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libtirpc3_1.3.3+ds-1_arm64.deb",
+      "bytes": 80940,
+      "sha256": "deaf9ea54f74cab6690b4bc0b427f05cbe62cc073580d84f5f18a8d9e2ece401"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libunistring2_1.0-2_arm64.deb",
+      "bytes": 422768,
+      "sha256": "05b0b7700bfe269ff7af61f45e92055d7ef4c532c9584e4e2a352cf0bd4de5b1"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libxtables12_1.8.9-2_arm64.deb",
+      "bytes": 29572,
+      "sha256": "8884a42f98b989e5ba2e91d931b5c6e9eb72568e5d3001d97d73d7913890a7b3"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libyaml-cpp0.7_0.7.0+dfsg-8+b1_arm64.deb",
+      "bytes": 99816,
+      "sha256": "8623509d15f1e145d24ff0ce89cbfe7f931f22977898b2b25cdb30c60291bac4"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/libzstd1_1.5.4+dfsg2-5_arm64.deb",
+      "bytes": 250548,
+      "sha256": "95e173c9538f96ede4fc275ec7863f395a97dd0ea62454be9bc914efa1b9be93"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/nginx-common_1.22.1-9+deb12u10_all.deb",
+      "bytes": 114932,
+      "sha256": "3b9e2207c67de87706c53d86ec4bed0760ed46e1401f30d078c3a926fdc2f9ee"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/nginx_1.22.1-9+deb12u10_arm64.deb",
+      "bytes": 497760,
+      "sha256": "482916490b3dfa7e23b0efdbe5eb0b4871220bbe6ea1f54d1cf1010de8d01fbb"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/passwd_1%3a4.13+dfsg1-1+deb12u2_arm64.deb",
+      "bytes": 947048,
+      "sha256": "680144df37766acb90253caaa9144cd00e78e0a76a2e171ecfb4277ec231922e"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/perl-base_5.36.0-7+deb12u4_arm64.deb",
+      "bytes": 1477684,
+      "sha256": "03d979b849a1a0a8955eee28b988dbc25a407fd3a0581df5c94e6ae7bcc01ddf"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/perl-modules-5.36_5.36.0-7+deb12u4_all.deb",
+      "bytes": 2817356,
+      "sha256": "3ed38ffa8320e9bf7597cefa01b6a6ace4a08ccc77cdfd15ef7d8b711dea7166"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/perl_5.36.0-7+deb12u4_arm64.deb",
+      "bytes": 239392,
+      "sha256": "b20b172eff2f1edef5c29ebb9fec09ceec5b32ca62aeb9b3700e7c71a58b5071"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/tar_1.34+dfsg-1.2+deb12u1_arm64.deb",
+      "bytes": 817696,
+      "sha256": "04a945d4f24068f9d4c44294014ef5a33fc6179a57021978afc7d08358e13df3"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/usrmerge_37~deb12u1_all.deb",
+      "bytes": 13336,
+      "sha256": "8a25318213244f075b56363408c87a519ed8cef24b270c3d045ef35d695de13a"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/host-debs/zlib1g_1%3a1.2.13.dfsg-1_arm64.deb",
+      "bytes": 82744,
+      "sha256": "52b8b8a145bbe1956bba82034f77022cbef0c3d0885c9e32d9817a7932fe1913"
+    },
+    {
+      "path": "build/resources-1.1.2/workflow/probe/data-probe-1.1.2-sanitized.tar.gz",
+      "bytes": 3959287,
+      "sha256": "3b8be504df61887f61f60293dce670a31ae6f6701ae3edd8947bc9b0cdae608f"
+    },
+    {
       "path": "installer-bundle/assets/fonts/NotoSansCJKsc-Regular.otf",
       "bytes": 16437364,
       "sha256": "2c76254f6fc379fddfce0a7e84fb5385bb135d3e399294f6eeb6680d0365b74b"

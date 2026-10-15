@@ -2,6 +2,7 @@
 
 Does not start containers or modify the host Docker installation, network or settings.
 """
+import argparse
 import hashlib
 import json
 import os
@@ -20,6 +21,7 @@ SHA='803d433f226db4776e1768fd319fc6c6e4935a456acf84fcc0080818b854bc8f'
 
 def main():
     if os.name!='posix' or os.geteuid()!=0:raise SystemExit('Run in WSL as root')
+    parser=argparse.ArgumentParser();parser.add_argument('--platform',action='store_true');args=parser.parse_args()
     archive=ROOT/'build/minio-mirror-check/docker-29.7.2.tgz'
     if not archive.exists():
         archive.parent.mkdir(parents=True,exist_ok=True)
@@ -32,6 +34,17 @@ def main():
     with archive.open('rb') as stream:
         if hashlib.file_digest(stream,'sha256').hexdigest()!=SHA:raise RuntimeError('Docker runtime digest differs')
     lock=json.loads((ROOT/'installer-bundle/catalog/workflow.json').read_text('utf-8'))
+    rows=lock['images'];report_name='component-archives.json'
+    if args.platform:
+        manifest=json.loads((ROOT/'installer-bundle/catalog/platform-manifest.json').read_text('utf-8'))
+        spec=json.loads((ROOT/'release-config.json').read_text('utf-8'))
+        resources=ROOT/spec['resources_root']
+        row=next(r for r in json.loads((ROOT/'installer-bundle/catalog/release-catalog.json').read_text('utf-8'))['resources'] if r['path']=='images/all-arm64-images.tar.gz')
+        platform_archive=resources/row['path']
+        with platform_archive.open('rb') as stream:
+            if hashlib.file_digest(stream,'sha256').hexdigest()!=row['sha256']:raise RuntimeError('Platform archive digest differs')
+        rows=[dict(image,id=image['tag'],archive={'sha256':row['sha256']}) for image in manifest['images']]
+        report_name='platform-images.json'
     git=['git','-c','safe.directory='+str(ROOT),'-C',str(ROOT)]
     report={'source_commit':subprocess.check_output([*git,'rev-parse','HEAD'],text=True).strip(),
             'source_dirty':bool(subprocess.check_output([*git,'status','--porcelain'],text=True).strip()),
@@ -58,16 +71,18 @@ def main():
         limit=time.monotonic()+90
         while True:
             try:run(['info'],timeout=5);break
-            except RuntimeError:
+            except (RuntimeError,subprocess.TimeoutExpired):
                 if daemon.poll() is not None or time.monotonic()>limit:raise
                 time.sleep(1)
-        for row in lock['images']:
+        if args.platform:run(['load','-i',platform_archive],timeout=1200)
+        for row in rows:
             print('Loading actual offline image: '+row['id'],flush=True)
-            source=ROOT/'support-files/files'/row['archive']['path']
-            with source.open('rb') as stream:
-                if hashlib.file_digest(stream,'sha256').hexdigest()!=row['archive']['sha256']:
-                    raise RuntimeError('Offline archive digest differs: '+row['id'])
-            run(['load','-i',source],timeout=900)
+            if not args.platform:
+                source=ROOT/'support-files/files'/row['archive']['path']
+                with source.open('rb') as stream:
+                    if hashlib.file_digest(stream,'sha256').hexdigest()!=row['archive']['sha256']:
+                        raise RuntimeError('Offline archive digest differs: '+row['id'])
+                run(['load','-i',source],timeout=900)
             image=json.loads(run(['image','inspect',row['config_id']]))[0]
             if image['Id']!=row['config_id'] or image['Architecture']!='arm64' or image['Os']!='linux' or image['RootFS']['Layers']!=row['rootfs_diff_ids']:
                 raise RuntimeError('Offline image config or filesystem differs: '+row['id'])
@@ -75,7 +90,7 @@ def main():
                                      'image_config_id':image['Id'],'architecture':image['Architecture'],'passed':True})
             run(['image','rm','--force',row['config_id']],timeout=300)
             print(row['id']+' offline import and complete layer identity verified.',flush=True)
-        report['passed']=len(report['checks'])==6 and all(x['passed'] for x in report['checks'])
+        report['passed']=len(report['checks'])==len(rows) and all(x['passed'] for x in report['checks'])
     finally:
         if daemon is not None and daemon.poll() is None:
             os.killpg(daemon.pid,signal.SIGTERM)
@@ -87,7 +102,7 @@ def main():
         if stage.resolve().parent!=Path('/var/tmp') or not stage.name.startswith('ai-platform-component-load-'):
             raise RuntimeError('Unexpected cleanup path')
         shutil.rmtree(stage)
-        (ROOT/'build/validation/component-archives.json').write_text(json.dumps(report,indent=2)+'\n')
+        (ROOT/'build/validation'/report_name).write_text(json.dumps(report,indent=2)+'\n')
     print(json.dumps(report,indent=2))
 
 

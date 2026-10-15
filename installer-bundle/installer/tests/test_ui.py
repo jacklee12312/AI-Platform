@@ -119,7 +119,7 @@ class WizardTests(unittest.TestCase):
         self.assertFalse(self.w.component_group.isEnabled())
 
     def test_card_count_controls_qwen36_checkbox(self):
-        for count,number in [(1,26),(2,27)]:
+        for count,number in [(1,24),(2,25)]:
             self.w.device_count=count;self.w.set_all_models(True)
             selected=self.w.selected_models()
             self.assertEqual(len(selected),number)
@@ -145,7 +145,7 @@ class WizardTests(unittest.TestCase):
         self.assertTrue(all(Path(root).is_absolute() for root in roots[1:]))
     def test_default_online_source_and_all_selected(self):
         self.assertTrue(self.w.online.isChecked());self.assertFalse(self.w.local.isChecked())
-        self.assertEqual(len(self.w.selected_models()),26)
+        self.assertEqual(len(self.w.selected_models()),24)
         self.assertEqual(self.w.collect_sources()['model_source'],'online')
         self.assertEqual(self.w.collect_sources()['mode'],'prefer-local')
         self.assertTrue(self.w.library_hint.isHidden())
@@ -154,13 +154,13 @@ class WizardTests(unittest.TestCase):
         self.assertIn(str(self.library),self.w.library_hint.text())
     def test_model_table_checkbox_changes_selection(self):
         self.w.models_table.item(0,0).setCheckState(Qt.Unchecked)
-        self.assertEqual(len(self.w.selected_models()),25)
+        self.assertEqual(len(self.w.selected_models()),23)
         self.assertFalse(self.w.check_pass)
     def test_model_checkbox_is_clickable(self):
         self.w.show_page(1);self.w.show();APP.processEvents()
         rect=self.w.models_table.visualItemRect(self.w.models_table.item(0,0))
         QTest.mouseClick(self.w.models_table.viewport(),Qt.LeftButton,pos=QPoint(rect.left()+10,rect.center().y()))
-        self.assertEqual(len(self.w.selected_models()),25)
+        self.assertEqual(len(self.w.selected_models()),23)
     def test_empty_selection_blocks_next(self):
         self.w.show_page(1);self.w.set_all_models(False)
         self.assertFalse(self.w.next.isEnabled())

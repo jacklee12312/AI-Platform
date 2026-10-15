@@ -33,6 +33,17 @@ def main():
                 if member.is_absolute() or '..' in member.parts or '\\' in name:
                     raise RuntimeError('Invalid test wheel path')
             archive.extractall(destination)
+    backend = wheels / 'backend'
+    backend.mkdir(exist_ok=True)
+    subprocess.run([sys.executable, '-m', 'pip', 'download', '--dest', str(backend), '--only-binary=:all:',
+                    '--platform', 'manylinux2014_x86_64', '--python-version', '3.14', '--implementation', 'cp', '--abi', 'cp314',
+                    '-r', str(ROOT / 'tools/backend-test-requirements.txt')], check=True)
+    for path in backend.glob('*.whl'):
+        with zipfile.ZipFile(path) as archive:
+            for name in archive.namelist():
+                member=PurePosixPath(name)
+                if member.is_absolute() or '..' in member.parts or '\\' in name:raise RuntimeError('Invalid backend test wheel path')
+            archive.extractall(destination)
     print('Qt test dependencies ready under build/test-python; ARM64 delivery runtime is unchanged.')
 
 

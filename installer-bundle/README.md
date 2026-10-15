@@ -1,18 +1,20 @@
-# AI 平台安装器 1.1.1
+# AI 平台安装器 1.1.2
 
 本包为待现场验收的候选交付包，适用于厂家 Debian 12 ARM64、CIX P1、后摩 LQ50/XH2 v1.4.0 驱动的单卡或双卡设备。
 
 1.1 固定按以下顺序执行：探针自动识别及 MQTT 检查 → 所选组件库认证与健康检查 → 所选模型及平台验收。有兼容探针时保留原绑定、隐藏注册表单并自动复用；没有探针时必须填写注册信息并安装，通过检查后才继续。
 
-Nginx、etcd、MySQL、Redis、ParadeDB、Neo4j、MinIO、Milvus 可按需勾选，默认不选。Milvus 自动包含 MinIO、etcd；Docker/Compose 是模型平台必需环境。只安装、检查所选组件及依赖，只要求相应凭据。
+Nginx、etcd、MySQL、Redis、ParadeDB、Neo4j、MinIO、Milvus 可按需勾选，默认不选。Milvus 自动包含 MinIO、etcd；Docker/Compose 是模型平台必需环境。只安装、检查所选组件及依赖，只要求相应凭据。六个组件镜像不随包携带，优先复用匹配镜像或本地导入；否则从锁定仓库按 ARM64 摘要联网拉取。
 
-将整个 `AI-Platform-1.1.1-linux-arm64` 目录复制到设备主目录，在图形桌面双击 `安装AI平台.desktop`。也可打开终端运行：
+将整个 `AI-Platform-1.1.2-linux-arm64` 目录复制到设备主目录，在图形桌面双击 `安装AI平台.desktop`。也可打开终端运行：
 
 ```sh
-python3 ./安装AI平台-1.1.1.run
+python3 ./安装AI平台-1.1.2.run
 ```
 
-保留同目录的 `.sources.json` 和 `support-files/`。本包提供 27 个模型/服务选项；单卡可选 26 项，Qwen3.6-35B-A3B 仅双卡可选。模型权重不随包分发，按所选来源获取并核对大小与 SHA-256。
+保留同目录的 `.sources.json` 和 `support-files/`。本包提供 25 个模型/服务选项；单卡可选 24 项，Qwen3.6-35B-A3B 仅双卡可选。模型权重不随包分发，按所选来源获取并核对大小与 SHA-256。
+
+本版移除民主测评票识别、Qwen3Guard 内容审核服务及 ModelDeck 对应面板、参数、审核范围开关和公共接口说明。设备冲突与加速卡运行保护继续生效。Kokoro 必需的共享依赖保留；平台镜像保留 10 个。
 
 Qwen3.8-27B 来源如下，协议均为 plain HTTP OCI：
 

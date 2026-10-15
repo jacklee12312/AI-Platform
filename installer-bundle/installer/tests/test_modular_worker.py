@@ -26,6 +26,7 @@ class ModularWorkerTests(unittest.TestCase):
     def fixture(self,stack):
         root=Path(stack.enter_context(tempfile.TemporaryDirectory()));bundle=root/'installer';src=root/'repository/files';home=root/'home';home.mkdir();state=root/'state';state.mkdir()
         manifest=common.read_json(BUNDLE/'catalog/platform-manifest.json');manifest['installed_payload_bytes']=1024;manifest['all_model_file_bytes']=len(b'model-fixture-content')+len(b'unselected-content');manifest['docker_disk_budget_bytes']=0
+        manifest['models']=['copaw-flash-9b','spark-x1-4b']
         common.atomic_json(bundle/'catalog/platform-manifest.json',manifest)
         common.atomic_json(bundle/'catalog/release-catalog.json',{'fixture':True})
         def put(rel,data):
@@ -49,7 +50,7 @@ class ModularWorkerTests(unittest.TestCase):
             if not p.is_file():continue
             rel=p.relative_to(src).as_posix();model='copaw-flash-9b' if rel.endswith('fixture-model.bin') else 'spark-x1-4b' if rel.endswith('unselected-model.bin') else None
             rows.append({'path':rel,'size':p.stat().st_size,'sha256':common.sha256(p),'category':'models' if model else 'platform','models':[model] if model else []})
-        catalog={'resources':rows,'models':['copaw-flash-9b','spark-x1-4b'],'components':[]}
+        catalog={'resources':rows,'models':['copaw-flash-9b','spark-x1-4b'],'components':[],'image_count':len(manifest['images'])}
         common.atomic_json(bundle/'release.json',{'release_id':'fixture-modular','installer_version':'0.2.3','resources_checksums_sha256':common.sha256(src/'manifests/SHA256SUMS')})
         config={'schema':1,'mode':'local-only','local_roots':[str(src.parent)],'base_urls':{},'file_urls':{},'allow_http':False}
         common.atomic_json(state/'private/request.json',{'admin_password':'fixture-password-123','sources':config,'selected_models':['copaw-flash-9b'],'device_count':2})

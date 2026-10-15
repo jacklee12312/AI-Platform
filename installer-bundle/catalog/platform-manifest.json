@@ -1,11 +1,11 @@
 {
   "package": "houmo-ai-cluster",
-  "release_id": "ai-platform-installer-1.1.0-20261015",
+  "release_id": "ai-platform-installer-1.1.2-20261015",
   "package_version": "1.4.0-dev.1",
   "release_state": "development",
   "status": "complete-artifacts",
   "built_at": "2026-09-29T03:48:34.033350+00:00",
-  "source": "deployed box with offline-install packaging transforms; Qwen3.8 multimodal overlay; XH2 single/dual model selection; single-card Qwen3.8 multimodal correction; portable local model library discovery; online model download default; installer 1.0.0: hardware-routed Harbor GGUF and Qwen3.6 dual runtime; installer 1.1: registered probe, authenticated middleware, shared Qwen3.8 projector",
+  "source": "deployed box with offline-install packaging transforms; Qwen3.8 multimodal overlay; XH2 single/dual model selection; single-card Qwen3.8 multimodal correction; portable local model library discovery; online model download default; installer 1.0.0: hardware-routed Harbor GGUF and Qwen3.6 dual runtime; installer 1.1: registered probe, authenticated middleware, shared Qwen3.8 projector; installer 1.1.2: on-demand middleware; content moderation and ballot service removed",
   "platform": "vendor Debian 12 ARM64 CIX P1 / Houmo LQ50 XH2 v1.4.0",
   "source_commit": "d72cd79ad43c1fbbc69ee224ec267577047e9ae0",
   "source_worktree_dirty": true,
@@ -40,25 +40,6 @@
         "sha256:ef94c6a6c1b92be2d2aad20a99b32aa4086379edb3901167c275512d0e3a1a06",
         "sha256:9f339c8715692b0575597111c69229d14ec2dc49cc1ab8d22b47c2cf15b4b6d0",
         "sha256:3b427b478e7b99e20618f8e2c5c838a43d397563a596c858dff0e0b7051a4019"
-      ]
-    },
-    {
-      "tag": "ballot-reader:0.1.0",
-      "id": "sha256:61d41c6c7bf3cfb3c2b989bcf653b9079f2ccde8f21ba9bf4b7ddb89dd6aaef6",
-      "architecture": "arm64",
-      "os": "linux",
-      "config_id": "sha256:e1b685aa8d8a56e808b9239c667b0b94a9b10076ec9806f3e865805c1020edee",
-      "rootfs_diff_ids": [
-        "sha256:e644ff0c302d7de4c3e03dc718bc4b77ebeb324f7c8f5483b463fa230027b02c",
-        "sha256:ad0a494865998e2c4ffc4547388ea0bd8551267a7c6ece4ad6185849d826b302",
-        "sha256:9137ed4faf201780a3be6cbc98343927418763a0666d880a2695401385281758",
-        "sha256:84e14a567d37f31ec40ccb4d85b3d7902b0aa08d0450a3f45e75ec17e3429857",
-        "sha256:74c21085cca9b6407b4aa6658640f034d57a46b069474a7369bba53c0c9dbdec",
-        "sha256:bbfdda232154bdb824573477d8b17bbe55fc01da76a571deec843e50f8166d83",
-        "sha256:21b45eeded518e936f62c62d65f6655b2039c26ded2e1cd33ff7aa3808cb0d60",
-        "sha256:b118104c07956a01bca6901b5a796302a9de226b99ab0673c7b72ae348fc9bc6",
-        "sha256:5143b3840de300ea6382fdf6f9182731c6cd5828f30298f3546cb14531700584",
-        "sha256:4ebdf73353588f99cb5ebe5054898fdc860ed64bc28abbf0b2ad24c1c7ecc4c1"
       ]
     },
     {
@@ -274,36 +255,6 @@
       ]
     },
     {
-      "tag": "qwen3guard-stream-cpu:0.1.0",
-      "id": "sha256:d3b1bb4c0c04502dad65791d3ec43d5c3f8a20ca7f990c439c17c53f08abef0a",
-      "architecture": "arm64",
-      "os": "linux",
-      "config_id": "sha256:ed65834c23e6966d29f6c4fc3846e3ff4723923246c996e61e83f82735caf25a",
-      "rootfs_diff_ids": [
-        "sha256:41d6505109809884e681a97f978542a2d4d3506af0124f18b3f3a471edfcc9b7",
-        "sha256:879ebba2ddb661058a6b097482c7dfef31be0abb768fd49568c8f1cc0242ebb6",
-        "sha256:41c73ea721b750f97d538e09b2537fcd7bdb876536dc5ade4bc35b75fee2e137",
-        "sha256:d84fb4937ce6968f14a6312dcbb90ebf225f777e8f797815fe016226b1962090",
-        "sha256:f20d8452c59be360f198ddfb85daa87c5cf946e8e1481befb3b92751e6f091ae",
-        "sha256:5fcbfaac9755999cdbf1cef5b7bb95ad1b34ed752336079bfa951531c1575a39",
-        "sha256:627c193f150535a7e290e3d9c1595fd7c62ce664fda3ac29aa513dca0b2cb2e9",
-        "sha256:604f8bf17e0c47d532a6e600a3294e39a1861a623cd750c6657eb8eb203b3624",
-        "sha256:ed1c638ea5058af0c63fd5f9d41e62cc340fe54c76a44e584a04edc7d4ce137c",
-        "sha256:e7bcced933db430ba4278fb1e6c3db83467d947a332c77f9c41d93b748d513e7",
-        "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
-        "sha256:d96c93feb3666c2f841b42f5967a7dfba8163f3ec7aa7b1ae4cd0520f55313a2",
-        "sha256:57db0b5bc7da068a227eebe26b8bafd9c76705e184f1a7dc39e974d5b804c4ca",
-        "sha256:8c5ad3371a5ee754cd98d56311c7a62a7c6b072ac838028c57bd09da92bcc17d",
-        "sha256:39800319aba7e08d9c916ab532a84c3e29dc62651ff6b324341a0c273ddc93d0",
-        "sha256:49c67160d6c1523f0bae6a428bb837cecc58b396f9809102465538f48a2e0c0c",
-        "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
-        "sha256:ddd6cbd90e871304cef5dd464e7eae30dacc48423556c29861643b250ff4b76c",
-        "sha256:4029beefb3f529450f2cb0b676952a57fc3f21c397a23d96bad99181215f1f30",
-        "sha256:de3a653721891d5380e0addad7e2b414658372caa8b1d2863c1b4eb481982069",
-        "sha256:3f19c8e63124cd5b8fb8948e7e6c78fcd158dc770722b8a9b78e257531b7d5dc"
-      ]
-    },
-    {
       "tag": "sensevoice-cpu:0.1.0",
       "id": "sha256:446639a0fb431c9c6cbbb50724977798c80e2e6878c83914b0cbbccf2d9bb8c0",
       "architecture": "arm64",
@@ -329,7 +280,6 @@
     "bge-reranker-v2-m3",
     "cosyvoice3-0.5b",
     "qwen3-vl-8b",
-    "qwen3guard-stream-0.6b",
     "qwen3.8-27b",
     "qwen3.6-35b-a3b",
     "sensevoice",
@@ -348,12 +298,11 @@
     "arcface",
     "yolov8l_seg",
     "kokoro-82m",
-    "matcha-zh",
-    "democratic-eval-v1"
+    "matcha-zh"
   ],
   "contains_secrets": false,
-  "all_model_file_bytes": 107622331197,
-  "installed_payload_bytes": 112179333532,
+  "all_model_file_bytes": 106411516737,
+  "installed_payload_bytes": 110968519072,
   "docker_disk_budget_bytes": 34359738368,
   "image_archive_content_bytes": 5639717815,
   "required_devices": [

@@ -84,7 +84,7 @@ def check_assets(root, store=None):
 def resource_rows(bundle,catalog):
     from workflow import load_workflow,workflow_assets
     workflow=load_workflow(bundle,catalog)
-    return catalog['resources']+([dict(row,category='platform') for row in workflow_assets(workflow)] if workflow else [])
+    return catalog['resources']+([dict(row,category='platform') for row in workflow_assets(workflow, include_images=False)] if workflow else [])
 
 
 def check(root, online=False):
@@ -224,7 +224,11 @@ def build(root, online=False):
         raise RuntimeError('Version already has output; use a new version, never overwrite a published release')
     workflow_reports=[]
     if read(inside(root,spec['source_bundle'])/'catalog/release-catalog.json').get('workflow_sha256'):
-        for name in ['workflow-artifacts.json','component-archives.json']:
+        workflow_lock=read(inside(root,spec['source_bundle'])/'catalog/workflow.json')
+        image_report='component-sources.json' if workflow_lock.get('image_acquisition','').startswith('on-demand') else 'component-archives.json'
+        required_reports=['workflow-artifacts.json',image_report]
+        if workflow_lock.get('image_acquisition','').startswith('on-demand'):required_reports.append('platform-images.json')
+        for name in required_reports:
             path=root/'build/validation'/name
             if not path.is_file():raise RuntimeError('Run the prerequisite artifact validation: '+name)
             report=read(path)

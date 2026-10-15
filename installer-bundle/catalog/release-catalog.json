@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "release_id": "ai-platform-installer-1.1.0-20261015",
-  "installer_version": "1.1.0",
-  "platform_manifest_sha256": "793baff301f46daf800ee4935fb2a8d0b6b5a2e8126d26a59ca2de7c6f2dfc66",
+  "release_id": "ai-platform-installer-1.1.2-20261015",
+  "installer_version": "1.1.2",
+  "platform_manifest_sha256": "2e2257d552507d01241bb2dab467c8267bb1be0eee434c7f3fa57ce52045ce5b",
   "platform": "vendor Debian 12 ARM64 / CIX P1 / Houmo LQ50 XH2 v1.4.0",
   "install_mode": "full",
   "models": [
@@ -12,7 +12,6 @@
     "bge-reranker-v2-m3",
     "cosyvoice3-0.5b",
     "qwen3-vl-8b",
-    "qwen3guard-stream-0.6b",
     "qwen3.8-27b",
     "qwen3.6-35b-a3b",
     "sensevoice",
@@ -31,10 +30,9 @@
     "arcface",
     "yolov8l_seg",
     "kokoro-82m",
-    "matcha-zh",
-    "democratic-eval-v1"
+    "matcha-zh"
   ],
-  "image_count": 12,
+  "image_count": 10,
   "components": [
     {
       "id": "platform",
@@ -89,17 +87,6 @@
         "payload/home/cix/ai-model-gateway/tests/test_request_diagnostics.py",
         "payload/home/cix/ai-model-gateway/tests/test_runtime_safety.py",
         "payload/home/cix/ai-model-gateway/tests/test_usage_reconciliation.py",
-        "payload/home/cix/ballot-reader/.dockerignore",
-        "payload/home/cix/ballot-reader/Dockerfile",
-        "payload/home/cix/ballot-reader/README.md",
-        "payload/home/cix/ballot-reader/app/__init__.py",
-        "payload/home/cix/ballot-reader/app/batch.py",
-        "payload/home/cix/ballot-reader/app/main.py",
-        "payload/home/cix/ballot-reader/app/reader.py",
-        "payload/home/cix/ballot-reader/compose.yaml",
-        "payload/home/cix/ballot-reader/gateway_extension.py",
-        "payload/home/cix/ballot-reader/requirements.txt",
-        "payload/home/cix/ballot-reader/tests/test_reader.py",
         "payload/home/cix/cix_telecom_projects/dual-core/qwen36_35B/chat_template.jinja",
         "payload/home/cix/cix_telecom_projects/dual-core/qwen36_35B/config.json",
         "payload/home/cix/cix_telecom_projects/dual-core/qwen36_35B/configuration.json",
@@ -235,11 +222,6 @@
         "payload/home/cix/matcha-tts-cpu/app.py",
         "payload/home/cix/matcha-tts-cpu/docker-compose.yml",
         "payload/home/cix/matcha-tts-cpu/sample_request.json",
-        "payload/home/cix/qwen3guard-stream-cpu/Dockerfile",
-        "payload/home/cix/qwen3guard-stream-cpu/README.md",
-        "payload/home/cix/qwen3guard-stream-cpu/requirements.txt",
-        "payload/home/cix/qwen3guard-stream-cpu/stream_guard/__init__.py",
-        "payload/home/cix/qwen3guard-stream-cpu/stream_guard/main.py",
         "payload/home/cix/sensevoice-cpu/.dockerignore",
         "payload/home/cix/sensevoice-cpu/Dockerfile",
         "payload/home/cix/sensevoice-cpu/README.md",
@@ -255,8 +237,6 @@
         "scripts/verify_runtime.py",
         "systemd/gateway-admin.service",
         "systemd/modeldeck-startup-verify.service",
-        "tests/synthetic-ballot-expected.json",
-        "tests/synthetic-ballot.png",
         "variants/single/ai-model-gateway/config/models.json",
         "variants/single/gateway-admin/admin_app/capability_catalog.json",
         "variants/single/gateway-admin/agent/model_catalog.json",
@@ -364,29 +344,6 @@
       "files": [
         "payload/home/cix/cix_telecom_projects/qwen3-vl-8b/HiModel_xh2_qwen3-vl_8b_256_32k_b1_1chip_2cores_v1.3.0_20260615.gguf",
         "payload/home/cix/cix_telecom_projects/qwen3-vl-8b/mmproj_xh2_qwen3-vl_8b_2cores_vit_448x448_v1.3.0_20260615.gguf"
-      ],
-      "requires": [
-        "platform",
-        "runtime",
-        "images"
-      ],
-      "remote_status": "not_configured"
-    },
-    {
-      "id": "qwen3guard-stream-0.6b",
-      "kind": "model",
-      "files": [
-        "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/LICENSE",
-        "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/README.md",
-        "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/config.json",
-        "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/configuration_qwen3.py",
-        "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/generation_config.json",
-        "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/merges.txt",
-        "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/model.safetensors",
-        "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/modeling_qwen3_guard.py",
-        "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/tokenizer.json",
-        "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/tokenizer_config.json",
-        "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/vocab.json"
       ],
       "requires": [
         "platform",
@@ -660,17 +617,6 @@
       "remote_status": "not_configured"
     },
     {
-      "id": "democratic-eval-v1",
-      "kind": "model",
-      "files": [],
-      "requires": [
-        "platform",
-        "runtime",
-        "images"
-      ],
-      "remote_status": "not_configured"
-    },
-    {
       "id": "qwen3.6-35b-a3b",
       "kind": "model",
       "files": [
@@ -758,15 +704,15 @@
     },
     {
       "path": "images/all-arm64-images.tar.gz",
-      "size": 2508011552,
-      "sha256": "0eb09a224343c5251634bda5d3b1888ce639a1d07dc4d5acf20bce9846b5e143",
+      "size": 1890677089,
+      "sha256": "a68e47710fbfe9bd1651d7213b120c0345719146882afe4454e4f23b5fcda623",
       "category": "images",
       "models": []
     },
     {
       "path": "manifests/SHA256SUMS",
-      "sha256": "75e6e22ca7736b576d421997b04c6e6ba74bcf25691bf8c5c52422727c7954c9",
-      "size": 37674,
+      "sha256": "20021c15c4ccb233626479d9931f0024cc82cb089ac7f0e4b6199db0db2aa0f1",
+      "size": 33813,
       "category": "platform",
       "models": []
     },
@@ -779,22 +725,22 @@
     },
     {
       "path": "manifests/image-lock.json",
-      "size": 20071,
-      "sha256": "8e8abb9ddc1be7e4a6a60ffd2f1fc69f519101c6ab637d3307b40ff97759b93f",
+      "size": 16956,
+      "sha256": "4edae6104fe93a46b45e5fde3fc4fe0f6a72d56c08520867e94de5c36ff30086",
       "category": "platform",
       "models": []
     },
     {
       "path": "manifests/manifest.json",
-      "size": 23061,
-      "sha256": "793baff301f46daf800ee4935fb2a8d0b6b5a2e8126d26a59ca2de7c6f2dfc66",
+      "size": 19878,
+      "sha256": "2e2257d552507d01241bb2dab467c8267bb1be0eee434c7f3fa57ce52045ce5b",
       "category": "platform",
       "models": []
     },
     {
       "path": "manifests/model-catalog.json",
-      "size": 39229,
-      "sha256": "cc92d4555d0f59a6b29bc54484bb76ffee78140137353adc09ba84e78045d4db",
+      "size": 34117,
+      "sha256": "0aacd2afc791659b584dc9257bdaea1fb2135d62a1bd272df17a6474b84b6a5c",
       "category": "platform",
       "models": []
     },
@@ -807,8 +753,8 @@
     },
     {
       "path": "manifests/versions.json",
-      "size": 10734,
-      "sha256": "d3fcce77fe44b44b924cb06c064d20839716076be7678a403ddf3db86095f9e8",
+      "size": 9780,
+      "sha256": "10a84e6333e4bd82d7a3d51431ffcaad68bc60badd3b5f98761490ff9fd2f14c",
       "category": "platform",
       "models": []
     },
@@ -912,8 +858,8 @@
     },
     {
       "path": "payload/home/cix/ai-model-gateway/app/main.py",
-      "size": 74579,
-      "sha256": "6f898f112fa8ff8a228f973e7c94021c50bf2c7f8bf207e2d547775ce9dedb2f",
+      "size": 60209,
+      "sha256": "97b5b55c2579010053da11ffe9929ad17a81d6bc622ac591826e0b4eabc7661f",
       "category": "platform",
       "models": []
     },
@@ -968,15 +914,15 @@
     },
     {
       "path": "payload/home/cix/ai-model-gateway/compose.yaml",
-      "size": 2454,
-      "sha256": "a447753e1740d8f490b488a2d92260a0d90b9b3cfacaf563869edead9f8ee6d5",
+      "size": 2176,
+      "sha256": "d5f2c13d6ee129bc1b280d8d0c557b91e5b768f45e9b6d70d7dc8aef00cd91d4",
       "category": "platform",
       "models": []
     },
     {
       "path": "payload/home/cix/ai-model-gateway/config/models.json",
-      "size": 12377,
-      "sha256": "16af49ffa840291efc6be018494a84f679b61779f2bbd0b7110fc4666fad3ae2",
+      "size": 10718,
+      "sha256": "92ad5f6f35dd6eed91f155c4e4f108beba1126490245e70312cedf020a67f88d",
       "category": "platform",
       "models": []
     },
@@ -1068,83 +1014,6 @@
       "path": "payload/home/cix/ai-model-gateway/tests/test_usage_reconciliation.py",
       "size": 11988,
       "sha256": "6bd45c2103f8d7124d6706e3c9ff10dbf22cfcc8c1de45fa5d5c4a2fa8fd531b",
-      "category": "platform",
-      "models": []
-    },
-    {
-      "path": "payload/home/cix/ballot-reader/.dockerignore",
-      "size": 41,
-      "sha256": "43adcb9a1acc2d6fb07cdf03741132a5d8906614d29a9a331cdcfd86f59dbf0d",
-      "category": "platform",
-      "models": []
-    },
-    {
-      "path": "payload/home/cix/ballot-reader/Dockerfile",
-      "size": 438,
-      "sha256": "57c7e158473d0a594a85dd9912c5e5ef6d892eda9dfd1cabb2badfc7c9cfce3c",
-      "category": "platform",
-      "models": []
-    },
-    {
-      "path": "payload/home/cix/ballot-reader/README.md",
-      "size": 1954,
-      "sha256": "61b83ddcde6503803473b7fa19b91447bc9447fd31dcfec8c31182fa03b1d303",
-      "category": "platform",
-      "models": []
-    },
-    {
-      "path": "payload/home/cix/ballot-reader/app/__init__.py",
-      "size": 41,
-      "sha256": "94640babda143f4ca5a4f3cb1cd66e0893228dd0dcb5685d7574dd1f8b05cf62",
-      "category": "platform",
-      "models": []
-    },
-    {
-      "path": "payload/home/cix/ballot-reader/app/batch.py",
-      "size": 4906,
-      "sha256": "a4787be6b624ae2dad19202a1e284841c968f9acfdb9ac48d5db18a50e996853",
-      "category": "platform",
-      "models": []
-    },
-    {
-      "path": "payload/home/cix/ballot-reader/app/main.py",
-      "size": 2339,
-      "sha256": "bceb681e7a29da3887f1e344b0fa2f3e1d7799c3e43ab4c5711935467286b235",
-      "category": "platform",
-      "models": []
-    },
-    {
-      "path": "payload/home/cix/ballot-reader/app/reader.py",
-      "size": 20738,
-      "sha256": "be02caf746a4fc1e08df4bc1181b6448a949fe40bd14a1fb795f9bdcf6fed241",
-      "category": "platform",
-      "models": []
-    },
-    {
-      "path": "payload/home/cix/ballot-reader/compose.yaml",
-      "size": 1291,
-      "sha256": "1222616badf79bec1aa93b95a24cde7269d3ecd56d28e8659d3c77c571359f76",
-      "category": "platform",
-      "models": []
-    },
-    {
-      "path": "payload/home/cix/ballot-reader/gateway_extension.py",
-      "size": 2455,
-      "sha256": "a171797281eb9f6ac56b01b075750c2720e12dedcb21d54c17a76979e47889e6",
-      "category": "platform",
-      "models": []
-    },
-    {
-      "path": "payload/home/cix/ballot-reader/requirements.txt",
-      "size": 144,
-      "sha256": "eeda20920366e6975ee15bb666f54647e2009b7af090327178e110c94526c921",
-      "category": "platform",
-      "models": []
-    },
-    {
-      "path": "payload/home/cix/ballot-reader/tests/test_reader.py",
-      "size": 2209,
-      "sha256": "4d329af509e496e3abe18a7b44ffadfd6582cb2675bda084e4de3faf1b435111",
       "category": "platform",
       "models": []
     },
@@ -1344,105 +1213,6 @@
       "category": "models",
       "models": [
         "qwen3.8-27b"
-      ]
-    },
-    {
-      "path": "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/LICENSE",
-      "sha256": "832dd9e00a68dd83b3c3fb9f5588dad7dcf337a0db50f7d9483f310cd292e92e",
-      "size": 11343,
-      "category": "models",
-      "models": [
-        "qwen3guard-stream-0.6b"
-      ]
-    },
-    {
-      "path": "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/README.md",
-      "sha256": "2ca500382dcdbba770cfb4c98ff4ae09f7c671a561b572a83b68e54e26bde9ce",
-      "size": 14638,
-      "category": "models",
-      "models": [
-        "qwen3guard-stream-0.6b"
-      ]
-    },
-    {
-      "path": "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/config.json",
-      "sha256": "b3bcfee86ed04c86e3c92000a2768d3c879564ac45e7e97909bce2e5767503cd",
-      "size": 1509,
-      "category": "models",
-      "models": [
-        "qwen3guard-stream-0.6b"
-      ]
-    },
-    {
-      "path": "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/configuration_qwen3.py",
-      "sha256": "db0bc8f36ab1857247263250cd37d62a3be8dacb58c75f486ddfbc0510dbb83e",
-      "size": 11817,
-      "category": "models",
-      "models": [
-        "qwen3guard-stream-0.6b"
-      ]
-    },
-    {
-      "path": "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/generation_config.json",
-      "sha256": "52a5a5dd9227794548c6de5e0a1c8bc795a662912bdae6a3a7e4226c542e835c",
-      "size": 161,
-      "category": "models",
-      "models": [
-        "qwen3guard-stream-0.6b"
-      ]
-    },
-    {
-      "path": "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/merges.txt",
-      "sha256": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
-      "size": 1671853,
-      "category": "models",
-      "models": [
-        "qwen3guard-stream-0.6b"
-      ]
-    },
-    {
-      "path": "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/model.safetensors",
-      "sha256": "e0a2eac6cc79cca5bf35bf8fb356f94c333dd9715f4f0dd58883b01f2fe33419",
-      "size": 1194258680,
-      "category": "models",
-      "models": [
-        "qwen3guard-stream-0.6b"
-      ]
-    },
-    {
-      "path": "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/modeling_qwen3_guard.py",
-      "sha256": "69cefff967313df5d8292afe3e7a9cec1f7bad5d52a15108bb52d4cff79f62ec",
-      "size": 28666,
-      "category": "models",
-      "models": [
-        "qwen3guard-stream-0.6b"
-      ]
-    },
-    {
-      "path": "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/tokenizer.json",
-      "sha256": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
-      "size": 11422654,
-      "category": "models",
-      "models": [
-        "qwen3guard-stream-0.6b"
-      ]
-    },
-    {
-      "path": "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/tokenizer_config.json",
-      "sha256": "d5d09f07b48c3086c508b30d1c9114bd1189145b74e982a265350c923acd8101",
-      "size": 9732,
-      "category": "models",
-      "models": [
-        "qwen3guard-stream-0.6b"
-      ]
-    },
-    {
-      "path": "payload/home/cix/cix_telecom_projects/qwen3guard-stream-0.6b/Qwen3Guard-Stream-0.6B/vocab.json",
-      "sha256": "87a257b04b17642a0688c98cd1df89c398bda4fee532d6f88b38a659ecb4ac8d",
-      "size": 3383407,
-      "category": "models",
-      "models": [
-        "qwen3guard-stream-0.6b"
       ]
     },
     {
@@ -1735,8 +1505,8 @@
     },
     {
       "path": "payload/home/cix/gateway-admin/admin_app/api_reference.py",
-      "size": 53525,
-      "sha256": "c897e924c64bbf9178f82566c215f6e8588838d2f44c142b83bff1f9f6f21637",
+      "size": 39591,
+      "sha256": "2f74a4bd791b529b8cb16eac9bd1c2f74662c6f6356d462e76d5ad1d966305aa",
       "category": "platform",
       "models": []
     },
@@ -1784,15 +1554,15 @@
     },
     {
       "path": "payload/home/cix/gateway-admin/admin_app/capability_catalog.json",
-      "size": 52543,
-      "sha256": "d0079d210edc1f16537def8d3f7a11fe7018c166a3ffe27c5113b22b2f0e1969",
+      "size": 48194,
+      "sha256": "de0aee048fb720a73d71228082f6b37564965926abe533140cc44eeaae77d2d8",
       "category": "platform",
       "models": []
     },
     {
       "path": "payload/home/cix/gateway-admin/admin_app/capability_examples.py",
-      "size": 15461,
-      "sha256": "702a92de71649bf45b406413298c88281a770c7ac4e0c6e459a8e575ad70eeba",
+      "size": 11984,
+      "sha256": "513c763393a457ffde50df99e58f69df9120cc754e4f36c2415c68bed8b8d515",
       "category": "platform",
       "models": []
     },
@@ -1819,8 +1589,8 @@
     },
     {
       "path": "payload/home/cix/gateway-admin/admin_app/main.py",
-      "size": 36456,
-      "sha256": "ca9cc37cae300a44f94defa72e723da4a54dd2a39be13c74bd7f33878e6c56c9",
+      "size": 36426,
+      "sha256": "80b355c4061f8483322031a307d8402a6156fec3541b39235e2db467e5f92e4e",
       "category": "platform",
       "models": []
     },
@@ -1840,8 +1610,8 @@
     },
     {
       "path": "payload/home/cix/gateway-admin/agent/configuration.py",
-      "size": 13587,
-      "sha256": "8c95e7e41d7df04a8ff503827aa88dc3e82e2c3b8d92ff0888437af66f6aec87",
+      "size": 10071,
+      "sha256": "60aadf6dcf92f72bcfb2626605811acc7732cbf27dc5e678569eeec6ce8fd9b1",
       "category": "platform",
       "models": []
     },
@@ -1854,8 +1624,8 @@
     },
     {
       "path": "payload/home/cix/gateway-admin/agent/diagnostics.py",
-      "size": 16262,
-      "sha256": "07f983bdc7d0ce10d6a71c6944f4cf6d5545fada0587796f4ad3d0612e62659e",
+      "size": 16070,
+      "sha256": "7466e7b4b8af7bff95791954e75d33e54f8966295eda172133366750395260a5",
       "category": "platform",
       "models": []
     },
@@ -1868,8 +1638,8 @@
     },
     {
       "path": "payload/home/cix/gateway-admin/agent/evaluation_cases.py",
-      "size": 7961,
-      "sha256": "becfeaddf82a62d1082d3c61b70d48b863e12c446b53a45dcb5f1e99272fb031",
+      "size": 6886,
+      "sha256": "14dd2b14250f042cac350cfdc2f2bbd83783e5a0f1ee927e6abf2d34407ae585",
       "category": "platform",
       "models": []
     },
@@ -1882,8 +1652,8 @@
     },
     {
       "path": "payload/home/cix/gateway-admin/agent/evaluation_runtime.py",
-      "size": 32710,
-      "sha256": "67ab71e4932a786c97cd17769efef290a013ded201362f9e371dc146feb849fc",
+      "size": 29774,
+      "sha256": "125a41c2cbc93e20a617af2fc9f99b9889701f315ffafea00c4b7962e7fd3c26",
       "category": "platform",
       "models": []
     },
@@ -1903,8 +1673,8 @@
     },
     {
       "path": "payload/home/cix/gateway-admin/agent/main.py",
-      "size": 41039,
-      "sha256": "4911f832f297077034d0645375cc46979f9f5e10eb0c02ea09e2be90aaa2b6ca",
+      "size": 40109,
+      "sha256": "be21abdc6ef738c25c11a7aa55a094800c8bb50faf53de6b97804a00e332b32e",
       "category": "platform",
       "models": []
     },
@@ -1917,8 +1687,8 @@
     },
     {
       "path": "payload/home/cix/gateway-admin/agent/model_catalog.json",
-      "size": 34236,
-      "sha256": "dab6f024201e1130fdbd5325a732a0f872058ced4d31f6e825ce8ee6c08082b7",
+      "size": 30005,
+      "sha256": "954740c27345094547f96fde4eb4b5ad2e781bb0d87e7e1977178b9880059110",
       "category": "platform",
       "models": []
     },
@@ -1931,8 +1701,8 @@
     },
     {
       "path": "payload/home/cix/gateway-admin/agent/model_runtime.py",
-      "size": 15342,
-      "sha256": "1b5e0c1592b7786150926dbdcd493928c25ad267197239e2451bae7f77837eb8",
+      "size": 14623,
+      "sha256": "ea65b5d9c2c09e1418c9c19f87a57171e52b1b5b5a2823d395739ebb0720b1fb",
       "category": "platform",
       "models": []
     },
@@ -1952,8 +1722,8 @@
     },
     {
       "path": "payload/home/cix/gateway-admin/agent/runtime_baseline.json",
-      "size": 10276,
-      "sha256": "e8813fac9e33f7876cc68aecbbf6844d3caad9f0a61c6ccde1ec9f7ca82c9434",
+      "size": 9758,
+      "sha256": "b7d08ff5971d9a17ccd06e6a07714b03029ba77c3bb0015801e0f5262bcebf37",
       "category": "platform",
       "models": []
     },
@@ -1973,8 +1743,8 @@
     },
     {
       "path": "payload/home/cix/gateway-admin/compose.yaml",
-      "size": 4717,
-      "sha256": "7a941fdc7d18a0e622f95481fd8adaa538d7719f7372f7da2a67993390bb6a6b",
+      "size": 3767,
+      "sha256": "ff1fe22009011d90be69acee2c20ff5028f3c0bb07a06fb69685fd820ac0b959",
       "category": "platform",
       "models": []
     },
@@ -2267,29 +2037,29 @@
     },
     {
       "path": "payload/home/cix/houmo-docker-deployment/compose.debug.yaml",
-      "size": 460,
-      "sha256": "8a6263c48df1ad31bf967d3f9ec68e6bfe5102f5f0d4bf7a32c4835446f94642",
+      "size": 401,
+      "sha256": "d4ac936a4d1c9db401abc35a1b2f7ae8bbe154186be9e4d05868640376ca27c8",
       "category": "platform",
       "models": []
     },
     {
       "path": "payload/home/cix/houmo-docker-deployment/compose.remote.current.yaml",
-      "size": 11977,
-      "sha256": "0f4bd529805e493faad6afc4b20b39412ab4d7bba988d9621590229d99f0db9a",
+      "size": 10705,
+      "sha256": "4b36d051f837de61231692eaa90a2e40cb47a7771c7e5d9bbf19deec7e480eb7",
       "category": "platform",
       "models": []
     },
     {
       "path": "payload/home/cix/houmo-docker-deployment/compose.remote.yaml",
-      "size": 11977,
-      "sha256": "0f4bd529805e493faad6afc4b20b39412ab4d7bba988d9621590229d99f0db9a",
+      "size": 10705,
+      "sha256": "4b36d051f837de61231692eaa90a2e40cb47a7771c7e5d9bbf19deec7e480eb7",
       "category": "platform",
       "models": []
     },
     {
       "path": "payload/home/cix/houmo-docker-deployment/compose.yaml",
-      "size": 21267,
-      "sha256": "ee26ca11dc7aab844440dd7888e8777258a833288ca10be9ff4a89b9e737884a",
+      "size": 20000,
+      "sha256": "71647ace86cee49dd717a280b82c5a80ba25ff708d11d94cf2642e1877e61bd9",
       "category": "platform",
       "models": []
     },
@@ -2316,8 +2086,8 @@
     },
     {
       "path": "payload/home/cix/houmo-docker-deployment/houmo-ai-qwen38-mode.conf",
-      "size": 218,
-      "sha256": "4f051adf8e4dc063d2c55e486cb8f04b45eee381828c95236578d8e6a7ec2e7b",
+      "size": 196,
+      "sha256": "3fd13dcf2ca46bc775453e7ab67490f6bddb87d9e4579caeff5fb4adb2714b39",
       "category": "platform",
       "models": []
     },
@@ -2337,8 +2107,8 @@
     },
     {
       "path": "payload/home/cix/houmo-docker-deployment/modelctl",
-      "size": 12796,
-      "sha256": "b9893d8267c316506b0128d81e66a2b81e6ab122d857e8bee5e95ad380641b71",
+      "size": 12618,
+      "sha256": "f50998146914d2ea9bcdb76733be8e96ea08762e6d4434a1a704c049528a3985",
       "category": "platform",
       "models": []
     },
@@ -2710,41 +2480,6 @@
       "models": []
     },
     {
-      "path": "payload/home/cix/qwen3guard-stream-cpu/Dockerfile",
-      "size": 608,
-      "sha256": "0fd88b4886721dcb37b3b87b17098b11651355a0fa2dfe8a1e4d315d9a1abab1",
-      "category": "platform",
-      "models": []
-    },
-    {
-      "path": "payload/home/cix/qwen3guard-stream-cpu/README.md",
-      "size": 551,
-      "sha256": "cab45daa18d6d1143cb968523b3aa89a4121505881ff05620c1b3e5aacb18098",
-      "category": "platform",
-      "models": []
-    },
-    {
-      "path": "payload/home/cix/qwen3guard-stream-cpu/requirements.txt",
-      "size": 34,
-      "sha256": "e7ccce793f48e888665452524510a97f22fd3c243c4211fe0f85837411851d1f",
-      "category": "platform",
-      "models": []
-    },
-    {
-      "path": "payload/home/cix/qwen3guard-stream-cpu/stream_guard/__init__.py",
-      "size": 41,
-      "sha256": "1a4fd15c10f883510c6674b44067dea631574d05f95b9ca0b7f4eb3497ee5f63",
-      "category": "platform",
-      "models": []
-    },
-    {
-      "path": "payload/home/cix/qwen3guard-stream-cpu/stream_guard/main.py",
-      "size": 16215,
-      "sha256": "b480c0b6edb7fa52aa3cf9a59189a0d9b10a16da854b0bd89b8a07f50248b5e5",
-      "category": "platform",
-      "models": []
-    },
-    {
       "path": "payload/home/cix/sensevoice-cpu/.dockerignore",
       "size": 59,
       "sha256": "d1083626e73bad5a2367679fe6ae99cbce70ddc9b93dc3fe8f21adbb0e82a52b",
@@ -2830,8 +2565,8 @@
     },
     {
       "path": "runtime/ui-static.tar.gz",
-      "size": 137380,
-      "sha256": "ff4ba5100e112e6b0f939831a73d4a5dafe91bf4c024ca80ff086b7efb27d545",
+      "size": 136126,
+      "sha256": "e47e5b432ad1d3c18d8f4ed1485c47ac1360e30cd3635ec40f1304a80ed661b5",
       "category": "runtime",
       "models": []
     },
@@ -2844,8 +2579,8 @@
     },
     {
       "path": "scripts/offline_install.py",
-      "size": 14843,
-      "sha256": "1fb4a5750748f4f09886ce72993852486eb9696e9c25e724e9924e24499528bb",
+      "size": 14685,
+      "sha256": "a802183bdc3313775ea504b4d9b89b033dc7f5d8744c9058307378d623694e10",
       "category": "platform",
       "models": []
     },
@@ -2865,8 +2600,8 @@
     },
     {
       "path": "scripts/verify_runtime.py",
-      "size": 6517,
-      "sha256": "ea68bfb434bbb90ebe4cd55c9bbd6b6f93b92d26e91d3f0d1d730b7cfff43271",
+      "size": 5730,
+      "sha256": "984413f4b6cf5cdba695274b3a6af6ea72428d2d7f77170a09b3b1e411b488f9",
       "category": "platform",
       "models": []
     },
@@ -2885,51 +2620,37 @@
       "models": []
     },
     {
-      "path": "tests/synthetic-ballot-expected.json",
-      "size": 120,
-      "sha256": "e6f35bb6d99932ecdf940ab91fe5fddf9dc5af5afc970dd60291affe2568ef56",
-      "category": "platform",
-      "models": []
-    },
-    {
-      "path": "tests/synthetic-ballot.png",
-      "size": 82284,
-      "sha256": "4267024e3e3346a4d854a611eaf9f5c1a2f3587edce2c765256c1de400424f4c",
-      "category": "platform",
-      "models": []
-    },
-    {
       "path": "variants/single/ai-model-gateway/config/models.json",
-      "size": 11871,
-      "sha256": "1cc1b8379fb9e5f1fe2dcdda5475c5108fd7eda89d57dd82e55e396804fd42dd",
+      "size": 10233,
+      "sha256": "cce86822e3a3a7c4f7986433faa29386c181772b4a549241fab02f4187dc814a",
       "category": "platform",
       "models": []
     },
     {
       "path": "variants/single/gateway-admin/admin_app/capability_catalog.json",
-      "size": 51259,
-      "sha256": "4b02080eb6bc42ad6aec9dea8391c5789043fcaed0cf14c62bc751238d0c3fa0",
+      "size": 46910,
+      "sha256": "1b86558ec1110c8899076eebf9655f94ff54228818c9504b231338c897123e0c",
       "category": "platform",
       "models": []
     },
     {
       "path": "variants/single/gateway-admin/agent/model_catalog.json",
-      "size": 32070,
-      "sha256": "44e0f20861db0831caac4f155007afe5d46e3e45c020a6a1d8c50e0024034798",
+      "size": 27839,
+      "sha256": "80c4d49dde2038107d0bba14bfbda76d6d3eea0ff27d2d22781a90d263aebacc",
       "category": "platform",
       "models": []
     },
     {
       "path": "variants/single/gateway-admin/agent/runtime_baseline.json",
-      "size": 9826,
-      "sha256": "01f8f20f9c6dc401921ec03929e79689a5caa4bba3c64e854d637ed8e7966ea0",
+      "size": 9308,
+      "sha256": "3d4a6ba8c8534ac07d5726c67df641bf6e28026a48f72c451666b048e6c4f189",
       "category": "platform",
       "models": []
     },
     {
       "path": "variants/single/houmo-docker-deployment/compose.yaml",
-      "size": 20619,
-      "sha256": "4ea42db7c46a222cd44fec5ebabba66345eb5b4b54aa083e2d7c4de35fc029e1",
+      "size": 19352,
+      "sha256": "f407cbf1f6d0c274f263b5f6cb6ba35164b00c33490dd2f9decda3103fa0e99c",
       "category": "platform",
       "models": []
     }
@@ -2949,5 +2670,5 @@
       2
     ]
   },
-  "workflow_sha256": "32f08b5490dfb44d22f9362c020b1f852df24496d4bdaabb11ee87ef020f7af2"
+  "workflow_sha256": "649d3592eea4c7defcafdebbee1f9cfcea366cff8f2e9c52d00a38cefe3fd241"
 }

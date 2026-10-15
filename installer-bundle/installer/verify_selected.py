@@ -19,8 +19,7 @@ MODES={'copaw-flash-9b':'copaw','spark-x1-4b':'spark-x1','bge-m3':'bge-m3',
        'bge-reranker-v2-m3':'reranker','cosyvoice3-0.5b':'cosyvoice',
        'qwen3-vl-8b':'qwen-vl','glm-ocr-0.9b':'glm-ocr','qwen3.8-27b':'qwen38','qwen3.6-35b-a3b':'qwen36'}
 CPU_CONTAINERS={'sensevoice':'houmo-sensevoice-cpu','kokoro-82m':'houmo-kokoro-tts',
-                'matcha-zh':'houmo-matcha-tts','democratic-eval-v1':'ballot-reader',
-                'qwen3guard-stream-0.6b':'houmo-qwen3guard-stream-0.6b'}
+                'matcha-zh':'houmo-matcha-tts'}
 CV={'mobilenet_v2','inception_v3','yolov11_l','yolov11_n','yolov11n_obb',
     'yolov12_s','yolov12_m','bytetrack_s','retinaface','yolov5s_face','scrfd','arcface','yolov8l_seg'}
 
@@ -72,9 +71,8 @@ def main():
         for name in ['ai-model-gateway','gateway-admin','gateway-admin-agent']:
             check_container(name)
         for model in selected:
-            if model in CPU_CONTAINERS and model!='qwen3guard-stream-0.6b':check_container(CPU_CONTAINERS[model])
+            if model in CPU_CONTAINERS:check_container(CPU_CONTAINERS[model])
         if CV.intersection(selected):check_container('cix-cv')
-        if 'qwen3guard-stream-0.6b' in selected:check_container(CPU_CONTAINERS['qwen3guard-stream-0.6b'])
         record('selected-containers-and-autostart')
         stage='网关模型清单'
         env=dict(line.split('=',1) for line in (DEPLOY/'.env').read_text().splitlines() if '=' in line)
@@ -84,7 +82,7 @@ def main():
         if not set(selected).issubset(ids):raise RuntimeError('网关未登记全部所选模型')
         result['registry_models']=sorted(ids);record('selected-gateway-registry')
         stage='CPU / CIX 模型真实推理'
-        probe_ids=[model for model in selected if model not in MODES and model!='democratic-eval-v1']
+        probe_ids=[model for model in selected if model not in MODES]
         if probe_ids:
             code="""import json,sys
 from agent.model_store import Catalog
@@ -97,13 +95,6 @@ print(json.dumps([r.probe(c.models[mid]) for mid in json.loads(sys.argv[1])]))
             for probe in probes:
                 if not probe.get('passed'):raise RuntimeError('真实推理失败：'+str(probe.get('model')))
                 record('inference:'+probe['model'])
-        if 'democratic-eval-v1' in selected:
-            stage='民主测评识别'
-            fixture=(args.resources/'tests/synthetic-ballot.png').read_bytes()
-            ballot=json.loads(request('/v1/documents/analyze?model=democratic-eval-v1',key,fixture,'image/png'))
-            pages=ballot.get('pages',[])
-            if not pages or pages[0].get('selection_count')!=36:raise RuntimeError('民主测评测试页未识别出 36 项')
-            record('ballot-gateway-36-selections')
         modes=[MODES[model] for model in selected if model in MODES]
         if modes:
             stage='加速卡模型真实推理';original=(DEPLOY/'state/active-mode').read_text().strip()

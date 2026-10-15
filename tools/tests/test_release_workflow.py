@@ -32,6 +32,8 @@ class ReleaseWorkflowTests(unittest.TestCase):
         new = release.read(BUNDLE / 'sources.json')
         for key in ('qwen38-1-mmproj', 'qwen38-2-mmproj'):
             old['oci_artifacts'][key]['repository'] = 'aistore/qwen3-8-27b-mmproj'
+        old['file_urls']={p:v for p,v in old['file_urls'].items() if 'qwen3guard' not in p}
+        old['oci_artifacts'].pop('qwen3guard-stream-0.6b')
         self.assertEqual(new, old)
 
     def test_copied_worker_reads_its_own_version_metadata(self):

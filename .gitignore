@@ -7,6 +7,10 @@ __pycache__/
 *.py[cod]
 .venv/
 .pytest_cache/
+node_modules/
+**/modeldeck-frontend/dist/
+**/modeldeck-frontend/test-results*/
+*.tsbuildinfo
 
 # Large assets are retained locally and recorded by external-assets.json.
 *.tar

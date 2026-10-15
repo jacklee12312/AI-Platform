@@ -159,7 +159,7 @@ class Wizard(QWidget):
     def build_welcome(self):
         v=self.page();stats=QHBoxLayout()
         stages=('2 阶段','组件库 → 模型') if self.probe_installed else ('3 阶段','探针 → 组件库 → 模型')
-        for number,title in [(str(len(self.catalog['models'])),'注册模型及服务'),('18' if self.workflow_enabled else '12','配套容器镜像'),stages if self.workflow_enabled else ('2 种','本地与远端来源')]:
+        for number,title in [(str(len(self.catalog['models'])),'注册模型及服务'),(str(self.catalog['image_count']+(6 if self.workflow_enabled else 0)),'配套容器镜像'),stages if self.workflow_enabled else ('2 种','本地与远端来源')]:
             f=QFrame();f.setObjectName('card');l=QVBoxLayout(f);l.setContentsMargins(18,14,18,14);l.addWidget(label(number,'number'));l.addWidget(label(title,'subtitle'));stats.addWidget(f)
         v.addLayout(stats)
         v.addWidget(card('完整推理能力','LLM / 图文理解 / OCR / 语音识别与合成 / 向量与重排 / CV / Guard / 民主测评识别'))
@@ -351,7 +351,7 @@ class Wizard(QWidget):
 
     def build_settings(self):
         page=self.page();scroll=QScrollArea();scroll.setWidgetResizable(True);content=QWidget();v=QVBoxLayout(content);scroll.setWidget(content);page.addWidget(scroll)
-        self.settings_scope=card('安装范围：探针、所选组件与所选模型' if self.workflow_enabled else '安装范围：平台基础组件 + 已选模型','组件库按前一步的勾选安装，Milvus 自动包含 MinIO 与 etcd。Docker / Compose 是模型平台必需环境。' if self.workflow_enabled else '12 个配套镜像、运行时、网关与管理界面固定安装；模型权重、模型服务和验收仅包含上一步勾选项。');v.addWidget(self.settings_scope)
+        self.settings_scope=card('安装范围：探针、所选组件与所选模型' if self.workflow_enabled else '安装范围：平台基础组件 + 已选模型','组件镜像按勾选联网拉取，也可本地导入；Milvus 自动包含 MinIO 与 etcd。Docker / Compose 是必需环境。' if self.workflow_enabled else '配套平台镜像、运行时、网关与管理界面固定安装；模型权重、模型服务和验收仅包含上一步勾选项。');v.addWidget(self.settings_scope)
         self.probe_fields={};self.component_fields={}
         if self.workflow_enabled:
             import_button=QPushButton('导入安装配置');import_button.clicked.connect(self.import_workflow_settings);v.addWidget(import_button,alignment=Qt.AlignLeft)

@@ -162,7 +162,7 @@ class Installer:
         for p in self.resources.rglob('*'):
             if p.is_symlink():raise RuntimeError('资源目录含意外链接：'+str(p))
             if p.is_file() and p.relative_to(self.resources).as_posix() not in listed|{'manifests/SHA256SUMS'}:raise RuntimeError('资源目录含未验证文件：'+str(p))
-        if len(self.manifest['models'])!=27 or len(self.manifest['images'])!=12:raise RuntimeError('不是完整的发行清单')
+        if self.catalog is not None and (set(self.manifest['models'])!=set(self.catalog['models']) or len(self.manifest['images'])!=self.catalog['image_count']):raise RuntimeError('平台范围与签名发行清单不一致')
         validate_runtime_config((self.resources/'payload/home/cix/houmo-docker-deployment/compose.yaml').read_text())
         if self.catalog is not None:
             validate_runtime_config((self.resources/'variants/single/houmo-docker-deployment/compose.yaml').read_text())
@@ -328,14 +328,13 @@ class Installer:
             finally:os.unlink(temporary)
         create_or_match('houmo-docker-deployment/.env','HOUMO_API_KEY='+request['api_key']+'\nGATEWAY_MANAGEMENT_TOKEN='+request['management_token']+'\n')
         create_or_match('gateway-admin/.env',"ADMIN_PASSWORD_HASH='"+encoded+"'\nADMIN_AGENT_TOKEN="+request['agent_token']+'\n')
-        for relative,uid,gid,mode in [('houmo-docker-deployment/state',user.pw_uid,user.pw_gid,0o755),('ai-model-gateway/data',65534,65534,0o750),('ballot-reader/work',65534,65534,0o750)]:
+        for relative,uid,gid,mode in [('houmo-docker-deployment/state',user.pw_uid,user.pw_gid,0o755),('ai-model-gateway/data',65534,65534,0o750)]:
             target=self.home/relative;no_symlink_parents(target/'placeholder',self.home)
             if not target.exists():target.mkdir()
             target.chmod(mode);os.chown(target,uid,gid)
         selected_modes=[mode for mode,model in ACCELERATOR_MODELS.items() if model in self.selected]
         initial_mode=selected_modes[0] if selected_modes else 'copaw'
         create_or_match('houmo-docker-deployment/state/active-mode',initial_mode+'\n',0o644)
-        create_or_match('houmo-docker-deployment/state/guard-mode','off\n',0o644)
         install_state={'schema_version':1,'revision':0,'models':{
             model:{'installed':True,'enabled':True,'status':'ready'} for model in self.selected}}
         create_or_match('houmo-docker-deployment/state/model-installations.json',json.dumps(install_state,ensure_ascii=False,indent=2)+'\n',0o644)
@@ -347,20 +346,17 @@ class Installer:
                   'bge-reranker-v2-m3':'reranker','cosyvoice3-0.5b':'cosyvoice',
                   'qwen3-vl-8b':'qwen-vl','glm-ocr-0.9b':'glm-ocr','qwen3.8-27b':'qwen38','qwen3.6-35b-a3b':'qwen36'}
         services=[mode_map[m] for m in self.selected if m in mode_map]
-        if 'qwen3guard-stream-0.6b' in self.selected:services.append('qwen3guard')
         if services:self.base.compose('houmo-docker-deployment','compose.yaml','up','--no-start','--no-build','--pull','never',*services)
         cv={'mobilenet_v2','inception_v3','yolov11_l','yolov11_n','yolov11n_obb','yolov12_s','yolov12_m','bytetrack_s','retinaface','yolov5s_face','scrfd','arcface','yolov8l_seg'}
         cpu=[]
         if cv.intersection(self.selected):cpu.append(('cv_deploy','compose.yaml'))
-        for model,directory,filename in [('sensevoice','sensevoice-cpu','compose.yaml'),('kokoro-82m','kokoro-cix','docker-compose.yml'),('matcha-zh','matcha-tts-cpu','docker-compose.yml'),('democratic-eval-v1','ballot-reader','compose.yaml')]:
+        for model,directory,filename in [('sensevoice','sensevoice-cpu','compose.yaml'),('kokoro-82m','kokoro-cix','docker-compose.yml'),('matcha-zh','matcha-tts-cpu','docker-compose.yml')]:
             if model in self.selected:cpu.append((directory,filename))
         for directory,filename in cpu:self.base.compose(directory,filename,'up','-d','--no-build','--pull','never','--wait','--wait-timeout','240')
         has_accelerator=any(m in mode_map for m in self.selected)
         if has_accelerator:
             self.command('systemctl','enable','--now','houmo-ai.service')
             self.command('/usr/local/bin/modelctl','boot',timeout=720)
-        elif 'qwen3guard-stream-0.6b' in self.selected:
-            self.base.compose('houmo-docker-deployment','compose.yaml','up','-d','--no-build','--pull','never','--wait','--wait-timeout','240','qwen3guard')
         self.command('systemctl','enable','--now','ai-model-gateway.service','gateway-admin.service')
         if has_accelerator:self.command('systemctl','enable','modeldeck-startup-verify.service')
         # Desktop entry is created for the actual cix user, after successful startup.
@@ -404,10 +400,9 @@ class Installer:
         if modes:
             initial=(self.home/'houmo-docker-deployment/state/active-mode').read_text().strip()
             expected.add('restore-mode:'+initial)
-        expected.update('inference:'+m for m in self.selected if m not in ACCELERATOR_MODELS.values() and m!='democratic-eval-v1')
+        expected.update('inference:'+m for m in self.selected if m not in ACCELERATOR_MODELS.values())
         for model in ('qwen3.8-27b','qwen3.6-35b-a3b'):
             if model in self.selected:expected.add('multimodal:'+model)
-        if 'democratic-eval-v1' in self.selected:expected.add('ballot-gateway-36-selections')
         if set(names)!=expected:raise RuntimeError('所选模型的真实推理验收项目不完整')
 
     def run(self):
