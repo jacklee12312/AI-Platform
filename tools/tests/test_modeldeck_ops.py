@@ -138,6 +138,14 @@ class ModelSupplyTests(unittest.TestCase):
         with self.assertRaises(ValueError):store.import_local(p)
         self.assertFalse(store.ready(store.catalog.files[self.sha]))
 
+    def test_full_installer_folder_skips_platform_and_runtime_archives(self):
+        store=self.store();folder=self.root/'delivery';folder.mkdir()
+        target=folder/'payload/home/cix'/self.model['files'][0]['target'];target.parent.mkdir(parents=True);target.write_bytes(self.body)
+        for name in ['all-arm64-images.tar.gz','cosyvoice-runtime.tar.gz']:
+            (folder/name).write_bytes(self.archive('platform/manifest.json'))
+        self.assertEqual(store.import_local(folder)['files_imported'],1)
+        self.assertTrue(store.ready(store.catalog.files[self.sha]))
+
     def test_archive_traversal_is_rejected(self):
         data=self.archive('../escape');store=self.store(self.tar_model(data));p=self.root/'archive';p.write_bytes(data)
         with self.assertRaises(ValueError):store.import_local(p)

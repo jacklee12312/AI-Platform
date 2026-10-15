@@ -8,9 +8,9 @@
   "images": 16,
   "install_mode": "probe-components-selected-models",
   "status": "candidate",
-  "resources_checksums_sha256": "ebadbb759340045e4d6842a18bb9413f95e0ede17dc05e1e06840b311e099df9",
+  "resources_checksums_sha256": "d52f0b72f096d920bd74a3e49d3afc012b142c104eda9ad60120a55cbeb74f8e",
   "resources_manifest_sha256": "bc94142b547e5c627a9dd9e68f56656e77f91aa1d4262c7c4dad20c7b071e47e",
-  "catalog_sha256": "f84fe6d48a24949ca3f446d8c1239e85dc9b849b3e097646579b6310a18f576a",
+  "catalog_sha256": "dc7ebe18e7012d8f85653d878c63278e0648b007694eb25d3001201407f52b3b",
   "signature": "Ed25519; dedicated installer 1.x release key",
   "validation": {
     "fresh_install": "not_run",

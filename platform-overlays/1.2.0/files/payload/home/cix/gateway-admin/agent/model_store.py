@@ -349,7 +349,20 @@ class ModelStore:
                 if matches:
                     self.import_file(file, None, progress); imported += 1
                 elif file.name.endswith(('.tar.gz', '.tgz', '.tar')):
-                    result = self.import_local(file, progress); imported += result.get('files_imported', 0)
+                    # A full installer directory also contains platform images,
+                    # runtimes and other tar files. Only consume recognized model
+                    # archive sizes or a standard bundle header; never load images.
+                    known = any(f.get('oci_source', {}).get('format') == 'tar+gzip' and
+                                f['oci_source']['blob_size'] == file.stat().st_size for f in self.catalog.files.values())
+                    if not known:
+                        try:
+                            with tarfile.open(file, 'r|*') as archive:
+                                first = archive.next()
+                                known = bool(first and first.name == 'modeldeck-bundle.json' and first.isfile() and first.size <= CHUNK)
+                        except (tarfile.TarError, OSError):
+                            continue
+                    if known:
+                        result = self.import_local(file, progress); imported += result.get('files_imported', 0)
             if not imported:
                 raise ValueError('目录中没有匹配当前设备的已适配模型资源')
             return {'files_imported': imported, 'status': 'downloaded'}

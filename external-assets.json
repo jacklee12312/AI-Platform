@@ -1559,7 +1559,7 @@
     {
       "path": "build/resources-1.2.0/manifests/SHA256SUMS",
       "bytes": 49519,
-      "sha256": "ebadbb759340045e4d6842a18bb9413f95e0ede17dc05e1e06840b311e099df9"
+      "sha256": "d52f0b72f096d920bd74a3e49d3afc012b142c104eda9ad60120a55cbeb74f8e"
     },
     {
       "path": "build/resources-1.2.0/manifests/build-checks.json",
@@ -2083,8 +2083,8 @@
     },
     {
       "path": "build/resources-1.2.0/payload/home/cix/gateway-admin/agent/model_store.py",
-      "bytes": 22635,
-      "sha256": "1edc0d6d8dd95b3d12314bb64c497ce4f98c10748ebdb5eaddb6e050d6cb02e5"
+      "bytes": 23548,
+      "sha256": "076edb9b7405071775f1316898cb0bdaa42b128b3b3b7158313c78c1916dccb9"
     },
     {
       "path": "build/resources-1.2.0/payload/home/cix/gateway-admin/agent/ops_api.py",
