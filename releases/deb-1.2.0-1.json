@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "package": "ai-platform-installer",
+  "package_version": "1.2.0-1",
+  "architecture": "arm64",
+  "source_commit": "329e73c8886066a1819732cc86d98af701052ba2",
+  "installer_version": "1.2.0",
+  "resource_release_id": "ai-platform-installer-1.2.0-20261015",
+  "payload_source_commit": "f3604b1292357640f5a3e3f851a29050a1d1c1c3",
+  "base_archive_sha256": "0b3a955ada8130572f67235ee48b6d9714d615d57328566f6b1adf25c613f7a2",
+  "base_delivery_checksums_sha256": "dd1c06849e10ca377f8aa35a6fe2c67a2443154d64373edc5422a9d8084206c8",
+  "catalog_sha256": "dc7ebe18e7012d8f85653d878c63278e0648b007694eb25d3001201407f52b3b",
+  "test_report_sha256": "e03ef3e93b63671a2241e83284bfc4accdf7607b321c7f3c5096233620122c39",
+  "model_weights_in_distribution": false,
+  "fresh_device_acceptance": "not_run",
+  "archive": "delivery/ai-platform-installer_1.2.0-1_arm64.deb",
+  "archive_bytes": 3733486502,
+  "archive_sha256": "7505d2ed413baa4e79923302fceabf391adce48aa5adfb0b91ad0f4de72b37dc",
+  "installed_size_kib": 3688183,
+  "packaged_files": 580,
+  "automated_tests": 222,
+  "source_tag": "deb-v1.2.0-1",
+  "device_validation": {
+    "checked_at": "2026-10-15T11:48:33.655850+00:00",
+    "package_installation": "passed",
+    "installed_files_md5_verified": 580,
+    "installed_files_sha256_verified": 579,
+    "application_menu": "passed",
+    "physical_display_window": "passed",
+    "user_sources_configuration": "passed",
+    "prerequisite_local_resources": 397,
+    "local_model_source_plans": [
+      {
+        "cards": 1,
+        "models": 24,
+        "local_files": 366,
+        "ready": true
+      },
+      {
+        "cards": 2,
+        "models": 24,
+        "local_files": 366,
+        "ready": true
+      }
+    ],
+    "wired_transfer_sha256": "passed",
+    "legacy_opener_patch_absent": true,
+    "workflow_order": [
+      "probe",
+      "components",
+      "models"
+    ],
+    "full_platform_installation": "not_run",
+    "hardware_inference": "not_run",
+    "reboot": "not_run"
+  }
+}
