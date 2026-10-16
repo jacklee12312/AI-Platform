@@ -1,5 +1,8 @@
 # Kokoro 与本机 NPU 运行库的适配
 
+本文记录 Debian 修订 6 的处理过程。修订 7 已将库随包交付并支持自动补装、
+损坏修复和兼容性选择，见 [NPU 离线运行环境](npu-offline-runtime.md)。
+
 2026-10-16 在 CIX 盒子实测：内核 6.6.89、AIPU KMD 6.0.1，
 `kokoro-cix:0.2.0` 的 libnoe 2.0.0 / libnoe.so.0.6.0 初始化报
 `query capability fail`，特权容器同样失败。盒子配套的 cix-noe-umd 3.1.2、

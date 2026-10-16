@@ -175,6 +175,10 @@ def quick_checks(bundle,selected_models=None,selected_components=None):
             catalog=load_catalog(bundle)
             if set(catalog['models'])!=set(m['models']) or catalog['image_count']!=len(m['images']):raise RuntimeError('平台范围与签名发行清单不一致')
             row('发行签名',True,'Ed25519 签名通过；安装前仍逐文件校验内容')
+            if release.get('npu_runtime_release_id'):
+                from npu_payload import load,contents
+                runtime,archive=load(bundle);contents(runtime,archive)
+                row('NPU 离线运行库',True,'配套 NOE 3.1.2 已随包提供；缺失自动补齐，兼容性以实际 NPU 推理检查为准')
             if catalog.get('workflow_sha256'):
                 from workflow import COMPONENTS,load_workflow,resolved_components
                 workflow=load_workflow(bundle,catalog)

@@ -132,6 +132,12 @@ def check(root, online=False):
               'signed_catalog_verified': True, 'original_1_0_0_archive_verified': baseline_verified,
               'sources_sha256': digest(bundle / 'sources.json'), 'remote_checks': [],
               'full_model_download': 'not_run', 'fresh_device_install': 'not_run', 'reboot': 'not_run'}
+    if spec.get('npu_runtime_release_id'):
+        from npu_payload import load,contents
+        runtime,archive=load(bundle);contents(runtime,archive)
+        if runtime['release_id']!=spec['npu_runtime_release_id']:raise RuntimeError('NPU runtime resource identity differs from release-config.json')
+        report.update(npu_runtime_release_id=runtime['release_id'],npu_runtime_archive_sha256=digest(archive),
+                      npu_runtime_archive_bytes=archive.stat().st_size,npu_runtime_signed=True)
     if online:
         def probe(item):
             key, source = item
@@ -360,10 +366,11 @@ def main():
         if candidate and candidate.is_file():
             os.environ['PATH'] = str(candidate.parent) + os.pathsep + os.environ.get('PATH', '')
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('command', choices=['check', 'test', 'build', 'deb', 'verify', 'assets', 'sync-version'])
+    parser.add_argument('command', choices=['check', 'test', 'build', 'deb', 'verify', 'assets', 'sync-version', 'npu-runtime'])
     parser.add_argument('--deb-revision', default='1', help='Debian packaging revision; immutable once published')
     parser.add_argument('--online', action='store_true', help='Read-only remote manifest checks; no model weight download')
     parser.add_argument('--path', type=Path, help='Delivery directory for verify; external asset store for assets')
+    parser.add_argument('--key', type=Path, help='Existing trusted publisher key for a new NPU runtime resource release')
     args = parser.parse_args()
     if args.command == 'check':
         report = check(ROOT, args.online)
@@ -389,6 +396,10 @@ def main():
         if not args.path:
             parser.error('assets requires --path pointing to an asset store with the locked relative layout')
         print(json.dumps({'verified_external_assets': check_assets(ROOT, args.path.resolve())}))
+    elif args.command == 'npu-runtime':
+        if not args.path or not args.key:parser.error('npu-runtime requires --path vendor export directory and --key')
+        from npu_runtime_release import prepare
+        prepare(ROOT,args.path,args.key)
     else:
         sync_version(ROOT)
 

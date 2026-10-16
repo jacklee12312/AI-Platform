@@ -155,12 +155,17 @@ def build(root, revision='1'):
     preflight = release.read(root / 'build/validation/preflight.json')
     if preflight.get('source_commit') != commit or not preflight.get('signed_catalog_verified'):
         raise RuntimeError('Run release.py check --online against this exact source commit')
+    if config.get('npu_runtime_release_id') and (not preflight.get('npu_runtime_signed') or preflight.get('npu_runtime_release_id')!=config['npu_runtime_release_id']):
+        raise RuntimeError('Offline NPU runtime must pass trusted signature and content checks')
     bundle = work / 'bundle'
     overlay_bundle(root / config['source_bundle'], reference, bundle)
     metadata_release = release.read(reference / 'release.json')
     metadata_release.update(source_commit=commit, debian_revision=revision,
                             resource_source_commit=base['source_commit'],
                             built_at=datetime.fromtimestamp(epoch, timezone.utc).isoformat())
+    if config.get('npu_runtime_release_id'):
+        metadata_release.update(npu_runtime_release_id=config['npu_runtime_release_id'],
+                                npu_runtime_manifest_sha256=release.digest(bundle/'npu-runtime/manifest.json'))
     metadata_release['validation']['automated_tests'] = str(tests['tests_run']) + ' passed'
     release.write(bundle / 'release.json', metadata_release)
     subprocess.run([sys.executable, '-B', str(bundle / 'tools/seal_installer.py'),
@@ -196,6 +201,11 @@ def build(root, revision='1'):
                   'base_delivery_checksums_sha256': release.digest(delivery / 'SHA256SUMS'),
                   'catalog_sha256': base['catalog_sha256'], 'test_report_sha256': release.digest(root / 'build/validation/tests.json'),
                   'model_weights_in_distribution': False, 'fresh_device_acceptance': 'not_run'}
+    if config.get('npu_runtime_release_id'):
+        provenance.update(npu_runtime_release_id=config['npu_runtime_release_id'],
+                          npu_runtime_manifest_sha256=release.digest(bundle/'npu-runtime/manifest.json'),
+                          npu_runtime_archive_sha256=preflight['npu_runtime_archive_sha256'],
+                          npu_runtime_offline_bytes=preflight['npu_runtime_archive_bytes'])
     files[prefix + '/debian-provenance.json'] = ((json.dumps(provenance, ensure_ascii=False, indent=2) + '\n').encode(), 0o644)
     files['usr/share/doc/ai-platform-installer/packaging-tests.json'] = (root / 'build/validation/tests.json', 0o644)
     md5sums, manifest, installed_size = [], [], 0

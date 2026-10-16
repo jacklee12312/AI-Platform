@@ -3742,6 +3742,11 @@
       "sha256": "f0dd635178e64a45be2f84c9f33dd79ac30328da87f834f21a0baf69ae210e6e"
     },
     {
+      "path": "installer-bundle/npu-runtime/cix-noe-3.1.2-arm64.tar.gz",
+      "bytes": 1538020,
+      "sha256": "2660df98bbaa813e6d4dfa3ce91d464861b99f46565e70083dfeefb3624c51d3"
+    },
+    {
       "path": "support-files/files/docker/arm64-bookworm/containerd.io_2.3.3-1~debian.12~bookworm_arm64.deb",
       "bytes": 19099456,
       "sha256": "2627d09156e863f57689664193e68c4f1c7fef57f7eab84ad39ae138cffb8857"

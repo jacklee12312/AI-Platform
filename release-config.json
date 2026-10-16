@@ -6,5 +6,6 @@
   "source_bundle": "installer-bundle",
   "resources_root": "build/resources-1.2.0",
   "target": "linux-arm64",
-  "validation_status": "candidate"
+  "validation_status": "candidate",
+  "npu_runtime_release_id": "cix-noe-runtime-3.1.2-arm64-20261016"
 }

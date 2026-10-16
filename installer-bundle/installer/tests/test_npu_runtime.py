@@ -43,8 +43,11 @@ class NpuRuntimeTests(unittest.TestCase):
             root=Path(tmp);resources=root/'resources';state=root/'state'
             original=resources/npu_runtime.RELATIVE;original.parent.mkdir(parents=True);original.write_text('base')
             generated=state/'private/local-configs/kokoro-compose.yml';generated.parent.mkdir(parents=True);generated.write_text('local')
-            library=state/'host-runtime/kokoro/lib/test.so';library.parent.mkdir(parents=True);library.write_bytes(b'library')
-            record={'base_sha256':sha256(original),'compose_sha256':sha256(generated),'files':{str(library):sha256(library)}}
+            files={}
+            for name in npu_runtime.MEMBERS:
+                p=state/'host-runtime/kokoro'/name;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(b'library');files[str(p)]=sha256(p)
+            library=state/'host-runtime/kokoro/lib/libnoe.so'
+            record={'base_sha256':sha256(original),'compose_sha256':sha256(generated),'files':files}
             atomic_json(state/'private/kokoro-runtime.json',record)
             # Tempfile parents are writable test directories; trust is checked separately.
             with mock.patch('npu_runtime.trusted',side_effect=lambda p:Path(p)):

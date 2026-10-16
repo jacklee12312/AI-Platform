@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "release_id": "cix-noe-runtime-3.1.2-arm64-20261016",
+  "architecture": "arm64",
+  "container_python": "3.11",
+  "selection_policy": "probe-image-then-offline-bundle-with-real-cix-inference",
+  "installation_scope": "platform-private-userspace; system kernel and drivers unchanged",
+  "vendor_packages": {
+    "cix-noe-umd": "3.1.2",
+    "cix-npu-onnxruntime": "1.2.0"
+  },
+  "vendor_inputs": [
+    {
+      "path": "/usr/share/cix/pypi/libnoe-3.1.2-py3-none-manylinux2014_aarch64.whl",
+      "size": 2218245,
+      "sha256": "65b549c2306a48925f4f0b4db4b46a1cf3d74f2f85ccd48262e3a2a5cef9bff4"
+    },
+    {
+      "path": "/usr/share/cix/lib/libnoe.so.3.1.0",
+      "size": 1902936,
+      "sha256": "2fabb9d161491add3ab4d6cac5fd921670c007bc273d6a0f840c7e7de6d5f3f4"
+    },
+    {
+      "path": "/usr/share/cix/lib/onnxruntime/libaipu_driver.so",
+      "size": 747600,
+      "sha256": "12b31f2997d217fb8adf3de41e038e8472ce247a6558966e1bd80f991929aca3"
+    }
+  ],
+  "archive": {
+    "path": "cix-noe-3.1.2-arm64.tar.gz",
+    "size": 1538020,
+    "sha256": "2660df98bbaa813e6d4dfa3ce91d464861b99f46565e70083dfeefb3624c51d3"
+  },
+  "files": [
+    {
+      "path": "lib/libaipu_driver.so",
+      "size": 747600,
+      "sha256": "12b31f2997d217fb8adf3de41e038e8472ce247a6558966e1bd80f991929aca3"
+    },
+    {
+      "path": "lib/libnoe.so",
+      "size": 1902936,
+      "sha256": "2fabb9d161491add3ab4d6cac5fd921670c007bc273d6a0f840c7e7de6d5f3f4"
+    },
+    {
+      "path": "lib/libnoe.so.3",
+      "size": 1902936,
+      "sha256": "2fabb9d161491add3ab4d6cac5fd921670c007bc273d6a0f840c7e7de6d5f3f4"
+    },
+    {
+      "path": "libnoe/__init__.py",
+      "size": 973,
+      "sha256": "ddd86f43428f55b48e94156d18719b90b355abdfb8fb724a9905c49806f13645"
+    },
+    {
+      "path": "libnoe/libnoe.cpython-311-aarch64-linux-gnu.so",
+      "size": 2598416,
+      "sha256": "635a3a38f837a42879e4aaeed17c2a67ee51a93e0640df521ab84e7597259b4c"
+    }
+  ],
+  "validated_hardware": {
+    "soc": "CIX P1",
+    "aipu_kmd": "6.0.1",
+    "kernel": "6.6.89-cix-build-generic"
+  },
+  "source_verification": "exported only after dpkg --verify cix-noe-umd cix-npu-onnxruntime passed"
+}

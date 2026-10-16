@@ -2,6 +2,7 @@
   "product": "AI 平台安装器",
   "version": "1.4.0-dev.1",
   "installer_version": "1.2.0",
+  "npu_runtime_release_id": "cix-noe-runtime-3.1.2-arm64-20261016",
   "release_id": "ai-platform-installer-1.2.0-20261015",
   "platform": "vendor Debian 12 ARM64 / CIX P1 / Houmo LQ50 XH2 v1.4.0",
   "models": 25,

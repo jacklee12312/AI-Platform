@@ -199,6 +199,8 @@ class Installer:
         for archive,destination in [('qwen36-vllm-runtime.tar.gz',''),('cosyvoice-runtime.tar.gz',''),('host-libs.tar.gz','modeldeck-runtime/lib'),('ui-static.tar.gz','gateway-admin/frontend/dist'),('qwen38-hliellama-2.2.0.tar.gz','modeldeck-runtime/qwen38-mm')]:
             self.update('正在展开：'+archive,force=True)
             safe_extract(self.resources/'runtime'/archive,stage/destination)
+        from npu_runtime import prepare
+        prepare(self)
         self.make_plan()
 
     def make_plan(self):
@@ -223,10 +225,11 @@ class Installer:
                     previous=by_path[str(target)][0]
                     if p.is_symlink() or previous.is_symlink() or sha256(p)!=sha256(previous):raise RuntimeError('包内存在冲突的安装目标：'+str(target))
                 if relative.as_posix() in {'kokoro-cix/docker-compose.yml','cv_deploy/compose.yaml'} and not runtime:
-                    from npu_runtime import effective_compose,apply_local
+                    from npu_runtime import effective_compose,apply_record
                     original=p;component='kokoro' if relative.parts[0]=='kokoro-cix' else 'cv'
-                    p=effective_compose(self.resources,self.root,component)
-                    if p!=original and target.exists():apply_local(original,p,target,self.home)
+                    # Libraries are repaired and probed before service startup.
+                    p=effective_compose(self.resources,self.root,component,verify_files=False)
+                    if p!=original and target.exists():apply_record(self.resources,self.root,component,target,self.home)
                 by_path[str(target)]=(p,target,mode)
         self.plan=list(by_path.values())
 
