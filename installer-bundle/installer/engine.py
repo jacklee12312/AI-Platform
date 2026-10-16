@@ -222,9 +222,10 @@ class Installer:
                 if str(target) in by_path:
                     previous=by_path[str(target)][0]
                     if p.is_symlink() or previous.is_symlink() or sha256(p)!=sha256(previous):raise RuntimeError('包内存在冲突的安装目标：'+str(target))
-                if relative.as_posix()=='kokoro-cix/docker-compose.yml' and not runtime:
+                if relative.as_posix() in {'kokoro-cix/docker-compose.yml','cv_deploy/compose.yaml'} and not runtime:
                     from npu_runtime import effective_compose,apply_local
-                    original=p;p=effective_compose(self.resources,self.root)
+                    original=p;component='kokoro' if relative.parts[0]=='kokoro-cix' else 'cv'
+                    p=effective_compose(self.resources,self.root,component)
                     if p!=original and target.exists():apply_local(original,p,target,self.home)
                 by_path[str(target)]=(p,target,mode)
         self.plan=list(by_path.values())

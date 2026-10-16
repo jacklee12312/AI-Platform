@@ -18,6 +18,10 @@ IMAGE = 'kokoro-cix:0.2.0'
 WHEEL = Path('/usr/share/cix/pypi/libnoe-3.1.2-py3-none-manylinux2014_aarch64.whl')
 LIBRARY = Path('/usr/share/cix/lib/libnoe.so.3.1.0')
 BACKEND = Path('/usr/share/cix/lib/onnxruntime/libaipu_driver.so')
+CONFIGS = {'kokoro': (RELATIVE, IMAGE, 'kokoro-cix/docker-compose.yml'),
+           'cv': ('payload/home/cix/cv_deploy/compose.yaml', 'cix-cv-noe:1.0.0', 'cv_deploy/compose.yaml')}
+CV_MODELS = {'mobilenet_v2','inception_v3','yolov11_l','yolov11_n','yolov11n_obb',
+             'yolov12_s','yolov12_m','bytetrack_s','retinaface','yolov5s_face','scrfd','arcface','yolov8l_seg'}
 
 
 def trusted(path):
@@ -33,13 +37,14 @@ def trusted(path):
     return path
 
 
-def effective_compose(resources, root):
-    record_path = Path(root)/'private/kokoro-runtime.json'
+def effective_compose(resources, root, component='kokoro'):
+    relative,_,_=CONFIGS[component]
+    record_path = Path(root)/('private/'+component+'-runtime.json')
     if not record_path.exists():
-        return Path(resources)/RELATIVE
+        return Path(resources)/relative
     record = read_json(trusted(record_path))
-    base = Path(resources)/RELATIVE
-    generated = Path(root)/'private/local-configs/kokoro-compose.yml'
+    base = Path(resources)/relative
+    generated = Path(root)/('private/local-configs/'+component+'-compose.yml')
     if record.get('base_sha256') != sha256(base) or record.get('compose_sha256') != sha256(trusted(generated)):
         raise RuntimeError('Kokoro 本机适配与签名基础配置不一致')
     for name, digest in record['files'].items():
@@ -70,25 +75,30 @@ def render(base, runtime):
                         '      AIPU_LIB_PATH: /opt/cix-host-lib/libaipu_driver.so\n')
 
 
-def probe(extra=()):
+def probe(extra=(),image=IMAGE):
     code = 'import os; from libnoe import NPU; n=NPU(); status=n.noe_init_context(); print(status,flush=True); os._exit(0 if status==0 else 1)'
     return subprocess.run(['docker', 'run', '--rm', '--network', 'none', '--device', '/dev/aipu',
-                           *extra, '--entrypoint', 'python', IMAGE, '-c', code],
+                           *extra, '--entrypoint', 'python', image, '-c', code],
                           capture_output=True, text=True, timeout=45)
 
 
 def configure(installer):
-    if 'kokoro-82m' not in installer.selected:
-        return
+    if 'kokoro-82m' in installer.selected:configure_component(installer,'kokoro')
+    if CV_MODELS.intersection(installer.selected):configure_component(installer,'cv')
+
+
+def configure_component(installer,component):
+    relative,image,installed=CONFIGS[component]
+    label='Kokoro' if component=='kokoro' else 'CIX CV'
     root = installer.root
-    original = installer.resources/RELATIVE
-    target = installer.home/'kokoro-cix/docker-compose.yml'
-    current = effective_compose(installer.resources, root)
+    original = installer.resources/relative
+    target = installer.home/installed
+    current = effective_compose(installer.resources, root,component)
     if current != original:
         apply_local(original,current,target,installer.home)
-        installer.event('复用已校验的 Kokoro 本机 NPU 运行库适配')
+        installer.event('复用已校验的 '+label+' 本机 NPU 运行库适配')
         return
-    if probe().returncode == 0:
+    if probe(image=image).returncode == 0:
         return
     version = subprocess.check_output(['dpkg-query', '-W', '-f=${Version}', 'cix-noe-umd'], text=True).strip()
     if version != '3.1.2':
@@ -120,7 +130,7 @@ def configure(installer):
     check = probe(['-v', str(runtime/'lib')+':/opt/cix-host-lib:ro',
                    '-v', str(runtime/'libnoe')+':/usr/local/lib/python3.11/site-packages/libnoe:ro',
                    '-e', 'LD_LIBRARY_PATH=/opt/cix-host-lib:/usr/local/lib',
-                   '-e', 'AIPU_LIB_PATH=/opt/cix-host-lib/libaipu_driver.so'])
+                   '-e', 'AIPU_LIB_PATH=/opt/cix-host-lib/libaipu_driver.so'],image=image)
     if check.returncode:
         raise RuntimeError('主机配套 NPU 运行库仍无法初始化：'+check.stderr[-1000:])
     no_symlink_parents(target, installer.home)
@@ -128,14 +138,14 @@ def configure(installer):
         raise RuntimeError('Kokoro 已有配置不同，不能自动应用 NPU 适配')
     local = root/'private/local-configs'
     local.mkdir(exist_ok=True, mode=0o700)
-    backup = local/'kokoro-compose.original.yml'
+    backup = local/(component+'-compose.original.yml')
     if not backup.exists(): shutil.copyfile(original, backup)
-    generated = local/'kokoro-compose.yml'
+    generated = local/(component+'-compose.yml')
     atomic_text(generated, render(original.read_text(), runtime), 0o644)
     record = {'schema':1, 'kind':'local-host-driver-configuration', 'host_noe_version':version,
               'base_sha256':sha256(original), 'compose_sha256':sha256(generated), 'files':files,
-              'inputs':{str(p):sha256(p) for p in inputs}, 'image':IMAGE}
+              'inputs':{str(p):sha256(p) for p in inputs}, 'image':image}
     # Record first: an interrupted target write can be recovered by payload().
-    atomic_json(root/'private/kokoro-runtime.json', record)
+    atomic_json(root/('private/'+component+'-runtime.json'), record)
     apply_local(original,generated,target,installer.home)
-    installer.event('Kokoro 已适配主机 CIX NPU 3.1.2 运行库；原配置和摘要已保留')
+    installer.event(label+' 已适配主机 CIX NPU 3.1.2 运行库；原配置和摘要已保留')
