@@ -241,7 +241,7 @@ class Installer:
                     raise RuntimeError('已有运行文件缺少执行权限，请管理员单独处理：'+str(target))
                 reuse+=1
         self.state['reusable_files']=reuse
-        # Existing unrelated containers are allowed only with the pinned compatible Docker runtime.
+        # The workflow replaces mismatched Docker packages before model deployment.
         expected_names=set()
         for p in (self.resources/'payload/home/cix').rglob('*'):
             if p.name in ['compose.yaml','docker-compose.yml']:
@@ -261,7 +261,7 @@ class Installer:
                 allowed_dirs={str(self.home/p.parent.relative_to(self.resources/'payload/home/cix')) for p in (self.resources/'payload/home/cix').rglob('*') if p.name in ['compose.yaml','docker-compose.yml']}
                 if directory not in allowed_dirs or not pinned or info.get('Image') not in {pinned['id'],pinned['config_id']}:
                     raise RuntimeError('同名容器不属于本次部署，未接管：'+name)
-            if current:
+            if current and not self.workflow:
                 if not self.runtime_is_pinned():raise RuntimeError('已有容器正在使用非配套 Docker 版本；本安装器不会升级或停止它们')
         for image in self.manifest['images']:
             if not shutil.which('docker'):break
@@ -290,6 +290,8 @@ class Installer:
             self.command('systemctl','enable','--now','modeldeck-ops.service')
 
     def docker(self):
+        if self.workflow:
+            self.workflow.docker();return
         if self.runtime_is_pinned():
             self.command('usermod','-aG','docker','cix');self.event('复用已安装的全部 5 个配套 Docker 软件包，不重启 Docker');return
         self.base.install_docker()
@@ -438,7 +440,7 @@ class Installer:
             for package in ['init-system-helpers','iptables','nftables','libc6','libsystemd0','libseccomp2']:
                 if subprocess.check_output(['dpkg-query','-W','-f=${Status}',package],text=True).strip()!='install ok installed':raise RuntimeError('缺少基础系统包：'+package)
             conflict=subprocess.run(['dpkg-query','-W','-f=${Status}','docker.io'],capture_output=True,text=True)
-            if conflict.returncode==0 and conflict.stdout.strip()=='install ok installed':raise RuntimeError('docker.io 与离线 Docker CE 冲突，不自动移除')
+            if not self.workflow and conflict.returncode==0 and conflict.stdout.strip()=='install ok installed':raise RuntimeError('docker.io 与离线 Docker CE 冲突，不自动移除')
             docker_root=Path('/var/lib/docker')
             if shutil.which('docker'):
                 p=subprocess.run(['docker','info','--format','{{.DockerRootDir}}'],capture_output=True,text=True)

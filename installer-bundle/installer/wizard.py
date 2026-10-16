@@ -352,7 +352,7 @@ class Wizard(QWidget):
 
     def build_settings(self):
         page=self.page();scroll=QScrollArea();scroll.setWidgetResizable(True);content=QWidget();v=QVBoxLayout(content);scroll.setWidget(content);page.addWidget(scroll)
-        self.settings_scope=card('安装范围：探针、所选组件与所选模型' if self.workflow_enabled else '安装范围：平台基础组件 + 已选模型','组件镜像按勾选联网拉取，也可本地导入；Milvus 自动包含 MinIO 与 etcd。Docker / Compose 是必需环境。' if self.workflow_enabled else '配套平台镜像、运行时、网关与管理界面固定安装；模型权重、模型服务和验收仅包含上一步勾选项。');v.addWidget(self.settings_scope)
+        self.settings_scope=card('安装范围：探针、所选组件与所选模型' if self.workflow_enabled else '安装范围：平台基础组件 + 已选模型','组件镜像按勾选联网拉取，也可本地导入；Milvus 自动包含 MinIO 与 etcd。Docker 配套版本不一致时将自动卸载旧软件包并安装包内版本，保留数据，现有容器会短暂停止。' if self.workflow_enabled else '配套平台镜像、运行时、网关与管理界面固定安装；模型权重、模型服务和验收仅包含上一步勾选项。');v.addWidget(self.settings_scope)
         self.probe_fields={};self.component_fields={}
         if self.workflow_enabled:
             import_button=QPushButton('导入安装配置');import_button.clicked.connect(self.import_workflow_settings);v.addWidget(import_button,alignment=Qt.AlignLeft)

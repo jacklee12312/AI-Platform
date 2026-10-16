@@ -357,10 +357,21 @@ class StageIntegrationTests(unittest.TestCase):
         b,s,h,m=helper.fixture(stack);obj=engine.Installer(b,s,h);obj.state['initial_guard_passed']=True
         helper.simulate_commands(obj,m)
         return obj
+    def test_model_docker_stage_uses_the_same_replacement_workflow(self):
+        obj=object.__new__(engine.Installer)
+        obj.workflow=SimpleNamespace(docker=mock.Mock());obj.base=SimpleNamespace(install_docker=mock.Mock())
+        obj.docker();obj.workflow.docker.assert_called_once();obj.base.install_docker.assert_not_called()
+    def test_unrelated_container_does_not_reapply_legacy_docker_version_block(self):
+        with ExitStack() as stack:
+            obj=self.fixture(stack);obj.workflow=SimpleNamespace()
+            def run(args,**kw):
+                return SimpleNamespace(returncode=0,stdout='mysql8\n') if args[:3]==['docker','ps','-a'] else SimpleNamespace(returncode=1,stdout='')
+            with mock.patch('engine.shutil.which',return_value='/usr/bin/docker'),mock.patch('engine.subprocess.run',side_effect=run),mock.patch.object(obj,'runtime_is_pinned',side_effect=AssertionError('legacy version guard reached')):
+                obj.conflicts()
     def test_failed_probe_prevents_components_and_model_resources(self):
         with ExitStack() as stack:
             obj=self.fixture(stack)
-            obj.workflow=SimpleNamespace(settings=settings(),probe=mock.Mock(side_effect=RuntimeError('MQTT offline')),components=mock.Mock(),finish=mock.Mock())
+            obj.workflow=SimpleNamespace(settings=settings(),docker=mock.Mock(),probe=mock.Mock(side_effect=RuntimeError('MQTT offline')),components=mock.Mock(),finish=mock.Mock())
             with mock.patch.object(obj,'acquire') as acquire:
                 with self.assertRaisesRegex(RuntimeError,'MQTT'):obj.run()
             acquire.assert_not_called();obj.workflow.components.assert_not_called()
@@ -369,7 +380,7 @@ class StageIntegrationTests(unittest.TestCase):
         with ExitStack() as stack:
             obj=self.fixture(stack);order=[]
             def skip():obj.state['probe_skipped']=True;return True
-            obj.workflow=SimpleNamespace(settings=settings(),skip_existing_probe=skip,
+            obj.workflow=SimpleNamespace(settings=settings(),docker=mock.Mock(),skip_existing_probe=skip,
                 probe=mock.Mock(side_effect=AssertionError('external probe touched')),
                 components=lambda:order.append('components'),finish=lambda:order.append('integration'))
             obj.run();obj.workflow.probe.assert_not_called()
@@ -382,7 +393,7 @@ class StageIntegrationTests(unittest.TestCase):
             def component():
                 order.append('components')
                 if order.count('components')==1:raise RuntimeError('MinIO unavailable')
-            obj.workflow=SimpleNamespace(settings=settings(),probe=lambda:order.append('probe'),components=component,finish=lambda:order.append('integration'))
+            obj.workflow=SimpleNamespace(settings=settings(),docker=mock.Mock(),probe=lambda:order.append('probe'),components=component,finish=lambda:order.append('integration'))
             acquire=obj.acquire
             def wrapped_acquire():order.append('models');acquire()
             obj.acquire=wrapped_acquire
@@ -396,7 +407,7 @@ class StageIntegrationTests(unittest.TestCase):
     def test_integration_failure_cannot_mark_installed(self):
         with ExitStack() as stack:
             obj=self.fixture(stack)
-            obj.workflow=SimpleNamespace(settings=settings(),probe=lambda:None,components=lambda:None,finish=mock.Mock(side_effect=RuntimeError('MQTT lost')))
+            obj.workflow=SimpleNamespace(settings=settings(),docker=mock.Mock(),probe=lambda:None,components=lambda:None,finish=mock.Mock(side_effect=RuntimeError('MQTT lost')))
             with self.assertRaisesRegex(RuntimeError,'MQTT'):obj.run()
             self.assertEqual(obj.state['status'],'failed')
             self.assertNotIn('integration',obj.state['completed'])

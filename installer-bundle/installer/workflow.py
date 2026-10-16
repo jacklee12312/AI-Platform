@@ -240,30 +240,14 @@ class Workflow:
 
     def docker(self):
         from artifacts import BlobStore, source_config
+        from docker_runtime import DockerRuntime
         rows = [r for r in self.owner.catalog['resources'] if r['category'] == 'docker']
         if len(rows) != 5:
             raise RuntimeError('配套 Docker 软件包应恰好为 5 个')
         store = BlobStore(self.owner.bundle, source_config(self.owner.bundle, read_json(self.request_path)['sources']),
                           rows=rows, pause=self.owner.pause_point)
         paths = [store.ensure(row) for row in rows]
-        ordered = []
-        pinned = True
-        for name in ['containerd.io', 'docker-ce-cli', 'docker-ce', 'docker-buildx-plugin', 'docker-compose-plugin']:
-            package = next(p for p in paths if self.run(['dpkg-deb', '-f', p, 'Package']).stdout.strip() == name)
-            version = self.run(['dpkg-deb', '-f', package, 'Version']).stdout.strip()
-            current = self.run(['dpkg-query', '-W', '-f=${Status}|${Version}', name], check=False)
-            pinned = pinned and current.returncode == 0 and current.stdout.strip() == 'install ok installed|' + version
-            ordered.append(package)
-        if not pinned:
-            if shutil.which('docker'):
-                existing = self.run(['docker', 'ps', '-aq'], check=False)
-                if existing.returncode or existing.stdout.strip():
-                    raise RuntimeError('已有容器使用非配套 Docker；不自动升级、停止或接管')
-            for package in ordered:
-                self.run(['dpkg', '-i', package], timeout=300)
-        self.run(['systemctl', 'enable', '--now', 'docker'])
-        self.run(['docker', 'info'], timeout=30)
-        self.run(['usermod', '-aG', 'docker', 'cix'])
+        DockerRuntime(self).install(paths)
 
     def probe(self):
         from probe import Probe
