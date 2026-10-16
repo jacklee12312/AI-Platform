@@ -97,7 +97,7 @@ class Installer:
         selected_bytes=sum(r['size'] for r in self.install_catalog['resources'] if r['category']=='models')
         base_bytes=int(self.manifest['installed_payload_bytes'])-int(self.manifest['all_model_file_bytes'])
         entries=[(self.home,base_bytes+selected_bytes,'平台与所选模型'),
-                 (docker,int(self.manifest['docker_disk_budget_bytes']),'Docker 镜像'),
+                 (docker,self.docker_space_budget(),'Docker 镜像'),
                  (self.root,METADATA_RESERVE,'安装记录与日志'),
                  (self.storage.work,WORK_RESERVE,'运行时解压与工作空间'),
                  (self.storage.cache,plan['cache_bytes_needed'],'资源缓存')]
@@ -107,6 +107,21 @@ class Installer:
         self.state['storage']={'data_root':str(self.storage.data_root),'cache':str(self.storage.cache),
                                'work':str(self.storage.work),'budgets':rows}
         return config,plan
+
+    def docker_space_budget(self):
+        """Already imported pinned images need working space, not a second copy."""
+        full=int(self.manifest['docker_disk_budget_bytes'])
+        if not shutil.which('docker'):return full
+        images=self.manifest['images']
+        result=subprocess.run(['docker','image','inspect',*[x['tag'] for x in images]],capture_output=True,text=True)
+        if result.returncode:return full
+        try:
+            actual=json.loads(result.stdout)
+            if len(actual)!=len(images):return full
+            if all(row['Id'] in {pin['id'],pin['config_id']} for row,pin in zip(actual,images)):
+                return min(full,2*1024**3)
+        except (ValueError,KeyError,TypeError):pass
+        return full
 
     def acquire(self):
         if self.catalog is None:return
@@ -207,6 +222,10 @@ class Installer:
                 if str(target) in by_path:
                     previous=by_path[str(target)][0]
                     if p.is_symlink() or previous.is_symlink() or sha256(p)!=sha256(previous):raise RuntimeError('包内存在冲突的安装目标：'+str(target))
+                if relative.as_posix()=='kokoro-cix/docker-compose.yml' and not runtime:
+                    from npu_runtime import effective_compose,apply_local
+                    original=p;p=effective_compose(self.resources,self.root)
+                    if p!=original and target.exists():apply_local(original,p,target,self.home)
                 by_path[str(target)]=(p,target,mode)
         self.plan=list(by_path.values())
 
@@ -361,6 +380,8 @@ class Installer:
 
     def start(self):
         self.state['start_attempted']=True;self.update(force=True)
+        from npu_runtime import configure
+        configure(self)
         mode_map={'copaw-flash-9b':'copaw','spark-x1-4b':'spark-x1','bge-m3':'bge-m3',
                   'bge-reranker-v2-m3':'reranker','cosyvoice3-0.5b':'cosyvoice',
                   'qwen3-vl-8b':'qwen-vl','glm-ocr-0.9b':'glm-ocr','qwen3.8-27b':'qwen38','qwen3.6-35b-a3b':'qwen36'}
@@ -454,7 +475,7 @@ class Installer:
                 p=subprocess.run(['docker','info','--format','{{.DockerRootDir}}'],capture_output=True,text=True)
                 if p.returncode==0 and p.stdout.strip():docker_root=Path(p.stdout.strip())
             while not docker_root.exists():docker_root=docker_root.parent
-            if docker_root.stat().st_dev!=self.home.stat().st_dev and shutil.disk_usage(docker_root).free<self.manifest['docker_disk_budget_bytes']:raise RuntimeError('Docker 数据分区空间不足')
+            if docker_root.stat().st_dev!=self.home.stat().st_dev and shutil.disk_usage(docker_root).free<self.docker_space_budget():raise RuntimeError('Docker 数据分区空间不足')
             if self.storage:
                 self.resource_plan();self.update(force=True)
             elif shutil.disk_usage(self.root).free<8*1024**3:raise RuntimeError('安装状态分区至少需要 8 GiB 暂存空间')
