@@ -15,3 +15,4 @@
 # Preserve upstream Debian control descriptions verbatim, including their spacing.
 /support-files/files/workflow/host-debs/Packages -whitespace
 installer-bundle/component-runtime/manifest.json -text
+installer-bundle/component-runtime-r9/manifest.json -text

@@ -226,7 +226,7 @@ class ComponentSelectionExecutionTests(unittest.TestCase):
             root=Path(folder);adapter=self.adapter(root,['mysql'])
             foreign=root/'data/redis';foreign.mkdir(parents=True);(foreign/'existing.rdb').write_bytes(b'preserve')
             txn=mock.Mock(record=None,state={'token':'fixture-task'})
-            with mock.patch('port_takeover.Takeover',return_value=txn),mock.patch.object(adapter,'inspect',return_value=None) as inspect,mock.patch.object(adapter,'image') as image,mock.patch.object(adapter,'healthy',return_value=True) as healthy,mock.patch.object(adapter,'export_connections'):
+            with mock.patch('components.os.chown'),mock.patch('port_takeover.Takeover',return_value=txn),mock.patch.object(adapter,'inspect',return_value=None) as inspect,mock.patch.object(adapter,'image') as image,mock.patch.object(adapter,'healthy',return_value=True) as healthy,mock.patch.object(adapter,'export_connections'):
                 adapter.install()
                 self.assertEqual({c.args[0] for c in inspect.call_args_list},{'mysql'})
                 txn.claim.assert_called_once_with([3306],names=['mysql'],units=['mysql.service']);image.assert_called_once_with('mysql');healthy.assert_called_once_with('mysql')

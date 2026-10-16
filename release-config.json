@@ -8,5 +8,6 @@
   "target": "linux-arm64",
   "validation_status": "candidate",
   "npu_runtime_release_id": "cix-noe-runtime-3.1.2-arm64-20261016",
-  "component_runtime_release_id": "modeldeck-component-runtime-1.2.0-r8-20261016"
+  "component_runtime_release_id": "modeldeck-component-runtime-1.2.0-r9-20261016",
+  "component_runtime_directory": "component-runtime-r9"
 }

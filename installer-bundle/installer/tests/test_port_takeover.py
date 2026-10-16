@@ -130,6 +130,19 @@ class TakeoverTests(unittest.TestCase):
 
 
 class OrderingTests(unittest.TestCase):
+    def test_named_image_user_is_resolved_before_creating_private_data_directory(self):
+        flow=SimpleNamespace(run=mock.Mock(side_effect=[SimpleNamespace(stdout='999\n'),SimpleNamespace(stdout='998\n'),SimpleNamespace(stdout='')]))
+        self.assertEqual(components.data_owner(flow,{'Id':'sha256:fixture','Config':{'User':'root'}},'paradedb'),(999,998))
+        commands=[c.args[0] for c in flow.run.call_args_list]
+        self.assertTrue(all('--network=none' in c and '--read-only' in c for c in commands[:2]))
+        self.assertTrue(all('--user=postgres' in c for c in commands[:2]))
+        self.assertEqual(commands[-1][:3],['docker','rm','-f'])
+
+    def test_numeric_and_root_image_users_do_not_require_image_utilities(self):
+        flow=SimpleNamespace(run=mock.Mock(side_effect=AssertionError('No probe required')))
+        for user,expected in [('',(0,0)),('root',(0,0)),('1000:1001',(1000,1001)),('999',(999,0))]:
+            self.assertEqual(components.data_owner(flow,{'Config':{'User':user}}),expected)
+
     def test_containerd_manifest_identity_and_classic_config_identity_are_both_verified(self):
         with tempfile.TemporaryDirectory() as folder:
             adapter=test_workflow.ComponentSelectionExecutionTests().adapter(Path(folder),['mysql'])

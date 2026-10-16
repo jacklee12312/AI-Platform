@@ -27,3 +27,5 @@ systemd/socket、旧数据隔离、备份损坏拒绝恢复、续装不覆盖新
 空白设备和重启验收需另外记录。
 
 Docker 镜像存储的本地 ID 支持受信任的 config 摘要和平台 manifest 摘要两种，均要求架构与全部文件系统层匹配。ModelDeck 的两处识别代码以独立资源发行 modeldeck-component-runtime-1.2.0-r8-20261016 交付，由原发布密钥签名并约束原始文件摘要；原平台资源和模型、镜像的签名字节保留。安装计划在逐文件校验原资源后应用该签名资源。参考：Moby containerd ImageInspect 实现 https://github.com/moby/moby/blob/master/daemon/containerd/image_inspect.go 。
+
+修订 8 实机验证已自动接管 3306 并完成 MySQL/Redis、Nginx/etcd。ParadeDB 暴露了非 root 镜像的数据目录属主问题；修订 9 在资源准备阶段解析镜像运行 UID/GID，新目录初始化为该用户私有的 0700 目录，续装不递归改变已提交的数据。镜像用户检查使用无网络、只读、禁权限容器，探测后立即删除。ModelDeck 采用新的独立签名资源 modeldeck-component-runtime-1.2.0-r9-20261016，保留修订 8 的原始资源及交付文件。

@@ -8,6 +8,7 @@ import json
 import os
 from pathlib import Path
 import pwd
+import secrets
 import shutil
 import socket
 import urllib.request
@@ -23,6 +24,28 @@ MOUNTS = {'mysql': '/var/lib/mysql', 'redis': '/data', 'paradedb': '/var/lib/pos
 
 def image_ids(row):
     return {row['config_id'], row['manifest_digest']}
+
+
+def data_owner(flow, info, component=None):
+    # These entrypoints start as root and then drop to the database account.
+    user = {'paradedb':'postgres','neo4j':'neo4j'}.get(component, info.get('Config', {}).get('User', ''))
+    if not user or user == 'root': return (0, 0)
+    parts = user.split(':')
+    if len(parts) <= 2 and all(p.isdecimal() for p in parts):
+        values = [int(parts[0]), int(parts[1]) if len(parts) == 2 else 0]
+        if all(0 <= v < 2**32-1 for v in values):return tuple(values)
+        raise RuntimeError('镜像数据用户无效')
+    name = 'ai-platform-usercheck-' + secrets.token_hex(8)
+    try:
+        values = []
+        for flag in ('-u', '-g'):
+            value = flow.run(['docker','run','--rm','--name',name,'--user='+user,'--network=none','--read-only',
+                              '--cap-drop=ALL','--security-opt=no-new-privileges','--entrypoint=id',info['Id'],flag],timeout=30).stdout.strip()
+            if not value.isdecimal() or not 0 <= int(value) < 2**32-1:raise RuntimeError('镜像数据用户无效')
+            values.append(int(value))
+        return tuple(values)
+    finally:
+        flow.run(['docker','rm','-f',name],check=False,timeout=30)
 
 
 def http(url, *, headers=None, data=None):
@@ -111,6 +134,7 @@ class Components:
         self.images = {r['id']: r for r in workflow.lock['images'] if r['id'] in self.selected}
         self.data_root = Path(data_root);self.config_root = Path(config_root)
         self.spec = compose_spec(workflow.lock['images'], self.settings, self.data_root)
+        self.data_owners = {}
         self.compose = self.config_root / 'compose.json'
 
     def inspect(self, name):
@@ -187,6 +211,7 @@ class Components:
             raise RuntimeError('组件镜像校验失败：' + name)
         # Docker's containerd store uses the manifest digest as its local ID.
         self.spec['services'][name]['image'] = info['Id']
+        self.data_owners[name] = data_owner(self.flow, info, name)
 
     def healthy(self, name):
         info = self.inspect(name)
@@ -262,6 +287,8 @@ class Components:
                     raise RuntimeError('组件数据目录不能是链接')
                 transaction.archive(target)
                 target.mkdir(parents=True, exist_ok=True)
+                os.chown(target, *self.data_owners.get(name, (0, 0)))
+                target.chmod(0o700)
                 owned = self.flow.owner.state.setdefault('component_data_owned', [])
                 if name not in owned:
                     owned.append(name);self.flow.owner.update(force=True)

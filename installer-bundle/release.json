@@ -21,5 +21,6 @@
   "catalog_public_key_sha256": "2372e0f4636aad17b6a7bae4ccea27056ca43c3ffaa24563e588f4e889b88fe5",
   "resource_release_id": "ai-platform-installer-1.2.0-20261015",
   "platform_version": "1.4.0-dev.1",
-  "component_runtime_release_id": "modeldeck-component-runtime-1.2.0-r8-20261016"
+  "component_runtime_release_id": "modeldeck-component-runtime-1.2.0-r9-20261016",
+  "component_runtime_directory": "component-runtime-r9"
 }

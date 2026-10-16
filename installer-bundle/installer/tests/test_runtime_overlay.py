@@ -20,9 +20,9 @@ class RuntimeOverlayTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             root=Path(folder)
             shutil.copytree(BUNDLE/'catalog',root/'catalog')
-            shutil.copytree(BUNDLE/'component-runtime',root/'component-runtime')
+            shutil.copytree(BUNDLE/runtime_overlay.DIRECTORY,root/runtime_overlay.DIRECTORY)
             shutil.copy2(BUNDLE/'release.json',root/'release.json')
-            file=root/'component-runtime/files/gateway-admin/host_ops/runtime.py'
+            file=root/runtime_overlay.DIRECTORY/'files/gateway-admin/host_ops/runtime.py'
             file.write_bytes(file.read_bytes()+b'\n# modified\n')
             with self.assertRaisesRegex(RuntimeError,'内容校验'):runtime_overlay.load(root)
 

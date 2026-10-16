@@ -139,11 +139,11 @@ def check(root, online=False):
         report.update(npu_runtime_release_id=runtime['release_id'],npu_runtime_archive_sha256=digest(archive),
                       npu_runtime_archive_bytes=archive.stat().st_size,npu_runtime_signed=True)
     if spec.get('component_runtime_release_id'):
-        from runtime_overlay import load
+        from runtime_overlay import load,DIRECTORY
         overlay=load(bundle)
         if overlay['release_id']!=spec['component_runtime_release_id']:raise RuntimeError('Component runtime resource identity differs')
         report.update(component_runtime_release_id=overlay['release_id'],component_runtime_signed=True,
-                      component_runtime_manifest_sha256=digest(bundle/'component-runtime/manifest.json'))
+                      component_runtime_manifest_sha256=digest(bundle/DIRECTORY/'manifest.json'))
     if online:
         def probe(item):
             key, source = item

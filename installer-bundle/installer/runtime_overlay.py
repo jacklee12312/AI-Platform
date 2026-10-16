@@ -3,12 +3,13 @@ from pathlib import Path
 import subprocess
 from common import read_json,sha256,no_symlink_parents
 
-RELEASE_ID='modeldeck-component-runtime-1.2.0-r8-20261016'
+RELEASE_ID='modeldeck-component-runtime-1.2.0-r9-20261016'
+DIRECTORY='component-runtime-r9'
 MEMBERS={'gateway-admin/host_ops/core/components.py','gateway-admin/host_ops/runtime.py'}
 
 
 def load(bundle):
-    bundle=Path(bundle);base=bundle/'component-runtime';key=bundle/'catalog/release-public.pem'
+    bundle=Path(bundle);base=bundle/DIRECTORY;key=bundle/'catalog/release-public.pem'
     metadata=read_json(bundle/'release.json')
     if metadata.get('component_runtime_release_id')!=RELEASE_ID:raise RuntimeError('组件运行资源发行 ID 不一致')
     for path in [base/'manifest.json',base/'manifest.sig',key]:
@@ -34,4 +35,4 @@ def effective_source(bundle,relative,original):
     if relative not in MEMBERS or not read_json(Path(bundle)/'release.json').get('component_runtime_release_id'):return original
     row=next(r for r in load(bundle)['files'] if r['path']==relative)
     if sha256(original)!=row['base_sha256']:raise RuntimeError('组件兼容资源基础文件不同')
-    return Path(bundle)/'component-runtime/files'/relative
+    return Path(bundle)/DIRECTORY/'files'/relative

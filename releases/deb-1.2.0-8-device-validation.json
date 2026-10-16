@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "package_version": "1.2.0-8",
+  "source_commit": "6f62b2800088fae1a87edd062d79cb97ca8a4e3e",
+  "automated_tests": 284,
+  "takeover_hardware_validation": {
+    "passed": true,
+    "checks": [
+      "systemd-service-mask-data-isolation-and-real-rollback",
+      "pid1-socket-activation-takeover-and-rollback",
+      "docker-published-port-archive-restart-policy-and-rollback",
+      "real-ipv4-sigterm",
+      "real-ipv6-sigkill"
+    ],
+    "candidate_files": [
+      {
+        "name": "common.py",
+        "sha256": "2d69f437821bd95e2de0b07d35f4b24a61b1a1ada744c541dee60e465aa54d5c"
+      },
+      {
+        "name": "storage.py",
+        "sha256": "730651775c1f009bb83c49b1ab21bb00c364f33cb53766ca3fba41e2cff67075"
+      },
+      {
+        "name": "version.py",
+        "sha256": "6fd4af2e3e3b879941f121253af6ed1802bb636463297452f1e4727f51f56833"
+      },
+      {
+        "name": "port_takeover.py",
+        "sha256": "c1a8ce7bca8f9f8462bf2bd02ab463931de57b41cdfb779678945f677199edf8"
+      }
+    ],
+    "actual_device": true,
+    "existing_mysql_unchanged": true,
+    "full_installation": "not_run_in_this_fixture",
+    "proof_directory": "/opt/ai-platform-data/diagnostics/takeover-r8-310e86a1b7",
+    "source_commit": "6f62b28"
+  },
+  "wired_transfer": {
+    "local": "F:\\duoliuer\\AI-Platform-1.0.0\\delivery\\ai-platform-installer_1.2.0-8_arm64.deb",
+    "remote": "/home/cix/ai-platform-installer_1.2.0-8_arm64.deb",
+    "sha256": "8e4c7412d49012cc1e48e37af86c3de5f89c67ec6ca84dabfb756c82f2f57cf0",
+    "bytes": 3778999870,
+    "ssh_connection": "192.168.133.254 10071 192.168.133.47 22",
+    "verified": true,
+    "desktop_directory": "/home/cix/桌面/AI平台安装包-1.2.0-8",
+    "ssh_connection_verified": "192.168.133.254 7802 192.168.133.47 22",
+    "local_model_library_present": true
+  },
+  "actual_installation": {
+    "port_3306_automatically_replaced": true,
+    "native_components_passed": [
+      "nginx",
+      "etcd"
+    ],
+    "container_components_passed": [
+      "mysql",
+      "redis"
+    ],
+    "failed_component": "paradedb",
+    "cause": "non-root image user could not write newly initialized bind directory; automatic component rollback performed",
+    "full_installation_passed": false
+  },
+  "superseded_by": "1.2.0-9"
+}
