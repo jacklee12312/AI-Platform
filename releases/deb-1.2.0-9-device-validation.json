@@ -1,0 +1,148 @@
+{
+  "schema": 1,
+  "package_version": "1.2.0-9",
+  "source_commit": "5a077b4a8cd53b0b568ee9c21f1aaa9268f16048",
+  "recorded_at": "2026-10-16T08:41:25.510333+00:00",
+  "archive_sha256": "6d1679eba6dfd8965984062eb48450a1913028370d2b2a0a24c677e1ca7c6b57",
+  "automated_tests": 286,
+  "automated_tests_source_dirty": false,
+  "wired_transfer": {
+    "local": "F:\\duoliuer\\AI-Platform-1.0.0\\delivery\\ai-platform-installer_1.2.0-9_arm64.deb",
+    "remote": "/home/cix/ai-platform-installer_1.2.0-9_arm64.deb",
+    "sha256": "6d1679eba6dfd8965984062eb48450a1913028370d2b2a0a24c677e1ca7c6b57",
+    "bytes": 3779051166,
+    "ssh_connection": "192.168.133.254 1346 192.168.133.47 22",
+    "verified": true,
+    "desktop_directory": "/home/cix/桌面/AI平台安装包-1.2.0-9",
+    "ssh_connection_verified": "192.168.133.254 10115 192.168.133.47 22",
+    "local_model_library_present": true
+  },
+  "on_device_installed_files_sha256_verified": 605,
+  "takeover_hardware_validation": {
+    "passed": true,
+    "checks": [
+      "systemd-service-mask-data-isolation-and-real-rollback",
+      "pid1-socket-activation-takeover-and-rollback",
+      "docker-published-port-archive-restart-policy-and-rollback",
+      "real-ipv4-sigterm",
+      "real-ipv6-sigkill"
+    ],
+    "candidate_files": [
+      {
+        "name": "common.py",
+        "sha256": "2d69f437821bd95e2de0b07d35f4b24a61b1a1ada744c541dee60e465aa54d5c"
+      },
+      {
+        "name": "storage.py",
+        "sha256": "730651775c1f009bb83c49b1ab21bb00c364f33cb53766ca3fba41e2cff67075"
+      },
+      {
+        "name": "version.py",
+        "sha256": "6fd4af2e3e3b879941f121253af6ed1802bb636463297452f1e4727f51f56833"
+      },
+      {
+        "name": "port_takeover.py",
+        "sha256": "c1a8ce7bca8f9f8462bf2bd02ab463931de57b41cdfb779678945f677199edf8"
+      }
+    ],
+    "actual_device": true,
+    "existing_mysql_unchanged": true,
+    "full_installation": "not_run_in_this_fixture",
+    "proof_directory": "/opt/ai-platform-data/diagnostics/takeover-r8-310e86a1b7",
+    "source_commit": "6f62b28"
+  },
+  "takeover_module_unchanged_from_hardware_fixture": true,
+  "component_directory_owner_hardware_validation": {
+    "passed": true,
+    "directory_owners": {
+      "paradedb": [
+        999,
+        999
+      ],
+      "neo4j": [
+        7474,
+        7474
+      ],
+      "minio": [
+        0,
+        0
+      ]
+    },
+    "actual_paradedb_query": "SELECT 1 passed",
+    "components_source_sha256": "dea34962d89c4f6ec231369b6e40694fc871c726a8f085d1088dc34ab9b4b78b",
+    "isolated_directory": "/opt/ai-platform-data/diagnostics/r9-owner-b186ffdfe9"
+  },
+  "actual_installation": {
+    "package_version": "1.2.0-9",
+    "source_commit": "5a077b4a8cd53b0b568ee9c21f1aaa9268f16048",
+    "platform_install_status": "installed",
+    "selected_models": 24,
+    "model_acceptance_checks": 28,
+    "model_acceptance_run_id": "434ff00a67e6af8d5eac7597528b9265",
+    "all_model_checks_passed": true,
+    "all_eight_components_authenticated_and_healthy": true,
+    "modeldeck_actual_daemon_component_status": [
+      {
+        "id": "nginx",
+        "status": "healthy"
+      },
+      {
+        "id": "etcd",
+        "status": "healthy"
+      },
+      {
+        "id": "mysql",
+        "status": "healthy"
+      },
+      {
+        "id": "redis",
+        "status": "healthy"
+      },
+      {
+        "id": "paradedb",
+        "status": "healthy"
+      },
+      {
+        "id": "neo4j",
+        "status": "healthy"
+      },
+      {
+        "id": "minio",
+        "status": "healthy"
+      },
+      {
+        "id": "milvus",
+        "status": "healthy"
+      }
+    ],
+    "takeover_scopes": {
+      "component-nginx": "committed",
+      "component-etcd": "committed",
+      "component-mysql": "committed",
+      "component-redis": "committed",
+      "component-paradedb": "committed",
+      "component-neo4j": "committed",
+      "component-minio": "committed",
+      "component-milvus": "committed",
+      "platform-files": "committed",
+      "platform-ports": "committed"
+    },
+    "old_mysql_archived_and_port_replaced": true,
+    "checked_backup_entries": 17,
+    "private_backup_directory": "/opt/ai-platform-backups/48c9d030752a859e3598804094b43ddf",
+    "local_model_library_preserved": true,
+    "model_source": "local-import",
+    "old_component_data_preserved_in_backups": true,
+    "probe_registered_and_mqtt_connected": true,
+    "probe_original_configuration_retained": true,
+    "component_runtime_release_id": "modeldeck-component-runtime-1.2.0-r9-20261016",
+    "fresh_device_install": "not_run",
+    "os_reboot": "not_run"
+  },
+  "superseded_revision": "1.2.0-8",
+  "revision_8_actual_failure_and_rollback": "ParadeDB directory owner mismatch; component rollback succeeded; fixed in revision 9",
+  "model_download_from_harbor": "not_run_in_this_device_install; local library used",
+  "fresh_device_install": "not_run; same device resumed from failed installation",
+  "dual_card_device_install": "not_run; actual device has one card",
+  "os_reboot": "not_run"
+}
