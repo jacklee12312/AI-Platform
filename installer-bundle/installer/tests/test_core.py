@@ -131,13 +131,14 @@ class FilesystemTests(unittest.TestCase):
     def test_start_reconciles_model_after_active_oneshot(self):
         obj=object.__new__(engine.Installer);obj.home=self.dst;obj.state={};obj.update=mock.Mock();obj.base=mock.Mock();obj.command=mock.Mock();obj.selected=['copaw-flash-9b']
         user=mock.Mock(pw_uid=os.getuid(),pw_gid=os.getgid())
-        with mock.patch('engine.pwd.getpwnam',return_value=user),mock.patch('engine.os.chown'):obj.start()
+        with mock.patch('engine.pwd.getpwnam',return_value=user),mock.patch('engine.os.chown'),mock.patch('npu_runtime.configure') as npu:
+            obj.start();npu.assert_called_once_with(obj)
         obj.base.compose.assert_called_once();self.assertIn(mock.call('/usr/local/bin/modelctl','boot',timeout=720),obj.command.call_args_list)
         self.assertTrue(obj.state['start_attempted'])
     def test_start_does_not_boot_after_platform_start_failure(self):
         obj=object.__new__(engine.Installer);obj.home=self.dst;obj.state={};obj.update=mock.Mock();obj.base=mock.Mock();obj.command=mock.Mock();obj.selected=['copaw-flash-9b']
         obj.base.compose.side_effect=RuntimeError('platform failed')
-        with self.assertRaises(RuntimeError):obj.start()
+        with mock.patch('npu_runtime.configure'),self.assertRaises(RuntimeError):obj.start()
         obj.command.assert_not_called()
 
 if __name__=='__main__':unittest.main(verbosity=2)

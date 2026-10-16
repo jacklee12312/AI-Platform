@@ -66,6 +66,11 @@ class ModularWorkerTests(unittest.TestCase):
         stack.enter_context(mock.patch('engine.pwd.getpwnam',return_value=mock.Mock(pw_uid=os.getuid(),pw_gid=os.getgid())))
         stack.enter_context(mock.patch('engine.os.chown'))
         stack.enter_context(mock.patch.object(engine.Installer,'guard_units'))
+        # This tiny acquisition fixture has no real NPU images/model files.
+        # Signature/extraction/repair and real hardware execution are covered by
+        # test_npu_offline and the separately recorded device validation.
+        stack.enter_context(mock.patch('npu_runtime.prepare'))
+        stack.enter_context(mock.patch('npu_runtime.configure'))
         return bundle,state,home,manifest
     def simulate_commands(self,obj,manifest):
         commands=[]
@@ -94,5 +99,15 @@ class ModularWorkerTests(unittest.TestCase):
             self.assertEqual(o.state['current'],'acquire');self.assertEqual(o.state['status'],'failed')
             self.assertEqual(list(h.iterdir()),[]);self.assertFalse(commands)
             self.assertNotIn('acquire',o.state['completed'])
+
+    def test_invalid_offline_npu_resource_prevents_payload_and_service_start(self):
+        with ExitStack() as stack:
+            b,s,h,m=self.fixture(stack);o=engine.Installer(b,s,h);o.state['initial_guard_passed']=True
+            commands=self.simulate_commands(o,m)
+            with mock.patch('npu_runtime.prepare',side_effect=RuntimeError('NPU offline signature invalid')):
+                with self.assertRaisesRegex(RuntimeError,'NPU offline signature'):o.run()
+            self.assertEqual(o.state['current'],'prepare');self.assertEqual(o.state['status'],'failed')
+            self.assertEqual(list(h.iterdir()),[]);self.assertFalse(commands)
+            self.assertNotIn('payload',o.state['completed']);self.assertNotIn('start',o.state['completed'])
 
 if __name__=='__main__':unittest.main(verbosity=2)
