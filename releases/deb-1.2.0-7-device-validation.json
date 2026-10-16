@@ -1,0 +1,362 @@
+{
+  "schema": 1,
+  "recorded_at_utc": "2026-10-16T05:55:59.225197+00:00",
+  "package_version": "1.2.0-7",
+  "source_commit": "4bd384d602d5cea28741159c044f218df2f4a686",
+  "artifact_sha256": "48bf8c9d5659a6b925c08ccbd57262ebd907edf2e83c3940e062d17eea802eda",
+  "automated_tests": 269,
+  "runtime_hardware_validation": {
+    "runtime_release_id": "cix-noe-runtime-3.1.2-arm64-20261016",
+    "passed": true,
+    "cases": [
+      {
+        "case": "missing-sdk",
+        "offline_network_namespace": true,
+        "host_sdk_hidden": true,
+        "incompatible_legacy_noe": null,
+        "runtime_release_id": "cix-noe-runtime-3.1.2-arm64-20261016",
+        "events": [
+          "离线 NPU 运行库已校验：补齐 5 个文件，修复 0 个文件；无需主机预装 NOE 软件包",
+          "Kokoro 已自动安装并启用离线 NPU 3.1.2 运行库，实际 NPU 推理通过",
+          "CIX CV 已自动安装并启用离线 NPU 3.1.2 运行库，实际 NPU 推理通过",
+          "离线 NPU 运行库已校验：补齐 1 个文件，修复 1 个文件；无需主机预装 NOE 软件包",
+          "Kokoro 已有环境通过实际 NPU 推理，复用现有适配",
+          "CIX CV 已有环境通过实际 NPU 推理，复用现有适配"
+        ],
+        "checks": [
+          {
+            "model": "kokoro-82m",
+            "passed": true,
+            "sample_rate": 24000,
+            "frames": 51600,
+            "bytes": 103244
+          },
+          {
+            "model": "mobilenet_v2",
+            "passed": true
+          },
+          {
+            "model": "inception_v3",
+            "passed": true
+          },
+          {
+            "model": "yolov11_l",
+            "passed": true
+          },
+          {
+            "model": "yolov11_n",
+            "passed": true
+          },
+          {
+            "model": "yolov11n_obb",
+            "passed": true
+          },
+          {
+            "model": "yolov12_s",
+            "passed": true
+          },
+          {
+            "model": "yolov12_m",
+            "passed": true
+          },
+          {
+            "model": "retinaface",
+            "passed": true
+          },
+          {
+            "model": "yolov5s_face",
+            "passed": true
+          },
+          {
+            "model": "scrfd",
+            "passed": true
+          },
+          {
+            "model": "arcface",
+            "passed": true
+          },
+          {
+            "model": "yolov8l_seg",
+            "passed": true
+          },
+          {
+            "model": "bytetrack_s",
+            "passed": true
+          },
+          {
+            "model": "automatic-missing-and-corrupt-runtime-repair",
+            "passed": true
+          }
+        ],
+        "passed": true,
+        "scope": "isolated-runtime-installation-and-real-NPU-inference; not a full fresh-device install"
+      },
+      {
+        "case": "incompatible-sdk",
+        "offline_network_namespace": true,
+        "host_sdk_hidden": true,
+        "incompatible_legacy_noe": "2.0.0",
+        "runtime_release_id": "cix-noe-runtime-3.1.2-arm64-20261016",
+        "events": [
+          "离线 NPU 运行库已校验：补齐 5 个文件，修复 0 个文件；无需主机预装 NOE 软件包",
+          "Kokoro 已有运行库缺失或不兼容，自动切换至包内运行库",
+          "Kokoro 已自动安装并启用离线 NPU 3.1.2 运行库，实际 NPU 推理通过",
+          "CIX CV 已有运行库缺失或不兼容，自动切换至包内运行库",
+          "CIX CV 已自动安装并启用离线 NPU 3.1.2 运行库，实际 NPU 推理通过"
+        ],
+        "checks": [
+          {
+            "model": "kokoro-82m",
+            "passed": true,
+            "sample_rate": 24000,
+            "frames": 51600,
+            "bytes": 103244
+          },
+          {
+            "model": "mobilenet_v2",
+            "passed": true
+          },
+          {
+            "model": "inception_v3",
+            "passed": true
+          },
+          {
+            "model": "yolov11_l",
+            "passed": true
+          },
+          {
+            "model": "yolov11_n",
+            "passed": true
+          },
+          {
+            "model": "yolov11n_obb",
+            "passed": true
+          },
+          {
+            "model": "yolov12_s",
+            "passed": true
+          },
+          {
+            "model": "yolov12_m",
+            "passed": true
+          },
+          {
+            "model": "retinaface",
+            "passed": true
+          },
+          {
+            "model": "yolov5s_face",
+            "passed": true
+          },
+          {
+            "model": "scrfd",
+            "passed": true
+          },
+          {
+            "model": "arcface",
+            "passed": true
+          },
+          {
+            "model": "yolov8l_seg",
+            "passed": true
+          },
+          {
+            "model": "bytetrack_s",
+            "passed": true
+          }
+        ],
+        "passed": true,
+        "scope": "isolated-runtime-installation-and-real-NPU-inference; not a full fresh-device install"
+      },
+      {
+        "case": "deferred-models",
+        "offline_network_namespace": true,
+        "host_sdk_hidden": true,
+        "incompatible_legacy_noe": null,
+        "runtime_release_id": "cix-noe-runtime-3.1.2-arm64-20261016",
+        "events": [
+          "离线 NPU 运行库已校验：补齐 5 个文件，修复 0 个文件；无需主机预装 NOE 软件包",
+          "Kokoro 已自动安装并启用离线 NPU 3.1.2 运行库，NPU 设备初始化；补装模型时仍需实际推理验收通过",
+          "CIX CV 已自动安装并启用离线 NPU 3.1.2 运行库，NPU 设备初始化；补装模型时仍需实际推理验收通过"
+        ],
+        "checks": [
+          {
+            "model": "kokoro-82m",
+            "passed": true,
+            "sample_rate": 24000,
+            "frames": 51600,
+            "bytes": 103244
+          },
+          {
+            "model": "mobilenet_v2",
+            "passed": true
+          },
+          {
+            "model": "inception_v3",
+            "passed": true
+          },
+          {
+            "model": "yolov11_l",
+            "passed": true
+          },
+          {
+            "model": "yolov11_n",
+            "passed": true
+          },
+          {
+            "model": "yolov11n_obb",
+            "passed": true
+          },
+          {
+            "model": "yolov12_s",
+            "passed": true
+          },
+          {
+            "model": "yolov12_m",
+            "passed": true
+          },
+          {
+            "model": "retinaface",
+            "passed": true
+          },
+          {
+            "model": "yolov5s_face",
+            "passed": true
+          },
+          {
+            "model": "scrfd",
+            "passed": true
+          },
+          {
+            "model": "arcface",
+            "passed": true
+          },
+          {
+            "model": "yolov8l_seg",
+            "passed": true
+          },
+          {
+            "model": "bytetrack_s",
+            "passed": true
+          }
+        ],
+        "passed": true,
+        "scope": "isolated-runtime-installation-and-real-NPU-inference; not a full fresh-device install"
+      }
+    ],
+    "production_containers_remained_healthy": true,
+    "system_runtime_not_modified": true,
+    "fresh_device_install": "not_run",
+    "os_reboot": "not_run",
+    "package_version": "1.2.0-7",
+    "source_commit": "4bd384d602d5cea28741159c044f218df2f4a686",
+    "source_dirty": false,
+    "verified_candidate_source_files": [
+      {
+        "path": "release.json",
+        "size": 1140,
+        "sha256": "ab037796b89b085cd12d0c7f8e25e79321b2700709e53e00f5b9f67a178e65a9"
+      },
+      {
+        "path": "catalog/release-public.pem",
+        "size": 116,
+        "sha256": "2372e0f4636aad17b6a7bae4ccea27056ca43c3ffaa24563e588f4e889b88fe5"
+      },
+      {
+        "path": "npu-runtime/manifest.json",
+        "size": 2171,
+        "sha256": "e739f6a5255a021f60efa54f83ab232df55021a01e0a3d4835e62c031df6d96f"
+      },
+      {
+        "path": "npu-runtime/manifest.sig",
+        "size": 64,
+        "sha256": "ae59fcd1426aafb7b5b52fd27babeb944d6399e4c1678f55029ee064f3d7933f"
+      },
+      {
+        "path": "npu-runtime/cix-noe-3.1.2-arm64.tar.gz",
+        "size": 1538020,
+        "sha256": "2660df98bbaa813e6d4dfa3ce91d464861b99f46565e70083dfeefb3624c51d3"
+      },
+      {
+        "path": "installer/common.py",
+        "size": 16578,
+        "sha256": "2d69f437821bd95e2de0b07d35f4b24a61b1a1ada744c541dee60e465aa54d5c"
+      },
+      {
+        "path": "installer/version.py",
+        "size": 483,
+        "sha256": "6fd4af2e3e3b879941f121253af6ed1802bb636463297452f1e4727f51f56833"
+      },
+      {
+        "path": "installer/npu_runtime.py",
+        "size": 11094,
+        "sha256": "e0cd19744dc96e846f13dbbd15173355bd331c9a64c6b365b7c406e5d21df0fb"
+      },
+      {
+        "path": "installer/npu_payload.py",
+        "size": 5126,
+        "sha256": "e7ac4dff9157620ebbb88f688a2647c46f2d46c47422ead1004df2da5c1fa1ad"
+      }
+    ],
+    "real_model_inference_checks": 42,
+    "automatic_repair_checks": 1
+  },
+  "installed_application": {
+    "package_version": "1.2.0-7",
+    "source_commit": "4bd384d602d5cea28741159c044f218df2f4a686",
+    "npu_runtime_release_id": "cix-noe-runtime-3.1.2-arm64-20261016",
+    "npu_runtime_signed": true,
+    "npu_runtime_files": 5,
+    "npu_runtime_archive_bytes": 1538020,
+    "npu_runtime_manifest_sha256": "e739f6a5255a021f60efa54f83ab232df55021a01e0a3d4835e62c031df6d96f",
+    "vendor_runtime_unchanged": true,
+    "legacy_6_runtime_configuration_compatible": true,
+    "production_containers": {
+      "houmo-kokoro-tts": {
+        "id": "4fe244a0cf866bc0ee4637addcaf89ae37705d1d7399779a2093a1d7cfa63fb1",
+        "health": "healthy",
+        "restarts": 0
+      },
+      "cix-cv": {
+        "id": "f9e487cf3544e86316fe8d3117b8190223004ca1e806bba3d9e1038093776531",
+        "health": "healthy",
+        "restarts": 0
+      },
+      "gateway-admin": {
+        "id": "962264ae88f858d3ca5606715cad80ab3254ee7f2b6c4a602dce9944bc96dbff",
+        "health": "healthy",
+        "restarts": 0
+      },
+      "ai-model-gateway": {
+        "id": "f8b73d7b8994fccea61b7472727f9e492549d2814ac442f549d2be35dcc5926d",
+        "health": "healthy",
+        "restarts": 0
+      }
+    },
+    "existing_install_status": "installed",
+    "application_entry_verified": true,
+    "platform_installation_restarted": false,
+    "fresh_device_install": "not_run",
+    "os_reboot": "not_run"
+  },
+  "physical_display_launch": {
+    "package": "1.2.0-7",
+    "physical_display": ":0",
+    "windows": [
+      {
+        "id": "0x800007",
+        "title": "AI 平台安装器 1.2.0 · Debian 修订 7",
+        "visible": true
+      }
+    ],
+    "installation_resumed": false
+  },
+  "delivery": {
+    "transport": "wired-ethernet",
+    "source_address": "192.168.133.254",
+    "destination_address": "192.168.133.47",
+    "sha256_verified": true,
+    "package_files_sha256_verified": 592,
+    "desktop_directory": "/home/cix/桌面/AI平台安装包-1.2.0-7"
+  }
+}
