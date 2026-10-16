@@ -216,6 +216,12 @@ def quick_checks(bundle,selected_models=None,selected_components=None):
     need=payload+int(m['docker_disk_budget_bytes'])+8*1024**3
     free=shutil.disk_usage('/home/cix').free
     row('安装空间',free>=need,f'用户分区可用 {free/1e9:.1f} GB；保守预算 {need/1e9:.1f} GB。后台另核对 Docker 分区。')
+    if modular:
+        try:
+            from storage import default_data_root,existing,WORK_RESERVE
+            bulk=default_data_root();available=shutil.disk_usage(existing(bulk)).free
+            row('缓存与解压工作目录',available>=WORK_RESERVE,f'{bulk}；所在分区可用 {available/1e9:.1f} GB，后台按实际分区核对全部预算')
+        except (OSError,RuntimeError) as exc:row('缓存与解压工作目录',False,str(exc))
     if modular and catalog.get('workflow_sha256') and components:
         data=Path('/data')
         while not data.exists():data=data.parent

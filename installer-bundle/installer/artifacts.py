@@ -6,7 +6,9 @@ from urllib import error,parse,request
 from common import read_json,atomic_json,sha256,safe_relative,no_symlink_parents
 from version import VERSION
 
-CACHE=Path('/var/cache/ai-platform')
+from storage import default_cache
+CACHE=default_cache()
+LEGACY_CACHE=Path('/var/cache/ai-platform')
 CATEGORIES={'platform','docker','runtime','images','models'}
 
 class SourceError(RuntimeError):pass
@@ -111,6 +113,14 @@ def remote_candidates(config,row):
 
 def blob_path(cache,row):return Path(cache)/'blobs/sha256'/row['sha256']
 
+def legacy_candidates(cache,row):
+    if Path(cache)==LEGACY_CACHE:return []
+    p=blob_path(LEGACY_CACHE,row)
+    try:
+        no_symlink_parents(p,LEGACY_CACHE)
+        return [p] if p.is_file() and not p.is_symlink() and p.stat().st_size==row['size'] else []
+    except (OSError,RuntimeError):return []
+
 def oci_source(config,row):
     if config['mode']=='local-only':return None
     if row['category']=='models' and config.get('model_source','local' if config['mode']=='local-only' else 'online')=='local':return None
@@ -128,7 +138,7 @@ def plan_sources(bundle,catalog,config,cache=CACHE):
         try:
             no_symlink_parents(p,Path(cache));valid_cache=not p.is_symlink() and p.is_file() and p.stat().st_size==r['size']
         except (OSError,RuntimeError):pass
-        local=local_candidates(bundle,config,r);remote=remote_candidates(config,r)
+        local=legacy_candidates(cache,r)+local_candidates(bundle,config,r);remote=remote_candidates(config,r)
         oci=oci_source(config,r)
         state='cache' if valid_cache else 'local' if local else 'remote' if remote or oci else 'missing'
         rows.append({'path':r['path'],'size':r['size'],'category':r['category'],'models':r['models'],'source':state,
@@ -217,7 +227,7 @@ class BlobStore:
         with file_lock(lock):
             if self.check(target,row):return target
             if target.exists():target.unlink()  # Only this exact digest-owned corrupt cache entry.
-            for source in local_candidates(self.bundle,self.config,row):
+            for source in legacy_candidates(self.cache,row)+local_candidates(self.bundle,self.config,row):
                 try:
                     self._copy_local(source,part,row)
                     if self.check(part,row):return self._publish(part,target)

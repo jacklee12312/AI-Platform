@@ -56,6 +56,7 @@ class ModularWorkerTests(unittest.TestCase):
         common.atomic_json(state/'private/request.json',{'admin_password':'fixture-password-123','sources':config,'selected_models':['copaw-flash-9b'],'device_count':2})
         stack.enter_context(mock.patch('artifacts.load_catalog',return_value=catalog))
         stack.enter_context(mock.patch('artifacts.CACHE',root/'cache'))
+        stack.enter_context(mock.patch('storage.default_data_root',return_value=root/'bulk'))
         stack.enter_context(mock.patch('engine.quick_checks',return_value=[]))
         stack.enter_context(mock.patch('engine.detect_device_count',return_value=2))
         stack.enter_context(mock.patch('engine.subprocess.check_output',return_value='install ok installed'))

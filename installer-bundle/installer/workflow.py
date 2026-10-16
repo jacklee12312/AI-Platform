@@ -154,8 +154,12 @@ class Workflow:
         # The root bridge recorded the presence decision. The probe stage checks it again before any writes.
         installed = saved.get('probe', {}).get('reuse_existing') if isinstance(saved, dict) else None
         self.settings = validate_settings(saved, probe_installed=installed)
-        self.directory = installer.root / 'private/workflow'
-        no_symlink_parents(self.directory, installer.root)
+        pending = installer.state.get('private', {})
+        recovering = pending.get('probe_replacement', {}).get('status') in ('prepared','replacing','activating') or (
+            pending.get('docker_replacement') and pending['docker_replacement'].get('status') != 'committed')
+        storage = getattr(installer, 'storage', None)
+        self.directory = storage.workflow if storage and not recovering else installer.root / 'private/workflow'
+        no_symlink_parents(self.directory, storage.work if storage and not recovering else installer.root)
         if self.directory.is_symlink():
             raise RuntimeError('前置安装暂存目录不能是链接')
         self.directory.mkdir(parents=True, exist_ok=True, mode=0o700)
@@ -196,7 +200,8 @@ class Workflow:
         config = json.loads(json.dumps(config))
         config.setdefault('file_urls', {}).setdefault(row['path'], row.get('urls', []))
         resource = dict(row, category='platform', models=[])
-        store = BlobStore(self.owner.bundle, config, progress=lambda r, n, p: self.owner.update(
+        options = {'cache': self.owner.storage.cache} if getattr(self.owner, 'storage', None) else {}
+        store = BlobStore(self.owner.bundle, config, **options, progress=lambda r, n, p: self.owner.update(
             p + '前置资源：' + Path(r['path']).name), pause=self.owner.pause_point, rows=[resource])
         return store.ensure(resource)
 
@@ -244,7 +249,8 @@ class Workflow:
         rows = [r for r in self.owner.catalog['resources'] if r['category'] == 'docker']
         if len(rows) != 5:
             raise RuntimeError('配套 Docker 软件包应恰好为 5 个')
-        store = BlobStore(self.owner.bundle, source_config(self.owner.bundle, read_json(self.request_path)['sources']),
+        options = {'cache': self.owner.storage.cache} if getattr(self.owner, 'storage', None) else {}
+        store = BlobStore(self.owner.bundle, source_config(self.owner.bundle, read_json(self.request_path)['sources']), **options,
                           rows=rows, pause=self.owner.pause_point)
         paths = [store.ensure(row) for row in rows]
         DockerRuntime(self).install(paths)

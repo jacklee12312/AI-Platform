@@ -46,7 +46,7 @@ def safe_extract(archive,destination):
         else:target.symlink_to(link)
 
 class Installer:
-    def __init__(self,bundle,root=STATE_ROOT,home=Path('/home/cix')):
+    def __init__(self,bundle,root=STATE_ROOT,home=Path('/home/cix'),storage_root=None):
         self.bundle=Path(bundle).resolve();self.resources=self.bundle/'resources';self.root=Path(root);self.home=Path(home)
         self.release=read_json(self.bundle/'release.json');self.catalog=None
         if (self.bundle/'catalog/release-catalog.json').is_file():
@@ -71,48 +71,53 @@ class Installer:
             raise RuntimeError('已有不同安装器版本的任务记录；不能跨版本继续')
         if self.state.get('status')=='installed':raise RuntimeError('本版本已安装；请打开管理界面')
         self.last_update=0;self.plan=[];self.base=None;self.current='acquire'
+        self.storage=None
+        if self.catalog is not None:
+            from storage import Storage
+            self.storage=Storage(self.root,self.release,storage_root)
+            self.storage.ensure();self.resources=self.storage.resources
         self.workflow=None
         if self.catalog and self.catalog.get('workflow_sha256'):
             from workflow import Workflow
             self.workflow=Workflow(self);self.current='probe'
 
-    def acquire(self):
-        if self.catalog is None:return
-        from artifacts import CACHE,materialize,source_config,plan_sources
+    def resource_plan(self):
+        from artifacts import source_config,plan_sources
         settings=read_json(self.root/'private/request.json')
         config=source_config(self.bundle,settings.get('sources'))
-        plan=plan_sources(self.bundle,self.install_catalog,config,CACHE)
+        plan=plan_sources(self.bundle,self.install_catalog,config,self.storage.cache)
         if not plan['ready']:
             missing=[r for r in plan['rows'] if r['source']=='missing']
             raise RuntimeError('缺少 '+str(len(missing))+' 个资源的本地文件或远端地址；请在资源来源页补齐后继续')
-        def existing(path):
-            path=Path(path)
-            while not path.exists():path=path.parent
-            return path
+        from storage import existing,budgets,require_space,WORK_RESERVE,METADATA_RESERVE
         docker=Path('/var/lib/docker')
         if shutil.which('docker'):
             info=subprocess.run(['docker','info','--format','{{.DockerRootDir}}'],capture_output=True,text=True)
             if info.returncode==0 and info.stdout.strip():docker=Path(info.stdout.strip())
-        # Account once per actual filesystem, including the cache and cross-volume staging copy.
-        budgets={}
-        def add(path,size):
-            p=existing(path);device=p.stat().st_dev
-            prior=budgets.get(device,(p,0));budgets[device]=(p,prior[1]+size)
         selected_bytes=sum(r['size'] for r in self.install_catalog['resources'] if r['category']=='models')
         base_bytes=int(self.manifest['installed_payload_bytes'])-int(self.manifest['all_model_file_bytes'])
-        add(self.home,base_bytes+selected_bytes)
-        add(docker,int(self.manifest['docker_disk_budget_bytes']))
-        add(self.root,8*1024**3)
-        add(CACHE,plan['cache_bytes_needed'])
-        if existing(CACHE).stat().st_dev!=existing(self.root).stat().st_dev:add(self.root,plan['total_bytes'])
-        for p,need in budgets.values():
-            if shutil.disk_usage(p).free<need:raise RuntimeError(f'{p} 所在分区空间不足；准备、安装与暂存共需约 {need/1e9:.1f} GB')
+        entries=[(self.home,base_bytes+selected_bytes,'平台与所选模型'),
+                 (docker,int(self.manifest['docker_disk_budget_bytes']),'Docker 镜像'),
+                 (self.root,METADATA_RESERVE,'安装记录与日志'),
+                 (self.storage.work,WORK_RESERVE,'运行时解压与工作空间'),
+                 (self.storage.cache,plan['cache_bytes_needed'],'资源缓存')]
+        if existing(self.storage.cache).stat().st_dev!=existing(self.resources).stat().st_dev:
+            entries.append((self.resources,plan['total_bytes'],'跨分区资源暂存'))
+        rows=budgets(entries);require_space(rows)
+        self.state['storage']={'data_root':str(self.storage.data_root),'cache':str(self.storage.cache),
+                               'work':str(self.storage.work),'budgets':rows}
+        return config,plan
+
+    def acquire(self):
+        if self.catalog is None:return
+        from artifacts import materialize
+        config,plan=self.resource_plan()
         completed={};total=max(1,plan['total_bytes']+plan.get('archive_bytes',0))
         def progress(row,n,phase):
             completed[row['path']]=max(completed.get(row['path'],0),min(n,row['size']))
             self.update(phase+'：'+row['path'],sum(completed.values())/total,transfer={'file':row['path'],'file_bytes':n,'file_total':row['size'],'ready_bytes':sum(completed.values()),'total_bytes':total,'phase':phase})
         self.event(f'准备 {len(self.selected)} 个所选模型与平台组件；仅在完整校验后进入部署')
-        materialize(self.bundle,self.install_catalog,config,self.resources,CACHE,progress,self.pause_point)
+        materialize(self.bundle,self.install_catalog,config,self.resources,self.storage.cache,progress,self.pause_point)
         self.state.pop('transfer',None)
         self.event('全部资源已准备，进入平台安装；下载缓存可用于失败恢复')
 
@@ -171,8 +176,8 @@ class Installer:
         self.base=importlib.util.module_from_spec(spec);spec.loader.exec_module(self.base)
 
     def prepare(self):
-        stage=self.root/'private/runtime'
-        no_symlink_parents(stage,self.root)
+        stage=self.runtime_directory()
+        no_symlink_parents(stage,self.storage.work if self.storage else self.root)
         if stage.is_symlink():raise RuntimeError('暂存路径不能是链接')
         # Only our private, fixed staging directory may be regenerated.
         if stage.exists():shutil.rmtree(stage)
@@ -190,7 +195,7 @@ class Installer:
             'gateway-admin/agent/model_catalog.json',
             'gateway-admin/admin_app/capability_catalog.json',
         }
-        for origin,runtime in [(self.resources/'payload/home/cix',False),(self.root/'private/runtime',True)]:
+        for origin,runtime in [(self.resources/'payload/home/cix',False),(self.runtime_directory(),True)]:
             for p in origin.rglob('*'):
                 if not (p.is_file() or p.is_symlink()):continue
                 relative=p.relative_to(origin);target=self.home/relative
@@ -204,6 +209,9 @@ class Installer:
                     if p.is_symlink() or previous.is_symlink() or sha256(p)!=sha256(previous):raise RuntimeError('包内存在冲突的安装目标：'+str(target))
                 by_path[str(target)]=(p,target,mode)
         self.plan=list(by_path.values())
+
+    def runtime_directory(self):
+        return self.storage.runtime if getattr(self,'storage',None) else self.root/'private/runtime'
 
     def command(self,*args,timeout=None):
         print('RUN',str(args[0]),flush=True)
@@ -447,7 +455,9 @@ class Installer:
                 if p.returncode==0 and p.stdout.strip():docker_root=Path(p.stdout.strip())
             while not docker_root.exists():docker_root=docker_root.parent
             if docker_root.stat().st_dev!=self.home.stat().st_dev and shutil.disk_usage(docker_root).free<self.manifest['docker_disk_budget_bytes']:raise RuntimeError('Docker 数据分区空间不足')
-            if shutil.disk_usage(self.root).free<8*1024**3:raise RuntimeError('安装状态分区至少需要 8 GiB 暂存空间')
+            if self.storage:
+                self.resource_plan();self.update(force=True)
+            elif shutil.disk_usage(self.root).free<8*1024**3:raise RuntimeError('安装状态分区至少需要 8 GiB 暂存空间')
             actions={'acquire':self.acquire,'verify':self.verify,'prepare':self.prepare,'conflicts':self.conflicts,'docker':self.docker,'payload':self.payload,'credentials':self.credentials,'images':lambda:self.base.images(self.manifest),'systemd':self.systemd,'start':self.start,'acceptance':self.acceptance}
             actions.update(probe=self.probe,components=self.components,integration=self.integration)
             for name,title in STEPS:

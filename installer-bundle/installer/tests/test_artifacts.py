@@ -44,6 +44,17 @@ class TransferTests(unittest.TestCase):
     def test_real_download_and_cached_reuse(self):
         p=self.store.ensure(self.item);self.assertEqual(p.read_bytes(),self.data)
         self.store.ensure(self.item);self.assertEqual(len(self.requests),1)
+    def test_legacy_cache_reused_after_hash_check_without_downloading_again(self):
+        old=self.root/'old-cache';p=artifacts.blob_path(old,self.item);p.parent.mkdir(parents=True);p.write_bytes(self.data)
+        with mock.patch('artifacts.LEGACY_CACHE',old):
+            plan=artifacts.plan_sources(self.root,{'resources':[self.item]},self.config,self.cache)
+            self.assertEqual(plan['bytes']['local'],len(self.data))
+            result=self.store.ensure(self.item)
+        self.assertEqual(result.read_bytes(),self.data);self.assertEqual(self.requests,[]);self.assertTrue(p.exists())
+    def test_corrupt_legacy_cache_cannot_bypass_sha256_validation(self):
+        old=self.root/'old-cache';p=artifacts.blob_path(old,self.item);p.parent.mkdir(parents=True);p.write_bytes(b'X'*len(self.data))
+        with mock.patch('artifacts.LEGACY_CACHE',old):result=self.store.ensure(self.item)
+        self.assertEqual(result.read_bytes(),self.data);self.assertEqual(len(self.requests),1)
     def test_range_resume(self):
         self.partial(self.data[:100]);p=self.store.ensure(self.item)
         self.assertEqual(self.requests,['bytes=100-']);self.assertEqual(p.read_bytes(),self.data)

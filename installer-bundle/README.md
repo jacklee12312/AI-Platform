@@ -8,6 +8,8 @@ Nginx、etcd、MySQL、Redis、ParadeDB、Neo4j、MinIO、Milvus 可按需勾选
 
 Docker 五个配套软件包全部一致时复用，任一不同则自动卸载旧软件包并安装包内锁定版本。切换时现有容器会短暂停止；保留配置、镜像、容器和数据卷，并恢复原容器运行状态。中断后可继续，不清理原数据目录。
 
+安装器自动选择可用空间最大且由管理员拥有的工作分区，缓存、模型暂存、运行时解压和前置工作文件放在同一处；常见设备选择 `/opt/ai-platform-data`。安装记录和凭据继续保存在 `/var/lib/ai-platform-installer`。更新安装器的 `.deb` 不重置平台安装任务，同为 1.2.0 的修订包继续原进度。
+
 将整个 `AI-Platform-1.2.0-linux-arm64` 目录复制到设备主目录，GNOME 桌面建议安装 Debian 包并从应用菜单启动；普通文件夹中的 `.desktop` 不作为 GNOME 启动入口。也可打开终端运行：
 
 ```sh

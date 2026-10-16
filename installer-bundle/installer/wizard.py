@@ -469,7 +469,7 @@ class Wizard(QWidget):
         self.page_index=index;self.stack.setCurrentIndex(index)
         if self.workflow_enabled and index in (3,4):self.refresh_probe_detection()
         titles=['欢迎安装 AI 平台','选择组件、模型与来源' if self.workflow_enabled else '选择模型与来源','检查结果','设置安装参数','确认安装','准备资源与安装平台','安装完成']
-        subtitles=['安装网关、管理中心及所需模型服务。','勾选所需模型，选择联网下载或本地导入。','确认来源与盒子的安装条件。','设置管理账号。','请确认范围与资源准备计划。','后台任务持续执行，可关闭窗口后重新查看。','已选模型服务已通过本次安装验收。']
+        subtitles=['安装网关、管理中心及所需模型服务。','勾选所需模型，选择联网下载或本地导入。','确认来源与盒子的安装条件。','设置管理账号。','请确认范围与资源准备计划。','后台任务持续执行；更新安装器会保留任务进度，可继续安装。','已选模型服务已通过本次安装验收。']
         if self.workflow_enabled:
             subtitles[1]='按需勾选组件与模型，选择联网下载或本地导入。'
             subtitles[3]='填写所选组件密码及管理账号。' if self.probe_installed else '填写必需的探针注册信息、所选组件密码及管理账号。'
