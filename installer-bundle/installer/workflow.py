@@ -282,7 +282,7 @@ class Workflow:
         from components import Components
         from probe import Probe
         Components(self).acceptance()
-        if not self.owner.state.get('probe_skipped'):
+        if not self.owner.state.get('probe_skipped') and not self.owner.state.get('probe_config_preserved'):
             Probe(self).enable_collectors()
         self.owner.state['workflow_passed'] = True
         self.owner.event('所选组件库及模型平台检查通过' if self.owner.state.get('probe_skipped')

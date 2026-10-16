@@ -33,7 +33,7 @@ class WizardTests(unittest.TestCase):
         with mock.patch('wizard.QProcess') as process:self.w.dispatch('install');process.assert_not_called()
 
     def test_existing_probe_hides_registration_and_needs_no_fields(self):
-        with mock.patch('wizard.detect_probe',return_value=True):
+        with mock.patch('wizard.detect_probe',return_value=True),mock.patch('wizard.matching_probe',return_value=True):
             self.w.show_page(3)
             for field in self.w.probe_fields.values():field.clear()
             self.assertTrue(self.w.probe_install_panel.isHidden())
@@ -44,6 +44,17 @@ class WizardTests(unittest.TestCase):
             self.assertNotIn('探针',self.w.confirm_overview.layout().itemAt(0).widget().text())
             self.assertNotIn('设备注册',self.w.consent.text())
         self.assertFalse(hasattr(self.w,'reuse_probe'))
+    def test_different_probe_requires_replacement_consent_without_registration_form(self):
+        with mock.patch('wizard.detect_probe',return_value=True),mock.patch('wizard.matching_probe',return_value=True):
+            self.w.show_page(3);self.w.consent.setChecked(True)
+        with mock.patch('wizard.detect_probe',return_value=True),mock.patch('wizard.matching_probe',return_value=False):
+            self.w.refresh_probe_detection()
+            self.assertFalse(self.w.consent.isChecked())
+            self.assertTrue(self.w.probe_install_panel.isHidden())
+            self.assertFalse(self.w.probe_detection_notice.isHidden())
+            self.assertIn('保留原注册',self.w.probe_detection_notice.text())
+            self.w.show_page(4);self.assertIn('替换探针程序及服务',self.w.consent.text())
+            self.assertEqual(self.w.collect_workflow_settings()['probe'],{'mode':'auto','reuse_existing':True})
     def test_missing_probe_is_visible_and_registration_is_mandatory(self):
         with mock.patch('wizard.detect_probe',return_value=False):
             self.w.show_page(3);self.assertFalse(self.w.probe_install_panel.isHidden())

@@ -67,4 +67,4 @@ Git 仓库本身不包含这些依赖；当前机器的本地文件已保留。�
 
 Debian 原生交付使用 `python tools/release.py deb --deb-revision 1`。它从已发布且逐文件验证的 1.2.0 交付制作 `ai-platform-installer_1.2.0-1_arm64.deb`，保留原签名资源，单独记录封装与原资源提交；不覆盖原 `.tar.gz`。先提交封装源码并对该干净提交执行 `test` 和 `check --online`，再构建 `.deb`。后续封装改动递增 `--deb-revision`，发布记录为 `releases/deb-版本-修订.json`，标签 `deb-v版本-修订` 指向记录中的封装 `source_commit`。应用安装到 `/opt/ai-platform-installer/版本/`，由系统应用菜单启动，用户来源设置独立保存在用户配置目录。图形使用和卸载说明见 [Debian 使用说明](tools/templates/DEBIAN-README.md)。
 
-Debian `1.2.0-2` 修订通过 `python tools/release.py deb --deb-revision 2` 生成。修订使用当前测试通过的安装器源码，逐字节核对并复用原 1.2.0 的签名目录、GUI 运行库、附带资源与来源映射；保持资源 ID 和安装器任务版本，因此可继续原 1.2.0 未完成任务。已有外部探针直接跳过，不修改其文件、注册信息、服务或采集设置；本任务新装的探针仍必须完成注册和 MQTT 验收。交付记录分别记录安装器源码提交与原资源提交，禁止覆盖旧包。
+Debian `1.2.0-3` 修订通过 `python tools/release.py deb --deb-revision 3` 生成。修订使用当前测试通过的安装器源码，逐字节核对并复用原 1.2.0 的签名目录、GUI 运行库、附带资源与来源映射；保持资源 ID 和安装器任务版本，因此可继续原 1.2.0 未完成任务。已有探针摘要一致直接复用，不一致备份后替换程序与服务，保留原注册信息和完整配置，MQTT 验证失败则恢复旧版本；没有探针强制安装并验收。交付记录分别记录安装器源码提交与原资源提交，禁止覆盖旧包。

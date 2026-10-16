@@ -7,9 +7,18 @@ import re
 import shutil
 import socket
 import subprocess
+import tempfile
 
 from common import atomic_json, atomic_text, copy_atomic, no_symlink_parents, sha256
 from workflow import REGISTER_FIELDS, mqtt_journal_connected
+
+
+def matching_probe(expected, binary=Path('/usr/local/bin/data-probe')):
+    binary = Path(binary)
+    try:
+        return binary.is_file() and not binary.is_symlink() and sha256(binary) == expected
+    except OSError:
+        return False
 
 
 def detect_probe(binary=Path('/usr/local/bin/data-probe'), config_root=Path('/etc/data-probe'),
@@ -94,9 +103,10 @@ def make_config(settings, collectors=False):
 
 class Probe:
     def __init__(self, workflow, config_root=Path('/etc/data-probe'), binary=Path('/usr/local/bin/data-probe'),
-                 unit_root=Path('/etc/systemd/system')):
+                 unit_root=Path('/etc/systemd/system'), lib_root=Path('/usr/local/lib/ai-platform-installer')):
         self.flow = workflow;self.settings = workflow.settings['probe']
         self.config_root = Path(config_root);self.binary = Path(binary);self.unit_root = Path(unit_root)
+        self.lib_root = Path(lib_root)
         self.config = self.config_root / 'probe.yaml'
         self.automatic_reuse = self.settings.get('mode') == 'auto' and self.settings.get('reuse_existing') is True
 
@@ -135,13 +145,15 @@ class Probe:
         return True
 
     def skip_existing(self):
-        """Presence means hands off: do not inspect or manage an external probe."""
+        """Reuse only the same build; a different external build must be replaced."""
+        if self.flow.owner.state.get('private', {}).get('probe_replacement', {}).get('status') in ('prepared', 'replacing', 'activating'):
+            return False
         existing = detect_probe(self.binary, self.config_root,
                                 (self.unit_root, Path('/lib/systemd/system'), Path('/usr/lib/systemd/system')))
         owned = self.flow.owner.state.get('probe_owned') is True
         if not existing and self.settings.get('reuse_existing') and not owned:
             raise RuntimeError('自动识别时存在的探针已缺失；请恢复原探针后继续，不以空配置重新注册')
-        skipped = existing and not owned
+        skipped = existing and not owned and matching_probe(self.flow.lock['probe']['binary_sha256'], self.binary)
         self.flow.owner.state['probe_skipped'] = skipped
         if skipped:
             self.automatic_reuse = True
@@ -150,13 +162,17 @@ class Probe:
         return skipped
 
     def install(self):
+        from probe_replace import Replacement
+        Replacement.recover(self)
         if self.skip_existing():
             return
         existing = detect_probe(self.binary, self.config_root,
                                 (self.unit_root, Path('/lib/systemd/system'), Path('/usr/lib/systemd/system')))
         owned = self.flow.owner.state.get('probe_owned') is True
+        if existing and not owned:
+            return self.replace_existing()
         if self.settings.get('mode') == 'auto':
-            # Recheck at the mutation boundary; a probe that appeared after the GUI check must be preserved.
+            # Recheck presence at the mutation boundary, including an interrupted fresh install.
             self.automatic_reuse = existing and not owned
             if self.automatic_reuse:
                 self.settings['reuse_existing'] = True
@@ -216,6 +232,46 @@ class Probe:
                     copy_atomic(source/src,target,Path('/'),mode=0o755 if target.suffix=='.sh' else 0o644)
         self.activate()
 
+    def replace_existing(self):
+        """Replace only executables/services, retaining the device's binding and config."""
+        from engine import safe_extract
+        from probe_replace import Replacement
+        self.automatic_reuse = True
+        config = self.binding()  # Validate before stopping the old service; never publish its values.
+        if config.get('log', {}).get('dir') != '/var/log/data-probe':
+            raise RuntimeError('已有探针日志位置不兼容，保留旧程序；请先修复日志配置')
+        registration = self.config_root / 'registration.yaml'
+        if registration.is_symlink() or not registration.is_file() or registration.stat().st_size == 0:
+            raise RuntimeError('旧探针缺少注册缓存，保留旧程序；请先恢复设备注册信息后重试')
+        self.flow.host_packages(self.flow.lock['probe_packages'])
+        self.flow.directory.mkdir(parents=True, exist_ok=True, mode=0o700)
+        stage = Path(tempfile.mkdtemp(prefix='probe-replacement-extract-', dir=self.flow.directory))
+        safe_extract(self.flow.asset(self.flow.lock['probe']['archive']), stage)
+        source = stage / 'data-probe-offline'
+        if sha256(source / 'build/data-probe') != self.flow.lock['probe']['binary_sha256']:
+            raise RuntimeError('探针包内二进制摘要不符，未修改原探针')
+        for name in ('deploy/data-probe.service', 'deploy/data-probe-rollback.service', 'deploy/data-probe-rollback.sh'):
+            if not (source / name).is_file():
+                raise RuntimeError('探针安装包缺少服务文件，未修改原探针')
+        manager = Replacement(self)
+        manager.prepare()
+        try:
+            self.flow.owner.event('已有探针摘要不同，备份后替换程序与服务，保留原注册配置')
+            manager.deploy(source)
+            self.flow.run(['systemctl', 'daemon-reload'])
+            self.flow.run(['systemctl', 'reset-failed', 'data-probe'], check=False)
+            self.activate()
+            self.flow.owner.state['probe_replaced'] = True
+            self.flow.owner.state['probe_config_preserved'] = True
+            manager.status('committed')
+        except Exception:
+            try:
+                manager.restore()
+            except Exception as recovery_error:
+                raise RuntimeError('探针替换失败且自动恢复未完成；私有备份已保留，重试将先恢复旧探针') from recovery_error
+            self.flow.owner.event('探针替换未通过，已恢复旧程序、服务与原注册配置')
+            raise
+
     def activate(self):
         # All ReadWritePaths in the vendor service must exist before systemd starts it.
         for directory in ['/data', '/opt', '/srv', '/mnt', '/var/log/data-probe']:
@@ -228,7 +284,7 @@ class Probe:
         self.flow.run(['systemctl', 'enable', '--now', 'data-probe'])
         self.flow.wait(self.ready, '探针设备注册及 MQTT 连接', timeout=300)
         self.flow.owner.state['probe_passed'] = True
-        self.flow.owner.event('探针已注册，当前进程 MQTT 连接与本地健康检查通过')
+        self.flow.owner.event('探针注册缓存和当前进程 MQTT 连接检查通过')
 
     def secure_logging(self):
         config=self.binding()
@@ -237,7 +293,7 @@ class Probe:
         log_root=Path('/var/log/data-probe');log_root.chmod(0o700)
         for path in log_root.iterdir():
             if path.is_file() and not path.is_symlink():path.chmod(0o600)
-        wrapper=Path('/usr/local/lib/ai-platform-installer/probe_runner.py')
+        wrapper=self.lib_root/'probe_runner.py'
         no_symlink_parents(wrapper,Path('/'))
         if wrapper.is_symlink():raise RuntimeError('探针日志过滤器不能是链接')
         source=Path(__file__).with_name('probe_runner.py')
@@ -257,7 +313,7 @@ class Probe:
             if active.stdout.strip()=='active':self.flow.run(['systemctl','restart','data-probe'])
 
     def enable_collectors(self):
-        if self.flow.owner.state.get('probe_skipped'):
+        if self.flow.owner.state.get('probe_skipped') or self.flow.owner.state.get('probe_config_preserved'):
             return
         config = self.binding()
         gateway = config.get('gateway', {})

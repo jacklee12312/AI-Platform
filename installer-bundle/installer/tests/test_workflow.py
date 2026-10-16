@@ -313,9 +313,9 @@ class AutomaticProbeTests(unittest.TestCase):
                 client=settings()['probe'] if appeared_late else {}
                 client=dict(client,mode='auto',reuse_existing=not appeared_late)
                 flow=SimpleNamespace(settings={'probe':client},owner=SimpleNamespace(state={},event=mock.Mock()),
-                                     lock={'probe':{'binary_sha256':'a different build'}},host_packages=mock.Mock(),asset=mock.Mock())
+                                     lock={'probe':{'binary_sha256':common.sha256(binary)}},host_packages=mock.Mock(),asset=mock.Mock())
                 adapter=probe.Probe(flow,config_root=config,binary=binary,unit_root=root/'units')
-                with mock.patch.object(adapter,'activate') as activate,mock.patch('probe.sha256',side_effect=AssertionError('external probe must not be hashed')),mock.patch('probe.read_probe_config',side_effect=AssertionError('private probe configuration must not be read')):
+                with mock.patch.object(adapter,'activate') as activate,mock.patch('probe.read_probe_config',side_effect=AssertionError('private probe configuration must not be read')):
                     adapter.install();adapter.enable_collectors();activate.assert_not_called()
                 self.assertTrue(flow.owner.state['probe_skipped']);self.assertNotIn('probe_passed',flow.owner.state)
                 self.assertEqual((config/'probe.yaml').read_bytes(),before)
@@ -345,6 +345,10 @@ class AutomaticProbeTests(unittest.TestCase):
         with mock.patch('components.Components') as component,mock.patch('probe.Probe') as adapter:
             obj.finish();component.return_value.acceptance.assert_called_once();adapter.assert_not_called()
         self.assertTrue(obj.owner.state['workflow_passed'])
+    def test_finish_preserves_replaced_probe_configuration(self):
+        obj=object.__new__(workflow.Workflow);obj.owner=SimpleNamespace(state={'probe_config_preserved':True},event=mock.Mock())
+        with mock.patch('components.Components') as component,mock.patch('probe.Probe') as adapter:
+            obj.finish();component.return_value.acceptance.assert_called_once();adapter.assert_not_called()
 
 
 class StageIntegrationTests(unittest.TestCase):
