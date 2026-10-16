@@ -79,7 +79,7 @@ def dispatch(args,bundle):
     code=STATE_ROOT/'private/code';no_symlink_parents(code,STATE_ROOT)
     if code.is_symlink():raise RuntimeError('后台代码目录不能是链接')
     code.mkdir(exist_ok=True)
-    for name in ['common.py','engine.py','artifacts.py','storage.py','npu_runtime.py','npu_payload.py','registry.py','selection.py','verify_selected.py','version.py','workflow.py','probe.py','probe_replace.py','docker_runtime.py','components.py','probe_runner.py']:
+    for name in ['common.py','engine.py','artifacts.py','storage.py','npu_runtime.py','npu_payload.py','port_takeover.py','platform_takeover.py','runtime_overlay.py','registry.py','selection.py','verify_selected.py','version.py','workflow.py','probe.py','probe_replace.py','docker_runtime.py','components.py','probe_runner.py']:
         shutil.copyfile(bundle/'installer'/name,code/name);(code/name).chmod(0o600)
     shutil.copyfile(bundle/'release.json',code/'release.json');(code/'release.json').chmod(0o600)
     # Credentials are never command-line arguments, environment values or public status fields.

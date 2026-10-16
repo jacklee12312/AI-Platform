@@ -14,3 +14,4 @@
 /installer-bundle/npu-runtime/manifest.json -text
 # Preserve upstream Debian control descriptions verbatim, including their spacing.
 /support-files/files/workflow/host-debs/Packages -whitespace
+installer-bundle/component-runtime/manifest.json -text

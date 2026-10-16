@@ -138,6 +138,12 @@ def check(root, online=False):
         if runtime['release_id']!=spec['npu_runtime_release_id']:raise RuntimeError('NPU runtime resource identity differs from release-config.json')
         report.update(npu_runtime_release_id=runtime['release_id'],npu_runtime_archive_sha256=digest(archive),
                       npu_runtime_archive_bytes=archive.stat().st_size,npu_runtime_signed=True)
+    if spec.get('component_runtime_release_id'):
+        from runtime_overlay import load
+        overlay=load(bundle)
+        if overlay['release_id']!=spec['component_runtime_release_id']:raise RuntimeError('Component runtime resource identity differs')
+        report.update(component_runtime_release_id=overlay['release_id'],component_runtime_signed=True,
+                      component_runtime_manifest_sha256=digest(bundle/'component-runtime/manifest.json'))
     if online:
         def probe(item):
             key, source = item
@@ -366,7 +372,7 @@ def main():
         if candidate and candidate.is_file():
             os.environ['PATH'] = str(candidate.parent) + os.pathsep + os.environ.get('PATH', '')
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('command', choices=['check', 'test', 'build', 'deb', 'verify', 'assets', 'sync-version', 'npu-runtime'])
+    parser.add_argument('command', choices=['check', 'test', 'build', 'deb', 'verify', 'assets', 'sync-version', 'npu-runtime', 'component-runtime'])
     parser.add_argument('--deb-revision', default='1', help='Debian packaging revision; immutable once published')
     parser.add_argument('--online', action='store_true', help='Read-only remote manifest checks; no model weight download')
     parser.add_argument('--path', type=Path, help='Delivery directory for verify; external asset store for assets')
@@ -400,6 +406,10 @@ def main():
         if not args.path or not args.key:parser.error('npu-runtime requires --path vendor export directory and --key')
         from npu_runtime_release import prepare
         prepare(ROOT,args.path,args.key)
+    elif args.command == 'component-runtime':
+        if not args.key:parser.error('component-runtime requires the existing trusted signing key')
+        from component_runtime_release import prepare
+        prepare(ROOT,args.key)
     else:
         sync_version(ROOT)
 

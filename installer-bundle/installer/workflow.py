@@ -205,7 +205,7 @@ class Workflow:
             p + '前置资源：' + Path(r['path']).name), pause=self.owner.pause_point, rows=[resource])
         return store.ensure(resource)
 
-    def host_packages(self, names):
+    def host_packages(self, names, *, prepare_only=False):
         stage = self.directory / 'host-debs';stage.mkdir(exist_ok=True)
         versions = {r['package']: r['version'] for r in self.lock['host_packages'] if r.get('package')}
         needed = []
@@ -230,6 +230,8 @@ class Workflow:
             if target.is_symlink():
                 raise RuntimeError('依赖暂存文件不能是链接')
             shutil.copyfile(source, target);target.chmod(0o644)
+        if prepare_only:
+            return
         # Private, file-only APT repository. Existing system repositories and daemon settings are preserved.
         lists = self.directory / 'apt-lists';(lists / 'partial').mkdir(parents=True, exist_ok=True)
         sources = self.directory / 'apt-sources.list'
@@ -240,7 +242,7 @@ class Workflow:
                      '-o', 'Dpkg::Options::=--force-confold']
         self.run(arguments + ['update'], timeout=180)
         environment = dict(os.environ, DEBIAN_FRONTEND='noninteractive', NEEDRESTART_MODE='l')
-        self.run(arguments + ['--yes', '--no-install-recommends', 'install',
+        self.run(arguments + ['--yes', '--allow-downgrades', '--no-install-recommends', 'install',
                              *(name + '=' + versions[name] for name in needed)], env=environment, timeout=900)
 
     def docker(self):

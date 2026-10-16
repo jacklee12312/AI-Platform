@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "release_id": "modeldeck-component-runtime-1.2.0-r8-20261016",
+  "files": [
+    {
+      "path": "gateway-admin/host_ops/core/components.py",
+      "bytes": 20051,
+      "sha256": "9710610e8d4e1728028f6e6c20ae76296ebcb6c60d83be6b77e97a9eb3df6fbd",
+      "base_sha256": "c85df2cba21743252c487d93841c33e3545df905d906179ccd0e1b052acf8d30"
+    },
+    {
+      "path": "gateway-admin/host_ops/runtime.py",
+      "bytes": 12669,
+      "sha256": "5693474728e2a22441df9592a281afc80452b62a810f4f22b0a50191f41606f7",
+      "base_sha256": "89211f1e3fba6bee44098a7d46bc54dddb873735a3766ff0f6467b103b509d54"
+    }
+  ]
+}

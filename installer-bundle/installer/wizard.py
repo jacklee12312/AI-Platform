@@ -352,7 +352,7 @@ class Wizard(QWidget):
 
     def build_settings(self):
         page=self.page();scroll=QScrollArea();scroll.setWidgetResizable(True);content=QWidget();v=QVBoxLayout(content);scroll.setWidget(content);page.addWidget(scroll)
-        self.settings_scope=card('安装范围：探针、所选组件与所选模型' if self.workflow_enabled else '安装范围：平台基础组件 + 已选模型','组件镜像按勾选联网拉取，也可本地导入；Milvus 自动包含 MinIO 与 etcd。Docker 配套版本不一致时将自动卸载旧软件包并安装包内版本，保留数据，现有容器会短暂停止。' if self.workflow_enabled else '配套平台镜像、运行时、网关与管理界面固定安装；模型权重、模型服务和验收仅包含上一步勾选项。');v.addWidget(self.settings_scope)
+        self.settings_scope=card('安装范围：探针、所选组件与所选模型' if self.workflow_enabled else '安装范围：平台基础组件 + 已选模型','组件镜像按勾选联网拉取，也可本地导入；Milvus 自动包含 MinIO 与 etcd。所需端口由安装器自动接管：停用旧服务、归档旧容器、备份隔离旧数据后安装；失败恢复对应旧环境。Docker 配套版本不一致时将自动卸载旧软件包并安装包内版本，保留数据，现有容器会短暂停止。' if self.workflow_enabled else '配套平台镜像、运行时、网关与管理界面固定安装；模型权重、模型服务和验收仅包含上一步勾选项。');v.addWidget(self.settings_scope)
         self.probe_fields={};self.component_fields={}
         if self.workflow_enabled:
             import_button=QPushButton('导入安装配置');import_button.clicked.connect(self.import_workflow_settings);v.addWidget(import_button,alignment=Qt.AlignLeft)
@@ -401,9 +401,9 @@ class Wizard(QWidget):
             self.settings_scope.layout().itemAt(0).widget().setText('安装范围：替换探针程序及服务、所选组件与所选模型' if replacement else '安装范围：所选组件与所选模型' if existing else '安装范围：必需探针、所选组件与所选模型')
         if hasattr(self,'confirm_overview'):
             self.confirm_overview.layout().itemAt(0).widget().setText('将替换探针程序及服务，并安装所选组件与模型' if replacement else '将安装所选组件与所选模型' if existing else '将安装必需探针、所选组件与所选模型')
-            self.confirm_overview.layout().itemAt(1).widget().setText(('① 备份旧探针，替换包内程序和服务，保留原注册配置并验证 MQTT' if replacement else '① 检查现有基础环境' if existing else '① 安装必需探针，完成注册及 MQTT 连接检查')+'\n② 所选组件安装、凭据认证和健康检查（未选则跳过）\n③ 所选模型、网关与管理中心安装及推理验收\n④ 平台联检')
+            self.confirm_overview.layout().itemAt(1).widget().setText(('① 备份旧探针，替换包内程序和服务，保留原注册配置并验证 MQTT' if replacement else '① 检查现有基础环境' if existing else '① 安装必需探针，完成注册及 MQTT 连接检查')+'\n② 自动接管所选组件端口，备份隔离旧数据，安装并验证凭据与健康状态（未选则跳过）\n③ 所选模型、网关与管理中心安装及推理验收\n④ 平台联检')
         if hasattr(self,'consent'):
-            self.consent.setText('我确认备份后替换探针程序及服务，保留原注册配置，并安装所选组件及模型。' if replacement else '我确认安装所选组件及模型，并允许开机服务配置。' if existing else '我确认安装必需探针、所选组件及模型，并允许设备注册和开机服务配置。')
+            self.consent.setText('我确认备份后替换探针程序及服务，保留原注册配置，并安装所选组件及模型。' if replacement else '我确认安装所选组件及模型，并授权接管所需端口、备份隔离旧数据及配置开机服务。' if existing else '我确认安装必需探针、所选组件及模型，并授权接管所需端口、备份隔离旧数据、设备注册和开机服务配置。')
             if previous!=(self.probe_installed,replacement):self.consent.setChecked(False)
 
     def collect_workflow_settings(self):
@@ -433,12 +433,12 @@ class Wizard(QWidget):
 
     def build_confirm(self):
         v=self.page();self.confirm_overview=card('将安装探针、所选组件与所选模型' if self.workflow_enabled else '将安装 AI 平台与所选模型',
-            '① 探针注册和当前进程 MQTT 连接检查\n② 所选组件安装、凭据认证和健康检查（未选则跳过）\n③ 所选模型、网关与管理中心安装及推理验收\n④ 三阶段联检，开启探针采集' if self.workflow_enabled else '① 准备所需资源，逐文件校验\n② 安装平台基础组件与勾选模型\n③ 导入配套镜像，配置账号、网关和开机自启\n④ 启动并验收勾选模型');v.addWidget(self.confirm_overview)
+            '① 探针注册和当前进程 MQTT 连接检查\n② 自动接管所选组件端口，备份隔离旧数据，安装并验证凭据与健康状态（未选则跳过）\n③ 所选模型、网关与管理中心安装及推理验收\n④ 三阶段联检，开启探针采集' if self.workflow_enabled else '① 准备所需资源，逐文件校验\n② 安装平台基础组件与勾选模型\n③ 导入配套镜像，配置账号、网关和开机自启\n④ 启动并验收勾选模型');v.addWidget(self.confirm_overview)
         if self.workflow_enabled:
             self.confirm_components=label('','notice');v.addWidget(self.confirm_components);self.refresh_component_selection()
         self.confirm_sources=label('来源与下载量将在检查后显示。','subtitle');v.addWidget(self.confirm_sources)
-        v.addWidget(label('已有文件只在内容一致时复用；冲突文件不会静默覆盖。\n清单之外的模型和其他项目保持不动。\n请保持电源和 U 盘连接；关闭此窗口不会终止后台安装。','notice'))
-        self.consent=QCheckBox('我确认安装探针、所选组件及模型，并允许设备注册和开机服务配置。' if self.workflow_enabled else '我确认在本机安装所选模型及平台组件，并允许配置开机服务。');self.consent.setChecked(False);self.consent.toggled.connect(self.update_buttons);v.addWidget(self.consent)
+        v.addWidget(label('所选组件和平台端口会自动接管，旧数据与配置备份隔离后安装。\n清单之外的模型和其他项目保持不动。\n请保持电源和 U 盘连接；关闭此窗口不会终止后台安装。','notice'))
+        self.consent=QCheckBox('我确认安装探针、所选组件及模型，并授权接管所需端口、备份隔离旧数据、设备注册和开机服务配置。' if self.workflow_enabled else '我确认在本机安装所选模型及平台组件，并允许配置开机服务。');self.consent.setChecked(False);self.consent.toggled.connect(self.update_buttons);v.addWidget(self.consent)
         v.addWidget(label('点击“开始安装”后，系统会请求管理员授权。\n资源复制和真实推理验收可能持续较长时间；不自动重启或复位加速卡。','subtitle'));v.addStretch()
         if self.workflow_enabled:self.refresh_probe_detection()
 

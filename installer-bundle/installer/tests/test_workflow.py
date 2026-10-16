@@ -166,14 +166,14 @@ class WorkflowTests(unittest.TestCase):
             row['pinned']=row['image'].rsplit(':',1)[0]+'@'+row['manifest_digest']
             common.atomic_json(root/'catalog/workflow.json',lock);catalog['workflow_sha256']=common.sha256(root/'catalog/workflow.json')
             with self.assertRaisesRegex(RuntimeError,'MinIO'):workflow.load_workflow(root,catalog)
-    def test_existing_database_without_container_is_not_initialized(self):
+    def test_existing_database_is_left_untouched_until_transactional_takeover(self):
         with tempfile.TemporaryDirectory() as folder:
             root=Path(folder);data=root/'data/mysql';data.mkdir(parents=True);(data/'ibdata1').write_bytes(b'preserve')
             owner=SimpleNamespace(state={})
             lock=common.read_json(BUNDLE/'catalog/workflow.json')
             adapter=components.Components(SimpleNamespace(settings=settings(),lock=lock,owner=owner),data_root=root/'data')
             with mock.patch.object(adapter,'inspect',return_value=None),mock.patch('components.check_ports'):
-                with self.assertRaisesRegex(RuntimeError,'已有 mysql 数据'):adapter.preflight()
+                adapter.preflight()
             self.assertEqual((data/'ibdata1').read_bytes(),b'preserve')
     def test_inactive_nginx_cannot_pass_when_other_services_are_active(self):
         def run(args,**kwargs):
@@ -225,10 +225,11 @@ class ComponentSelectionExecutionTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             root=Path(folder);adapter=self.adapter(root,['mysql'])
             foreign=root/'data/redis';foreign.mkdir(parents=True);(foreign/'existing.rdb').write_bytes(b'preserve')
-            with mock.patch.object(adapter,'inspect',return_value=None) as inspect,mock.patch.object(adapter,'image') as image,mock.patch('components.check_ports') as ports,mock.patch.object(adapter,'healthy',return_value=True) as healthy,mock.patch.object(adapter,'export_connections'):
+            txn=mock.Mock(record=None,state={'token':'fixture-task'})
+            with mock.patch('port_takeover.Takeover',return_value=txn),mock.patch.object(adapter,'inspect',return_value=None) as inspect,mock.patch.object(adapter,'image') as image,mock.patch.object(adapter,'healthy',return_value=True) as healthy,mock.patch.object(adapter,'export_connections'):
                 adapter.install()
                 self.assertEqual({c.args[0] for c in inspect.call_args_list},{'mysql'})
-                ports.assert_called_once_with([3306]);image.assert_called_once_with('mysql');healthy.assert_called_once_with('mysql')
+                txn.claim.assert_called_once_with([3306],names=['mysql'],units=['mysql.service']);image.assert_called_once_with('mysql');healthy.assert_called_once_with('mysql')
                 self.assertEqual(set(common.read_json(adapter.compose)['services']),{'mysql'})
                 self.assertEqual(adapter.flow.owner.state['components_passed'],['mysql'])
             self.assertEqual((foreign/'existing.rdb').read_bytes(),b'preserve')
@@ -246,13 +247,15 @@ class ComponentSelectionExecutionTests(unittest.TestCase):
         for name,version in [('nginx','1.22.1'),('etcd','3.4.23')]:
             with self.subTest(name=name),tempfile.TemporaryDirectory() as folder:
                 root=Path(folder);adapter=self.adapter(root,[name]);adapter.flow.run.return_value.stdout=version
-                with mock.patch('components.shutil.which',return_value='/fixture/bin'),mock.patch.object(adapter,'nginx_healthy',return_value=True),mock.patch.object(adapter,'etcd_healthy',return_value=True),mock.patch.object(adapter,'export_connections'):
+                txn=mock.Mock(record={'status':'committed'})
+                with mock.patch('port_takeover.Takeover',return_value=txn),mock.patch('components.shutil.which',return_value='/fixture/bin'),mock.patch.object(adapter,'nginx_healthy',return_value=True),mock.patch.object(adapter,'etcd_healthy',return_value=True),mock.patch.object(adapter,'export_connections'):
                     adapter.install();adapter.acceptance()
                 calls=[c.args[0] for c in adapter.flow.run.call_args_list]
                 other='etcd' if name=='nginx' else 'nginx'
                 self.assertFalse(any(other in command for command in calls),calls)
                 self.assertIn(['systemctl','enable','--now',name],calls)
-                self.assertFalse((root/'config').exists());adapter.flow.host_packages.assert_not_called()
+                self.assertFalse((root/'config').exists())
+                self.assertTrue(all(c.kwargs.get('prepare_only') for c in adapter.flow.host_packages.call_args_list))
     def test_connection_export_contains_only_selected_components_and_dependencies(self):
         for selected,expected in [([],set()),(['redis'],{'redis'}),(['milvus'],{'etcd','minio','milvus'})]:
             with self.subTest(selected=selected),tempfile.TemporaryDirectory() as folder:
@@ -355,6 +358,7 @@ class StageIntegrationTests(unittest.TestCase):
     def fixture(self,stack):
         helper=worker_fixture.ModularWorkerTests()
         b,s,h,m=helper.fixture(stack);obj=engine.Installer(b,s,h);obj.state['initial_guard_passed']=True
+        stack.enter_context(mock.patch('platform_takeover.claim_ports'))
         helper.simulate_commands(obj,m)
         return obj
     def test_model_docker_stage_uses_the_same_replacement_workflow(self):

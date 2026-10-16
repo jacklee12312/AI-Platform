@@ -21,6 +21,10 @@ MOUNTS = {'mysql': '/var/lib/mysql', 'redis': '/data', 'paradedb': '/var/lib/pos
           'neo4j': '/data', 'minio': '/data', 'milvus': '/var/lib/milvus'}
 
 
+def image_ids(row):
+    return {row['config_id'], row['manifest_digest']}
+
+
 def http(url, *, headers=None, data=None):
     opener=urllib.request.build_opener(urllib.request.ProxyHandler({}))
     with opener.open(urllib.request.Request(url, headers=headers or {}, data=data), timeout=5) as response:
@@ -118,7 +122,7 @@ class Components:
         return json.loads(result.stdout)[0]
 
     def compatible(self, name, info):
-        if info.get('Image') != self.images[name]['config_id']:
+        if info.get('Image') not in image_ids(self.images[name]):
             raise RuntimeError('已有 ' + name + ' 容器镜像与锁定版本不符，不接管')
         mounts = [r for r in info.get('Mounts', []) if r.get('Destination') == MOUNTS[name]]
         if len(mounts) != 1 or mounts[0].get('Type') != 'bind' or mounts[0].get('Source') != str(self.data_root / name):
@@ -137,62 +141,12 @@ class Components:
                 raise RuntimeError('已有 Milvus 的 etcd/MinIO 地址或凭据不一致，不自动修改')
 
     def preflight(self):
-        owned = self.flow.owner.state.setdefault('component_data_owned', [])
         for name in self.images:
             target = self.data_root / name;no_symlink_parents(target, Path('/'))
             if target.is_symlink() or (target.exists() and not target.is_dir()):
                 raise RuntimeError('组件数据目录不能是链接或文件：' + str(target))
-            existing = self.inspect(name)
-            if existing:
-                self.compatible(name, existing)
-            else:
-                check_ports(PORTS[name])
-                if target.exists() and any(target.iterdir()) and name not in owned:
-                    raise RuntimeError('检测到已有 ' + name + ' 数据但无对应容器，不自动初始化或重置')
-
-    def host_services(self):
-        names = [name for name in self.flow.lock['component_packages']
-                 if ('nginx' if name == 'nginx' else 'etcd') in self.selected]
-        existing = {}
-        for name, executable, expected, port in [('nginx', 'nginx', '1.22.1', 80), ('etcd', 'etcd', '3.4.23', 2379)]:
-            if name not in self.selected:
-                continue
-            version = self.flow.run([executable, '-v' if name == 'nginx' else '--version'], check=False) if shutil.which(executable) else None
-            if version is not None:
-                if expected not in version.stdout + version.stderr:
-                    raise RuntimeError('已有 ' + name + ' 版本不兼容，不升级或覆盖')
-                existing[name] = True
-            else:
-                check_ports([port] if name == 'nginx' else [2379, 2380])
-                existing[name] = False
-        missing = [name for name in names if not existing['nginx' if name == 'nginx' else 'etcd']]
-        if 'etcd' in existing and not existing['etcd']:
-            data=Path('/var/lib/etcd')
-            if data.exists() and any(data.iterdir()) and not self.flow.owner.state.get('etcd_owned'):
-                raise RuntimeError('发现已有 etcd 数据，不自动重新初始化')
-            self.flow.owner.state['etcd_owned']=True;self.flow.owner.update(force=True)
-        if existing.get('etcd') and not shutil.which('etcdctl'):missing.append('etcd-client')
-        if missing:
-            self.flow.host_packages(missing)
-        if 'etcd' in existing and (not existing['etcd'] or self.flow.owner.state.get('etcd_owned')):
-            override = Path('/etc/systemd/system/etcd.service.d/ai-platform-1.1.conf')
-            no_symlink_parents(override, Path('/'))
-            text = '[Service]\nEnvironment="ETCD_UNSUPPORTED_ARCH=arm64"\nEnvironment="ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379"\nEnvironment="ETCD_ADVERTISE_CLIENT_URLS=http://127.0.0.1:2379"\nEnvironment="ETCD_DATA_DIR=/var/lib/etcd"\n'
-            if override.is_symlink() or (override.exists() and override.read_text() != text):
-                raise RuntimeError('已有 etcd 前置配置冲突，不覆盖')
-            self.flow.owner.state['etcd_owned'] = True;self.flow.owner.update(force=True)
-            atomic_text(override,text,0o644)
-            self.flow.run(['systemctl', 'daemon-reload'])
-            self.flow.run(['systemctl', 'restart', 'etcd'])
-        if 'nginx' in existing:
-            self.flow.run(['nginx', '-t'])
-            self.flow.run(['systemctl', 'enable', '--now', 'nginx'])
-            self.flow.wait(self.nginx_healthy, 'Nginx 服务与 80 端口检查')
-        if 'etcd' in existing:
-            self.flow.run(['systemctl', 'enable', '--now', 'etcd'])
-            self.flow.wait(self.etcd_healthy, 'etcd 健康检查')
-        if existing:
-            self.flow.owner.event('已选主机组件服务检查通过：' + '、'.join(existing))
+            # Conflicting instances and old data are handled transactionally after
+            # every selected image/dependency has been verified.
 
     def etcd_healthy(self):
         status, body = http('http://127.0.0.1:2379/health')
@@ -207,6 +161,8 @@ class Components:
     def image(self, name):
         row = self.images[name]
         current = self.flow.run(['docker', 'image', 'inspect', row['config_id']], check=False)
+        if current.returncode:
+            current = self.flow.run(['docker', 'image', 'inspect', row['pinned']], check=False)
         if current.returncode:
             # A local archive is always rehashed before loading. If unavailable, pull the exact platform manifest.
             from artifacts import local_candidates, source_config
@@ -224,10 +180,13 @@ class Components:
                     raise RuntimeError('本地组件镜像缺失：' + name)
                 self.flow.owner.event('正在联网拉取所选组件 ' + name + '（固定 ARM64 摘要，可重新运行继续）')
                 self.flow.run(['docker', 'pull', '--platform=linux/arm64', row['pinned']], timeout=1800)
-            current = self.flow.run(['docker', 'image', 'inspect', row['config_id']])
+            current = self.flow.run(['docker', 'image', 'inspect', row['pinned']], check=False)
+            if current.returncode:current = self.flow.run(['docker', 'image', 'inspect', row['config_id']])
         info = json.loads(current.stdout)[0]
-        if info['Id'] != row['config_id'] or info['Architecture'] != 'arm64' or info['Os'] != 'linux' or info['RootFS']['Layers'] != row['rootfs_diff_ids']:
+        if info['Id'] not in image_ids(row) or info['Architecture'] != 'arm64' or info['Os'] != 'linux' or info['RootFS']['Layers'] != row['rootfs_diff_ids']:
             raise RuntimeError('组件镜像校验失败：' + name)
+        # Docker's containerd store uses the manifest digest as its local ID.
+        self.spec['services'][name]['image'] = info['Id']
 
     def healthy(self, name):
         info = self.inspect(name)
@@ -265,10 +224,16 @@ class Components:
             self.flow.owner.event('未选择组件库服务，跳过组件库安装')
             self.export_connections()
             return
-        self.preflight();self.host_services()
+        self.preflight()
+        for name in self.images:
+            self.flow.owner.update('准备固定摘要组件镜像：' + name, force=True)
+            self.image(name)
+        packages = [name for name in self.flow.lock['component_packages']
+                    if ('nginx' if name == 'nginx' else 'etcd') in self.selected]
+        if packages: self.flow.host_packages(packages, prepare_only=True)
+        self.host_services()
         if not self.images:
-            self.export_connections()
-            return
+            self.export_connections();return
         no_symlink_parents(self.config_root, Path('/'))
         if self.config_root.is_symlink():
             raise RuntimeError('组件配置目录不能是链接')
@@ -276,28 +241,96 @@ class Components:
         atomic_json(self.compose, escape_compose(self.spec), 0o600)
         for index, name in enumerate(self.images):
             self.flow.owner.pause_point();self.flow.owner.update('安装组件：' + name, index / len(self.images), force=True)
-            info = self.inspect(name)
-            if info:
-                self.compatible(name, info)
-                if not info.get('State', {}).get('Running'):
-                    self.flow.run(['docker', 'start', name])
-            else:
-                self.image(name)
+            from port_takeover import Takeover
+            transaction = Takeover(self.flow, 'component-' + name)
+            if transaction.record and transaction.record['status'] == 'committed':
+                info = self.inspect(name)
+                if info and info['Id'] in transaction.record['created']:
+                    self.compatible(name, info)
+                    if not info.get('State', {}).get('Running'): self.flow.run(['docker', 'start', name])
+                    self.flow.wait(lambda: self.healthy(name), name + ' 认证与健康检查', timeout=360)
+                    self.flow.owner.event('复用本任务已安装组件：' + name)
+                    continue
+            if transaction.record and transaction.record['status'] not in ('committed', 'rolled-back'):
+                self.recover_container(transaction, name)
+                transaction.rollback()
+            transaction.begin()
+            try:
+                transaction.claim(PORTS[name], names=[name], units=[name + '.service'])
                 target = self.data_root / name;no_symlink_parents(target, Path('/'))
                 if target.is_symlink():
                     raise RuntimeError('组件数据目录不能是链接')
+                transaction.archive(target)
                 target.mkdir(parents=True, exist_ok=True)
                 owned = self.flow.owner.state.setdefault('component_data_owned', [])
                 if name not in owned:
                     owned.append(name);self.flow.owner.update(force=True)
+                self.spec['services'][name]['labels']['ai-platform.installer.task'] = transaction.state['token']
+                atomic_json(self.compose, escape_compose(self.spec), 0o600)
+                transaction.phase('deploying')
                 self.flow.run(['docker', 'compose', '-f', self.compose, 'up', '-d', '--no-deps',
                                '--no-build', '--pull', 'never', name], timeout=600)
-            self.flow.wait(lambda: self.healthy(name), name + ' 认证与健康检查', timeout=360)
+                transaction.created(self.inspect(name))
+                self.flow.wait(lambda: self.healthy(name), name + ' 认证与健康检查', timeout=360)
+                transaction.commit()
+            except Exception:
+                self.recover_container(transaction, name)
+                transaction.rollback()
+                raise
             passed = self.flow.owner.state.setdefault('components_passed', [])
             if name not in passed:
                 passed.append(name)
             self.flow.owner.event(name + ' 已通过检查')
         self.export_connections()
+
+    def recover_container(self, transaction, name):
+        info = self.inspect(name)
+        if info and (info['Config'].get('Labels') or {}).get('ai-platform.installer.task') == transaction.state['token']:
+            if info['Image'] in image_ids(self.images[name]): transaction.created(info)
+
+    def host_services(self):
+        from port_takeover import Takeover
+        for name, ports in [('nginx', [80]), ('etcd', [2379, 2380])]:
+            if name not in self.selected: continue
+            transaction = Takeover(self.flow, 'component-' + name)
+            healthy = self.nginx_healthy if name == 'nginx' else self.etcd_healthy
+            if transaction.record and transaction.record['status'] == 'committed':
+                self.flow.run(['systemctl', 'enable', '--now', name])
+                self.flow.wait(healthy, name + ' 健康检查')
+                continue
+            if transaction.record and transaction.record['status'] not in ('committed', 'rolled-back'): transaction.rollback()
+            transaction.begin()
+            try:
+                transaction.claim(ports, units=[name + '.service'])
+                paths = [Path('/etc/nginx')] if name == 'nginx' else [Path('/etc/default/etcd'), Path('/var/lib/etcd')]
+                for path in paths: transaction.archive(path)
+                packages = ['nginx'] if name == 'nginx' else ['etcd-server', 'etcd-client']
+                self.flow.host_packages(packages)
+                transaction.release_unit(name + '.service')
+                if name == 'nginx':
+                    self.flow.run(['mkdir', '-p', '/etc/nginx', '/var/log/nginx'])
+                    atomic_text(Path('/etc/nginx/nginx.conf'), 'user www-data;\nworker_processes auto;\npid /run/nginx.pid;\n'
+                      'events { worker_connections 1024; }\nhttp { server { listen 80; listen [::]:80; '
+                      'location / { default_type text/plain; return 200 "AI Platform component ready\\n"; } } }\n', 0o644)
+                    command = '/usr/sbin/nginx -g "daemon off;"'
+                    environment = ''
+                else:
+                    self.flow.run(['mkdir', '-p', '/var/lib/etcd'])
+                    command = '/usr/bin/etcd --data-dir=/var/lib/etcd --listen-client-urls=http://0.0.0.0:2379 --advertise-client-urls=http://127.0.0.1:2379'
+                    environment = 'Environment=ETCD_UNSUPPORTED_ARCH=arm64\n'
+                    self.flow.owner.state['etcd_owned'] = True
+                unit = '[Unit]\nDescription=AI Platform ' + name + '\nAfter=network-online.target\nWants=network-online.target\n'
+                unit += '[Service]\nType=simple\n' + environment + 'ExecStart=' + command + '\nRestart=always\nRestartSec=3\nTimeoutStopSec=30\n[Install]\nWantedBy=multi-user.target\n'
+                atomic_text(Path('/etc/systemd/system') / (name + '.service'), unit, 0o644)
+                self.flow.run(['systemctl', 'daemon-reload'])
+                transaction.phase('deploying')
+                self.flow.run(['systemctl', 'enable', '--now', name])
+                self.flow.wait(healthy, name + ' 健康检查')
+                transaction.commit()
+                self.flow.owner.event(name + ' 端口接管与健康检查通过')
+            except Exception:
+                transaction.rollback()
+                raise
 
     def acceptance(self):
         # systemctl with several units succeeds if ANY is active; check each required unit.

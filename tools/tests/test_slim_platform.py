@@ -53,7 +53,7 @@ class SlimPlatformTests(unittest.TestCase):
             def run(args,**kwargs):
                 calls.append(args)
                 if args[:3]==['docker','image','inspect']:
-                    exists=sum(x[:3]==['docker','image','inspect'] for x in calls)>1
+                    exists=any(x[:2]==['docker','pull'] for x in calls)
                     return SimpleNamespace(returncode=0 if exists else 1,stdout=json.dumps([valid]) if exists else '')
                 return SimpleNamespace(returncode=0,stdout='')
             flow=SimpleNamespace(settings={'components':{'selected':['redis'],'redis_password':'fixture-password-123'}},lock=lock,

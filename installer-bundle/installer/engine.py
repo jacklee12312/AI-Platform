@@ -140,7 +140,11 @@ class Installer:
         if self.workflow:self.workflow.probe()
 
     def components(self):
-        if self.workflow:self.workflow.components()
+        if self.workflow:
+            if self.release.get('component_runtime_release_id'):
+                from runtime_overlay import load
+                load(self.bundle)
+            self.workflow.components()
 
     def integration(self):
         if self.workflow:self.workflow.finish()
@@ -219,6 +223,9 @@ class Installer:
                 if not runtime and self.catalog is not None and self.device_count==1 and relative.as_posix() in variant_files:
                     p=self.resources/'variants/single'/relative
                     if not p.is_file() or p.is_symlink():raise RuntimeError('单卡运行配置缺失：'+relative.as_posix())
+                if not runtime and relative.as_posix() in {'gateway-admin/host_ops/core/components.py','gateway-admin/host_ops/runtime.py'}:
+                    from runtime_overlay import effective_source
+                    p=effective_source(self.bundle,relative.as_posix(),p)
                 raw_mode=p.lstat().st_mode & 0o777
                 mode=(raw_mode | 0o444 | (0o111 if raw_mode & 0o111 else 0)) if runtime else (0o755 if p.name=='modelctl' or p.suffix=='.sh' else 0o644)
                 if str(target) in by_path:
@@ -255,6 +262,9 @@ class Installer:
 
     def conflicts(self):
         if not self.state.get('initial_guard_passed'):
+            if self.workflow:
+                from platform_takeover import prepare_files
+                prepare_files(self)
             for name in CORE_DIRS:
                 p=self.home/name
                 if os.path.lexists(p) and (p.is_symlink() or not p.is_dir() or any(p.iterdir())):
@@ -383,6 +393,20 @@ class Installer:
         self.event('管理员密码已以哈希保存；独立 API / Agent 密钥已生成，日志不包含密码')
 
     def start(self):
+        transaction=None
+        if getattr(self,'workflow',None):
+            from platform_takeover import claim_ports
+            transaction=claim_ports(self)
+        try:
+            self.start_services()
+            if transaction:transaction.commit()
+        except Exception:
+            if transaction:
+                from platform_takeover import rollback_start
+                rollback_start(self,transaction)
+            raise
+
+    def start_services(self):
         self.state['start_attempted']=True;self.update(force=True)
         from npu_runtime import configure
         configure(self)
