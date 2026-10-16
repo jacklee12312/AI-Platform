@@ -1,0 +1,197 @@
+{
+  "schema": 1,
+  "package_version": "1.2.0-6",
+  "source_commit": "336790518596b23b18475b29d5e6faeada2407de",
+  "scope": "existing-device-resume-and-selected-model-inference",
+  "device": "CIX P1 + one Houmo LQ50",
+  "kernel": "6.6.89-cix-build-generic",
+  "aipu_kmd": "6.0.1",
+  "host_noe": "3.1.2",
+  "signed_resource_release_preserved": "ai-platform-installer-1.2.0-20261015",
+  "catalog_sha256": "dc7ebe18e7012d8f85653d878c63278e0648b007694eb25d3001201407f52b3b",
+  "status": "installed",
+  "percent": 100.0,
+  "acceptance": {
+    "run_id": "88ad6eb86dc5005e7383d3a1b069fac4",
+    "scope": "selected-models",
+    "selected_models": [
+      "copaw-flash-9b",
+      "spark-x1-4b",
+      "bge-m3",
+      "bge-reranker-v2-m3",
+      "cosyvoice3-0.5b",
+      "qwen3-vl-8b",
+      "qwen3.8-27b",
+      "sensevoice",
+      "glm-ocr-0.9b",
+      "mobilenet_v2",
+      "inception_v3",
+      "yolov11_l",
+      "yolov11_n",
+      "yolov11n_obb",
+      "yolov12_s",
+      "yolov12_m",
+      "bytetrack_s",
+      "retinaface",
+      "yolov5s_face",
+      "scrfd",
+      "arcface",
+      "yolov8l_seg",
+      "kokoro-82m",
+      "matcha-zh"
+    ],
+    "device_count": 1,
+    "started_at": "2026-10-16T13:04:32.176888+08:00",
+    "checks": [
+      {
+        "name": "selected-containers-and-autostart",
+        "passed": true
+      },
+      {
+        "name": "selected-gateway-registry",
+        "passed": true
+      },
+      {
+        "name": "inference:sensevoice",
+        "passed": true
+      },
+      {
+        "name": "inference:mobilenet_v2",
+        "passed": true
+      },
+      {
+        "name": "inference:inception_v3",
+        "passed": true
+      },
+      {
+        "name": "inference:yolov11_l",
+        "passed": true
+      },
+      {
+        "name": "inference:yolov11_n",
+        "passed": true
+      },
+      {
+        "name": "inference:yolov11n_obb",
+        "passed": true
+      },
+      {
+        "name": "inference:yolov12_s",
+        "passed": true
+      },
+      {
+        "name": "inference:yolov12_m",
+        "passed": true
+      },
+      {
+        "name": "inference:bytetrack_s",
+        "passed": true
+      },
+      {
+        "name": "inference:retinaface",
+        "passed": true
+      },
+      {
+        "name": "inference:yolov5s_face",
+        "passed": true
+      },
+      {
+        "name": "inference:scrfd",
+        "passed": true
+      },
+      {
+        "name": "inference:arcface",
+        "passed": true
+      },
+      {
+        "name": "inference:yolov8l_seg",
+        "passed": true
+      },
+      {
+        "name": "inference:kokoro-82m",
+        "passed": true
+      },
+      {
+        "name": "inference:matcha-zh",
+        "passed": true
+      },
+      {
+        "name": "accelerator-mode:copaw",
+        "passed": true
+      },
+      {
+        "name": "accelerator-mode:spark-x1",
+        "passed": true
+      },
+      {
+        "name": "accelerator-mode:bge-m3",
+        "passed": true
+      },
+      {
+        "name": "accelerator-mode:reranker",
+        "passed": true
+      },
+      {
+        "name": "accelerator-mode:cosyvoice",
+        "passed": true
+      },
+      {
+        "name": "accelerator-mode:qwen-vl",
+        "passed": true
+      },
+      {
+        "name": "accelerator-mode:qwen38",
+        "passed": true
+      },
+      {
+        "name": "multimodal:qwen3.8-27b",
+        "passed": true
+      },
+      {
+        "name": "accelerator-mode:glm-ocr",
+        "passed": true
+      },
+      {
+        "name": "restore-mode:copaw",
+        "passed": true
+      }
+    ],
+    "passed": true,
+    "registry_models": [
+      "arcface",
+      "bge-m3",
+      "bge-reranker-v2-m3",
+      "bytetrack_s",
+      "copaw-flash-9b",
+      "cosyvoice3-0.5b",
+      "glm-ocr-0.9b",
+      "inception_v3",
+      "kokoro-82m",
+      "matcha-zh",
+      "mobilenet_v2",
+      "qwen3-vl-8b",
+      "qwen3.8-27b",
+      "retinaface",
+      "scrfd",
+      "sensevoice",
+      "spark-x1-4b",
+      "yolov11_l",
+      "yolov11_n",
+      "yolov11n_obb",
+      "yolov12_m",
+      "yolov12_s",
+      "yolov5s_face",
+      "yolov8l_seg"
+    ],
+    "finished_at": "2026-10-16T13:12:19.817016+08:00"
+  },
+  "runtime_configuration": "verified host NOE libraries mounted read-only; original signed images and resources unchanged",
+  "kokoro_healthy": true,
+  "kokoro_restart_count": 0,
+  "cv_healthy": true,
+  "cv_restart_count": 0,
+  "wired_ui_http_status": 200,
+  "automated_tests": 258,
+  "fresh_device_install": "not_run",
+  "os_reboot": "not_run"
+}
