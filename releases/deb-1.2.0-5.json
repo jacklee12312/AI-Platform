@@ -1,0 +1,85 @@
+{
+  "schema": 1,
+  "package": "ai-platform-installer",
+  "package_version": "1.2.0-5",
+  "architecture": "arm64",
+  "source_commit": "3497093b3415a8e40911ad69b970576a42b35dba",
+  "installer_version": "1.2.0",
+  "resource_release_id": "ai-platform-installer-1.2.0-20261015",
+  "payload_source_commit": "3497093b3415a8e40911ad69b970576a42b35dba",
+  "resource_source_commit": "f3604b1292357640f5a3e3f851a29050a1d1c1c3",
+  "code_overlay": true,
+  "base_archive_sha256": "0b3a955ada8130572f67235ee48b6d9714d615d57328566f6b1adf25c613f7a2",
+  "base_delivery_checksums_sha256": "dd1c06849e10ca377f8aa35a6fe2c67a2443154d64373edc5422a9d8084206c8",
+  "catalog_sha256": "dc7ebe18e7012d8f85653d878c63278e0648b007694eb25d3001201407f52b3b",
+  "test_report_sha256": "840d0586d9707d7353d69e01f597e8817de4713d03287602be7561a4651bdcb9",
+  "model_weights_in_distribution": false,
+  "fresh_device_acceptance": "not_run",
+  "archive": "delivery/ai-platform-installer_1.2.0-5_arm64.deb",
+  "archive_bytes": 3777319982,
+  "archive_sha256": "764a9c1f3310f6534ecf222c4e231bca0a0a9d4fddfa92e4bf52b7478779503e",
+  "installed_size_kib": 3688249,
+  "packaged_files": 586,
+  "automated_tests": 254,
+  "source_tag": "deb-v1.2.0-5",
+  "device_validation": {
+    "checked_at": "2026-10-16T01:15:24.143768+00:00",
+    "package_installation": "passed",
+    "previous_debian_package": "1.2.0-4",
+    "installed_files_md5_verified": 586,
+    "installed_files_sha256_verified": 585,
+    "wired_transfer_sha256": "passed",
+    "physical_display_window": "passed",
+    "window_revision": 5,
+    "bulk_storage_validation": {
+      "package_version": "1.2.0-5",
+      "data_root": "/opt/ai-platform-data",
+      "cache": "/opt/ai-platform-data/cache",
+      "resource_staging": "/opt/ai-platform-data/work/30d2fc99b456c8c2e838df25/resources",
+      "runtime_staging": "/opt/ai-platform-data/work/30d2fc99b456c8c2e838df25/runtime",
+      "workflow_staging": "/opt/ai-platform-data/work/30d2fc99b456c8c2e838df25/workflow",
+      "bulk_paths_on_large_volume": true,
+      "complete_selected_model_disk_budget_passed": true,
+      "budgets": [
+        {
+          "path": "/home/cix",
+          "need_bytes": 131721494647,
+          "free_bytes": 589360644096,
+          "purposes": [
+            "平台与所选模型",
+            "运行时解压与工作空间",
+            "资源缓存"
+          ]
+        },
+        {
+          "path": "/var/lib/docker",
+          "need_bytes": 35433480192,
+          "free_bytes": 36507881472,
+          "purposes": [
+            "Docker 镜像",
+            "安装记录与日志"
+          ]
+        }
+      ],
+      "verified_real_resource_files": 3,
+      "cache_and_staging_share_verified_hardlinks": true,
+      "runtime_extraction_on_large_volume": true,
+      "legacy_cache_reused_after_sha256": true,
+      "same_task_storage_path_persisted": true,
+      "original_task_request_and_probe_unchanged": true,
+      "original_completed_stages": [
+        "probe",
+        "components"
+      ],
+      "model_source_unchanged": "online",
+      "mysql_running": true,
+      "full_model_acquisition": "not_run",
+      "full_platform_installation": "not_run",
+      "hardware_inference": "not_run",
+      "reboot": "not_run"
+    },
+    "full_platform_installation": "not_run",
+    "hardware_inference": "not_run",
+    "reboot": "not_run"
+  }
+}
