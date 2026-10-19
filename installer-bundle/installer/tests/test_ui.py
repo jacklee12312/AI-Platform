@@ -64,27 +64,28 @@ class WizardTests(unittest.TestCase):
             self.assertIn(url,warning.call_args.args[2])
 
     def test_existing_probe_hides_registration_and_needs_no_fields(self):
-        with mock.patch('wizard.detect_probe',return_value=True),mock.patch('wizard.matching_probe',return_value=True):
+        with mock.patch('wizard.detect_probe',return_value=True):
             self.w.show_page(3)
             for field in self.w.probe_fields.values():field.clear()
             self.assertTrue(self.w.probe_install_panel.isHidden())
-            self.assertTrue(self.w.probe_detection_notice.isHidden())
+            self.assertFalse(self.w.probe_detection_notice.isHidden())
+            self.assertIn('联网下载最新探针',self.w.probe_detection_notice.text())
             self.assertNotIn('探针',self.w.subtitle.text())
             self.assertEqual(self.w.collect_workflow_settings()['probe'],{'mode':'auto','reuse_existing':True})
             self.w.show_page(4)
-            self.assertNotIn('探针',self.w.confirm_overview.layout().itemAt(0).widget().text())
+            self.assertIn('核对最新探针',self.w.confirm_overview.layout().itemAt(0).widget().text())
             self.assertNotIn('设备注册',self.w.consent.text())
         self.assertFalse(hasattr(self.w,'reuse_probe'))
-    def test_different_probe_requires_replacement_consent_without_registration_form(self):
-        with mock.patch('wizard.detect_probe',return_value=True),mock.patch('wizard.matching_probe',return_value=True):
+    def test_gui_defers_binary_comparison_and_network_to_the_worker(self):
+        with mock.patch('wizard.detect_probe',return_value=True):
             self.w.show_page(3);self.w.consent.setChecked(True)
-        with mock.patch('wizard.detect_probe',return_value=True),mock.patch('wizard.matching_probe',return_value=False):
+        with mock.patch('wizard.detect_probe',return_value=True),mock.patch('probe.matching_probe',side_effect=AssertionError('GUI must not compare the historical build')) as compare,mock.patch('probe_source.fetch_probe',side_effect=AssertionError('GUI must not fetch')) as fetch:
             self.w.refresh_probe_detection()
-            self.assertFalse(self.w.consent.isChecked())
+            self.assertTrue(self.w.consent.isChecked());compare.assert_not_called();fetch.assert_not_called()
             self.assertTrue(self.w.probe_install_panel.isHidden())
             self.assertFalse(self.w.probe_detection_notice.isHidden())
             self.assertIn('保留原注册',self.w.probe_detection_notice.text())
-            self.w.show_page(4);self.assertIn('替换探针程序及服务',self.w.consent.text())
+            self.w.show_page(4);self.assertIn('备份替换程序及服务',self.w.consent.text())
             self.assertEqual(self.w.collect_workflow_settings()['probe'],{'mode':'auto','reuse_existing':True})
     def test_missing_probe_is_visible_and_registration_is_mandatory(self):
         with mock.patch('wizard.detect_probe',return_value=False):
@@ -95,7 +96,7 @@ class WizardTests(unittest.TestCase):
                 self.w.go_next();warning.assert_called_once()
             self.assertEqual(self.w.page_index,3)
             self.w.probe_fields['bindActivateToken'].setText('fixture-registration-secret');self.w.go_next()
-            self.assertEqual(self.w.page_index,4);self.assertIn('必需探针',self.w.consent.text())
+            self.assertEqual(self.w.page_index,4);self.assertIn('联网安装最新探针',self.w.consent.text())
     def test_probe_detection_changes_reset_consent_and_reveal_required_form(self):
         with mock.patch('wizard.detect_probe',return_value=True):self.w.show_page(3)
         self.w.consent.setChecked(True)
@@ -314,7 +315,7 @@ class YiQiBanWizardTests(unittest.TestCase):
 
     def test_probe_refresh_preserves_yiqiban_scope_and_consent_without_duplication(self):
         for installed in (True,False):
-            with mock.patch('wizard.detect_probe',return_value=installed),mock.patch('wizard.matching_probe',return_value=True):
+            with mock.patch('wizard.detect_probe',return_value=installed):
                 for _ in range(2):self.w.refresh_probe_detection()
                 self.assertEqual(self.w.consent.text().count('翼起办'),1)
                 self.assertIn('翼起办',self.w.settings_scope.layout().itemAt(0).widget().text())
