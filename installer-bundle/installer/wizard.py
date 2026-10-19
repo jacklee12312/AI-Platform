@@ -14,7 +14,7 @@ from artifacts import load_catalog,source_config,source_roots,worker_source_root
 from download_speed import DownloadSpeedMeter
 from selection import selected_catalog,validate_selected,supported_on
 from workflow import COMPONENTS,COMPONENT_DEPENDENCIES,requested_components,resolved_components
-from probe import detect_probe,matching_probe
+from probe import detect_probe
 from browser_open import browser_request
 
 STYLE='''
@@ -407,19 +407,19 @@ class Wizard(QWidget):
             self.probe_detection_notice.setText(self.probe_detection_error)
             self.probe_detection_notice.setVisible(bool(self.probe_detection_error))
         existing=self.probe_installed is True
-        expected=read_json(self.bundle/'catalog/workflow.json',{}).get('probe',{}).get('binary_sha256')
-        replacement=existing and not matching_probe(expected)
+        # Compare only after downloading the current publisher build in the worker.
+        replacement=False
         self.probe_replacement_needed=replacement
-        if hasattr(self,'probe_detection_notice') and replacement and not self.probe_detection_error:
-            self.probe_detection_notice.setText('已有探针与安装包摘要不同：将先备份，再替换程序和服务，保留原注册信息及配置。')
+        if hasattr(self,'probe_detection_notice') and existing and not self.probe_detection_error:
+            self.probe_detection_notice.setText('安装时联网下载最新探针并比较程序摘要：一致复用，不同则备份替换程序和服务，保留原注册信息及配置。')
             self.probe_detection_notice.setVisible(True)
         if hasattr(self,'settings_scope'):
-            self.settings_scope.layout().itemAt(0).widget().setText('安装范围：替换探针程序及服务、所选组件与所选模型' if replacement else '安装范围：所选组件与所选模型' if existing else '安装范围：必需探针、所选组件与所选模型')
+            self.settings_scope.layout().itemAt(0).widget().setText('安装范围：核对最新探针、所选组件与所选模型' if existing else '安装范围：联网安装最新探针、所选组件与所选模型')
         if hasattr(self,'confirm_overview'):
-            self.confirm_overview.layout().itemAt(0).widget().setText('将替换探针程序及服务，并安装所选组件与模型' if replacement else '将安装所选组件与所选模型' if existing else '将安装必需探针、所选组件与所选模型')
-            self.confirm_overview.layout().itemAt(1).widget().setText(('① 备份旧探针，替换包内程序和服务，保留原注册配置并验证 MQTT' if replacement else '① 检查现有基础环境' if existing else '① 安装必需探针，完成注册及 MQTT 连接检查')+'\n② 自动接管所选组件端口，备份隔离旧数据，安装并验证凭据与健康状态（未选则跳过）\n③ 所选模型、网关与管理中心安装及推理验收\n④ 平台联检')
+            self.confirm_overview.layout().itemAt(0).widget().setText('将核对最新探针并安装所选组件与模型')
+            self.confirm_overview.layout().itemAt(1).widget().setText(('① 联网下载最新探针，摘要一致复用，不同则备份替换并保留原注册配置' if existing else '① 联网安装最新探针，完成注册及 MQTT 连接检查')+'\n② 自动接管所选组件端口，备份隔离旧数据，安装并验证凭据与健康状态（未选则跳过）\n③ 所选模型、网关与管理中心安装及推理验收\n④ 平台联检')
         if hasattr(self,'consent'):
-            self.consent.setText('我确认备份后替换探针程序及服务，保留原注册配置，并安装所选组件及模型。' if replacement else '我确认安装所选组件及模型，并授权接管所需端口、备份隔离旧数据及配置开机服务。' if existing else '我确认安装必需探针、所选组件及模型，并授权接管所需端口、备份隔离旧数据、设备注册和开机服务配置。')
+            self.consent.setText('我确认联网核对最新探针，摘要不同时备份替换程序及服务并保留原注册配置，并授权安装所选组件及模型、接管所需端口和配置开机服务。' if existing else '我确认联网安装最新探针、所选组件及模型，并授权接管所需端口、备份隔离旧数据、设备注册和开机服务配置。')
             if previous!=(self.probe_installed,replacement):self.consent.setChecked(False)
         if self.yiqiban_enabled:
             if hasattr(self,'settings_scope'):

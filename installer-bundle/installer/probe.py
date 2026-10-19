@@ -1,4 +1,4 @@
-"""Detect, reuse or install the pinned probe; gate on registration and MQTT."""
+"""Compare against the publisher's current probe; retain binding on replacement."""
 from pathlib import Path
 import json
 import os
@@ -7,10 +7,10 @@ import re
 import shutil
 import socket
 import subprocess
-import tempfile
 
 from common import atomic_json, atomic_text, copy_atomic, no_symlink_parents, sha256
 from workflow import REGISTER_FIELDS, mqtt_journal_connected
+from probe_source import fetch_probe
 
 
 def matching_probe(expected, binary=Path('/usr/local/bin/data-probe')):
@@ -109,6 +109,11 @@ class Probe:
         self.lib_root = Path(lib_root)
         self.config = self.config_root / 'probe.yaml'
         self.automatic_reuse = self.settings.get('mode') == 'auto' and self.settings.get('reuse_existing') is True
+        self.latest = None
+
+    def target(self):
+        if self.latest is None:self.latest = fetch_probe(self.flow)
+        return self.latest
 
     def binding(self):
         if self.config.is_symlink() or not self.config.is_file():
@@ -153,23 +158,25 @@ class Probe:
         owned = self.flow.owner.state.get('probe_owned') is True
         if not existing and self.settings.get('reuse_existing') and not owned:
             raise RuntimeError('自动识别时存在的探针已缺失；请恢复原探针后继续，不以空配置重新注册')
-        skipped = existing and not owned and matching_probe(self.flow.lock['probe']['binary_sha256'], self.binary)
+        skipped = existing and not owned and matching_probe(self.target()['binary_sha256'], self.binary)
         self.flow.owner.state['probe_skipped'] = skipped
         if skipped:
             self.automatic_reuse = True
             self.settings['reuse_existing'] = True
             self.flow.owner.state.pop('probe_passed', None)
+            self.flow.owner.event('本机探针与接口最新程序摘要一致，直接复用并保留原注册配置')
         return skipped
 
     def install(self):
         from probe_replace import Replacement
         Replacement.recover(self)
+        self.target()  # Fetch even when the device already has a same-version probe.
         if self.skip_existing():
             return
         existing = detect_probe(self.binary, self.config_root,
                                 (self.unit_root, Path('/lib/systemd/system'), Path('/usr/lib/systemd/system')))
         owned = self.flow.owner.state.get('probe_owned') is True
-        if existing and not owned:
+        if existing and (not owned or (self.config.is_file() and not matching_probe(self.target()['binary_sha256'], self.binary))):
             return self.replace_existing()
         if self.settings.get('mode') == 'auto':
             # Recheck presence at the mutation boundary, including an interrupted fresh install.
@@ -183,8 +190,8 @@ class Probe:
             no_symlink_parents(target,Path('/'))
             if target.is_symlink():raise RuntimeError('探针安装目标不能是链接：'+target.name)
         if existing and (complete or not owned):
-            if self.binary.is_symlink() or not self.binary.is_file() or sha256(self.binary) != self.flow.lock['probe']['binary_sha256']:
-                raise RuntimeError('已有探针版本与锁定的 1.1.2 不兼容，不自动覆盖')
+            if not matching_probe(self.target()['binary_sha256'], self.binary):
+                raise RuntimeError('本次探针程序与已下载的最新探针摘要不符')
             if not owned and not self.automatic_reuse and not self.settings['reuse_existing']:
                 raise RuntimeError('检测到已有探针；请明确选择复用并填写与其一致的设备注册信息')
             self.binding()
@@ -199,16 +206,10 @@ class Probe:
             with socket.socket() as listener:
                 try:listener.bind(('127.0.0.1',9090))
                 except OSError:raise RuntimeError('探针本地端口 9090 已被占用，不停止其他程序') from None
-            from engine import safe_extract
             self.flow.host_packages(self.flow.lock['probe_packages'])
-            stage = self.flow.directory / 'probe-extract'
-            no_symlink_parents(stage, self.flow.directory)
-            if stage.exists():
-                if stage.is_symlink():
-                    raise RuntimeError('探针暂存目录不能是链接')
-                shutil.rmtree(stage)
-            safe_extract(self.flow.asset(self.flow.lock['probe']['archive']), stage)
-            source = stage / 'data-probe-offline'
+            source = self.target()['source']
+            if sha256(source / 'build/data-probe') != self.target()['binary_sha256']:
+                raise RuntimeError('已下载探针程序发生变化，未安装')
             # Persist intent before publishing files, so a partial deployment can be resumed.
             self.flow.owner.state['probe_owned'] = True;self.flow.owner.update(force=True)
             self.config_root.mkdir(parents=True, exist_ok=True, mode=0o700)
@@ -234,21 +235,18 @@ class Probe:
 
     def replace_existing(self):
         """Replace only executables/services, retaining the device's binding and config."""
-        from engine import safe_extract
         from probe_replace import Replacement
         self.automatic_reuse = True
         config = self.binding()  # Validate before stopping the old service; never publish its values.
         if config.get('log', {}).get('dir') != '/var/log/data-probe':
             raise RuntimeError('已有探针日志位置不兼容，保留旧程序；请先修复日志配置')
         registration = self.config_root / 'registration.yaml'
-        if registration.is_symlink() or not registration.is_file() or registration.stat().st_size == 0:
+        owned = self.flow.owner.state.get('probe_owned') is True
+        if registration.is_symlink() or (not owned and (not registration.is_file() or registration.stat().st_size == 0)):
             raise RuntimeError('旧探针缺少注册缓存，保留旧程序；请先恢复设备注册信息后重试')
         self.flow.host_packages(self.flow.lock['probe_packages'])
-        self.flow.directory.mkdir(parents=True, exist_ok=True, mode=0o700)
-        stage = Path(tempfile.mkdtemp(prefix='probe-replacement-extract-', dir=self.flow.directory))
-        safe_extract(self.flow.asset(self.flow.lock['probe']['archive']), stage)
-        source = stage / 'data-probe-offline'
-        if sha256(source / 'build/data-probe') != self.flow.lock['probe']['binary_sha256']:
+        source = self.target()['source']
+        if sha256(source / 'build/data-probe') != self.target()['binary_sha256']:
             raise RuntimeError('探针包内二进制摘要不符，未修改原探针')
         for name in ('deploy/data-probe.service', 'deploy/data-probe-rollback.service', 'deploy/data-probe-rollback.sh'):
             if not (source / name).is_file():

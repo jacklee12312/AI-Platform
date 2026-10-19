@@ -318,8 +318,9 @@ class AutomaticProbeTests(unittest.TestCase):
                 flow=SimpleNamespace(settings={'probe':client},owner=SimpleNamespace(state={},event=mock.Mock()),
                                      lock={'probe':{'binary_sha256':common.sha256(binary)}},host_packages=mock.Mock(),asset=mock.Mock())
                 adapter=probe.Probe(flow,config_root=config,binary=binary,unit_root=root/'units')
-                with mock.patch.object(adapter,'activate') as activate,mock.patch('probe.read_probe_config',side_effect=AssertionError('private probe configuration must not be read')):
+                with mock.patch('probe.fetch_probe',return_value={'binary_sha256':common.sha256(binary)}) as fetch,mock.patch.object(adapter,'activate') as activate,mock.patch('probe.read_probe_config',side_effect=AssertionError('private probe configuration must not be read')):
                     adapter.install();adapter.enable_collectors();activate.assert_not_called()
+                fetch.assert_called_once_with(flow)
                 self.assertTrue(flow.owner.state['probe_skipped']);self.assertNotIn('probe_passed',flow.owner.state)
                 self.assertEqual((config/'probe.yaml').read_bytes(),before)
                 self.assertEqual(adapter.binding()['register']['project'],'original-project')
@@ -331,12 +332,12 @@ class AutomaticProbeTests(unittest.TestCase):
             flow=SimpleNamespace(settings=value,owner=SimpleNamespace(state={}),lock={'probe_packages':['fixture-library']},
                                  host_packages=mock.Mock(side_effect=RuntimeError('required probe install reached')))
             adapter=probe.Probe(flow,config_root=root/'config',binary=root/'binary',unit_root=root/'units')
-            with mock.patch('probe.detect_probe',return_value=False),mock.patch('probe.socket.socket'),self.assertRaisesRegex(RuntimeError,'required probe install reached'):
+            with mock.patch('probe.fetch_probe',return_value={'binary_sha256':'0'*64}),mock.patch('probe.detect_probe',return_value=False),mock.patch('probe.socket.socket'),self.assertRaisesRegex(RuntimeError,'required probe install reached'):
                 adapter.install()
             flow.host_packages.assert_called_once_with(['fixture-library'])
     def test_probe_removed_after_privileged_detection_cannot_be_silently_skipped(self):
         flow=SimpleNamespace(settings={'probe':{'mode':'auto','reuse_existing':True}},owner=SimpleNamespace(state={}))
-        with mock.patch('probe.detect_probe',return_value=False),self.assertRaisesRegex(RuntimeError,'已缺失'):
+        with mock.patch('probe.fetch_probe',return_value={'binary_sha256':'0'*64}),mock.patch('probe.detect_probe',return_value=False),self.assertRaisesRegex(RuntimeError,'已缺失'):
             probe.Probe(flow).install()
     def test_installer_owned_partial_probe_is_resumed_instead_of_skipped(self):
         flow=SimpleNamespace(settings={'probe':{'mode':'auto','reuse_existing':False}},owner=SimpleNamespace(state={'probe_owned':True}))
@@ -401,17 +402,17 @@ class StageIntegrationTests(unittest.TestCase):
                 with self.assertRaisesRegex(RuntimeError,'MQTT'):obj.run()
             acquire.assert_not_called();obj.workflow.components.assert_not_called()
             self.assertEqual(obj.state['completed'],[])
-    def test_external_probe_stage_and_its_installation_notice_are_skipped(self):
+    def test_external_probe_still_enters_the_online_comparison_stage(self):
         with ExitStack() as stack:
             obj=self.fixture(stack);order=[]
-            def skip():obj.state['probe_skipped']=True;return True
-            obj.workflow=SimpleNamespace(settings=settings(),docker=mock.Mock(),skip_existing_probe=skip,
-                probe=mock.Mock(side_effect=AssertionError('external probe touched')),
+            def check():obj.state['probe_skipped']=True;order.append('probe-check')
+            obj.workflow=SimpleNamespace(settings=settings(),docker=mock.Mock(),
+                probe=mock.Mock(side_effect=check),
                 components=lambda:order.append('components'),finish=lambda:order.append('integration'))
-            obj.run();obj.workflow.probe.assert_not_called()
-            self.assertEqual(order,['components','integration'])
+            obj.run();obj.workflow.probe.assert_called_once()
+            self.assertEqual(order,['probe-check','components','integration'])
             self.assertIn('probe',obj.state['completed']);self.assertTrue(obj.state['probe_skipped'])
-            self.assertFalse(any('安装探针' in item['message'] for item in obj.state['events']))
+            self.assertTrue(any('安装探针' in item['message'] for item in obj.state['events']))
     def test_failed_component_can_resume_but_probe_is_rechecked(self):
         with ExitStack() as stack:
             obj=self.fixture(stack);order=[]

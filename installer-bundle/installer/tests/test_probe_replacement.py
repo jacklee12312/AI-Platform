@@ -44,6 +44,9 @@ class ProbeReplacementTests(unittest.TestCase):
         self.flow.asset.return_value=archive
         self.flow.lock={'probe':{'binary_sha256':sha256(self.source/'build/data-probe'),'archive':{}},'probe_packages':['fixture-dependency']}
         self.root=root
+        self.target={'source':self.source,'binary_sha256':sha256(self.source/'build/data-probe'),'version':'1.1.2-current'}
+        patcher=mock.patch('probe.fetch_probe',return_value=self.target)
+        self.fetch=patcher.start();self.addCleanup(patcher.stop)
 
     def assert_restored(self):
         for relative,data in self.original.items():self.assertEqual((self.root/relative).read_bytes(),data,relative)
@@ -100,7 +103,7 @@ class ProbeReplacementTests(unittest.TestCase):
         self.assertEqual(self.probe.binary.read_bytes(),b'pinned executable');self.flow.run.assert_not_called()
 
     def test_wrong_archive_binary_rejected_before_stopping_existing_probe(self):
-        self.flow.lock['probe']['binary_sha256']='0'*64
+        self.target['binary_sha256']='0'*64
         with self.assertRaisesRegex(RuntimeError,'包内二进制摘要不符'):self.probe.install()
         self.flow.run.assert_not_called();self.assertEqual(self.probe.binary.read_bytes(),b'old executable')
 

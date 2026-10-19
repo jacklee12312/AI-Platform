@@ -69,7 +69,9 @@ def load_workflow(bundle, catalog):
 
 
 def workflow_assets(lock, *, include_images=True):
-    return [lock['probe']['archive'], *lock.get('host_packages', []),
+    # The signed probe snapshot remains historical metadata. Current installers
+    # acquire the probe exclusively from its live publisher API.
+    return [*lock.get('host_packages', []),
             *(row['archive'] for row in lock['images'] if include_images and row.get('archive'))]
 
 

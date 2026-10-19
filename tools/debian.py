@@ -13,6 +13,10 @@ from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
 
 
+def omitted_probe_payload(path):
+    return 'workflow/probe/' in ('/' + str(path).replace('\\', '/'))
+
+
 def add_bytes(archive, name, data, epoch, mode=0o644):
     info = tarfile.TarInfo('./' + name)
     info.size, info.mtime, info.mode = len(data), epoch, mode
@@ -163,6 +167,9 @@ def build(root, revision='1'):
     metadata_release.update(source_commit=commit, debian_revision=revision,
                             resource_source_commit=base['source_commit'],
                             built_at=datetime.fromtimestamp(epoch, timezone.utc).isoformat())
+    sys.path.insert(0, str(bundle / 'installer'))
+    from probe_source import PROBE_URL
+    metadata_release['probe_source'] = {'mode': 'online-latest', 'url': PROBE_URL, 'embedded_archive': False}
     if config.get('npu_runtime_release_id'):
         metadata_release.update(npu_runtime_release_id=config['npu_runtime_release_id'],
                                 npu_runtime_manifest_sha256=release.digest(bundle/'npu-runtime/manifest.json'))
@@ -181,11 +188,13 @@ def build(root, revision='1'):
                     '--bundle', str(bundle)], check=True)
     prefix = f'opt/ai-platform-installer/{version}'
     files = {prefix + '/bundle/' + p.relative_to(bundle).as_posix(): (p, 0o644)
-             for p in bundle.rglob('*') if p.is_file()}
+             for p in bundle.rglob('*') if p.is_file() and not omitted_probe_payload(p.relative_to(bundle).as_posix())}
     for source in delivery.rglob('*'):
         if not source.is_file():
             continue
         relative = source.relative_to(delivery).as_posix()
+        if omitted_probe_payload(relative):
+            continue
         if relative.startswith('support-files/'):
             target = prefix + '/' + relative
         elif source.parent == delivery and (source.suffix in ('.run', '.desktop', '.sh') or source.name.startswith(launcher.name)):
@@ -210,6 +219,7 @@ def build(root, revision='1'):
                   'base_delivery_checksums_sha256': release.digest(delivery / 'SHA256SUMS'),
                   'catalog_sha256': base['catalog_sha256'], 'test_report_sha256': release.digest(root / 'build/validation/tests.json'),
                   'model_weights_in_distribution': False, 'fresh_device_acceptance': 'not_run'}
+    provenance['probe_source'] = metadata_release['probe_source']
     if config.get('npu_runtime_release_id'):
         provenance.update(npu_runtime_release_id=config['npu_runtime_release_id'],
                           npu_runtime_manifest_sha256=release.digest(bundle/'npu-runtime/manifest.json'),
