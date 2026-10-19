@@ -500,19 +500,12 @@ class Wizard(QWidget):
         try:command,environ=browser_request(url)
         except (OSError,ValueError) as exc:
             QMessageBox.warning(self,'无法打开浏览器',str(exc));return
-        process=QProcess(self);env=QProcessEnvironment()
+        process=QProcess();env=QProcessEnvironment()
         for key,value in environ.items():env.insert(key,value)
         process.setProcessEnvironment(env)
-        if not hasattr(self,'browser_requests'):self.browser_requests=[]
-        self.browser_requests.append(process)
-        def complete(code=0,*args):
-            if process not in self.browser_requests:return
-            self.browser_requests.remove(process)
-            if code:QMessageBox.warning(self,'无法打开浏览器','浏览器启动失败。请在浏览器中输入：\n'+url)
-            process.deleteLater()
-        process.finished.connect(complete)
-        process.errorOccurred.connect(lambda error:complete(1) if error==QProcess.FailedToStart else None)
-        process.start(command[0],command[1:])
+        process.setProgram(command[0]);process.setArguments(command[1:])
+        started,pid=process.startDetached()
+        if not started:QMessageBox.warning(self,'无法打开浏览器','浏览器启动失败。请在浏览器中输入：\n'+url)
 
     def show_page(self,index):
         self.page_index=index;self.stack.setCurrentIndex(index)

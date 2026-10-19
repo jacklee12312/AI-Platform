@@ -42,6 +42,26 @@ class WizardTests(unittest.TestCase):
         with mock.patch('wizard.browser_request') as request,mock.patch('wizard.QProcess') as process:
             self.w.open_browser('http://127.0.0.1:17780/');request.assert_not_called();process.assert_not_called()
 
+    def test_browser_is_detached_with_clean_environment_and_explicit_url(self):
+        self.w.preview=False
+        command=['/usr/bin/chromium','http://127.0.0.1:17780/']
+        with mock.patch('wizard.browser_request',return_value=(command,{'DISPLAY':':10'})),mock.patch('wizard.QProcess') as process:
+            process.return_value.startDetached.return_value=(True,1234)
+            self.w.open_browser(command[1])
+            process.return_value.setProgram.assert_called_once_with(command[0])
+            process.return_value.setArguments.assert_called_once_with([command[1]])
+            process.return_value.startDetached.assert_called_once_with()
+            process.return_value.start.assert_not_called()
+            self.assertEqual(process.return_value.setProcessEnvironment.call_args.args[0].value('DISPLAY'),':10')
+
+    def test_detached_browser_start_failure_displays_the_url(self):
+        self.w.preview=False
+        url='http://127.0.0.1:17780/'
+        with mock.patch('wizard.browser_request',return_value=(['missing-browser',url],{})),mock.patch('wizard.QProcess') as process,mock.patch('wizard.QMessageBox.warning') as warning:
+            process.return_value.startDetached.return_value=(False,0)
+            self.w.open_browser(url)
+            self.assertIn(url,warning.call_args.args[2])
+
     def test_existing_probe_hides_registration_and_needs_no_fields(self):
         with mock.patch('wizard.detect_probe',return_value=True),mock.patch('wizard.matching_probe',return_value=True):
             self.w.show_page(3)
