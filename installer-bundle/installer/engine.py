@@ -503,11 +503,12 @@ class Installer:
             if model in self.selected:expected.add('multimodal:'+model)
         if set(names)!=expected:raise RuntimeError('所选模型的真实推理验收项目不完整')
 
-    def run(self):
+    def run(self,preflight_only=False):
         self.root.joinpath('private').mkdir(parents=True,exist_ok=True,mode=0o700)
         lock=(self.root/'private/install.lock').open('a')
         fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
         self.state.pop('error',None)
+        self.state.pop('worker_preflight_passed',None)
         self.state['status']='running';self.state['bundle']=str(self.bundle);self.state['selected_models']=self.selected;self.state['device_count']=self.device_count
         self.state['installer_version']=self.release.get('installer_version','legacy');self.update(force=True)
         try:
@@ -537,6 +538,9 @@ class Installer:
                 self.resource_plan(prepare_storage=True);self.update(force=True)
             elif docker_root.stat().st_dev!=self.home.stat().st_dev and shutil.disk_usage(docker_root).free<self.docker_space_budget():raise RuntimeError('Docker 数据分区空间不足')
             elif shutil.disk_usage(self.root).free<8*1024**3:raise RuntimeError('安装状态分区至少需要 8 GiB 暂存空间')
+            if preflight_only:
+                self.update('后台入口、资源与存储预检通过，等待继续安装',force=True,status='paused',worker_preflight_passed=True)
+                return
             actions={'acquire':self.acquire,'verify':self.verify,'prepare':self.prepare,'conflicts':self.conflicts,'docker':self.docker,'payload':self.payload,'credentials':self.credentials,'images':lambda:self.base.images(self.manifest),'systemd':self.systemd,'start':self.start,'acceptance':self.acceptance}
             actions.update(probe=self.probe,components=self.components,yiqiban=self.yiqiban,
                            **{'yiqiban-check':self.yiqiban_check},integration=self.integration)
@@ -563,7 +567,8 @@ class Installer:
         finally:lock.close()
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('--bundle',required=True);args=parser.parse_args()
+    parser=argparse.ArgumentParser();parser.add_argument('--bundle',required=True)
+    parser.add_argument('--preflight-only',action='store_true');args=parser.parse_args()
     if os.geteuid()!=0:raise SystemExit('安装后台必须由系统授权启动')
     os.umask(0o077)
     for p,mode in [(STATE_ROOT,0o755),(STATE_ROOT/'public',0o755),(STATE_ROOT/'private',0o700)]:
@@ -571,6 +576,6 @@ def main():
         p.mkdir(parents=True,exist_ok=True);p.chmod(mode)
     with (STATE_ROOT/'private/worker.log').open('a') as log:
         os.dup2(log.fileno(),1);os.dup2(log.fileno(),2)
-        Installer(args.bundle).run()
+        Installer(args.bundle).run(preflight_only=args.preflight_only)
 
 if __name__=='__main__':main()

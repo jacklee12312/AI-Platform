@@ -122,5 +122,13 @@
     "platform_install_continued": false,
     "temporary_candidate_helpers_removed": true,
     "desktop_directory": "/home/cix/桌面/AI平台安装包-1.3.0-5"
+  },
+  "background_dispatch_followup": {
+    "passed": false,
+    "recommended_for_distribution": false,
+    "observed_error": "No module named 'container_storage'",
+    "cause": "service_entry.py copied a handwritten backend list that omitted the sealed container_storage.py module",
+    "previous_acceptance_limit": "storage migration was exercised directly from the installed bundle, bypassing private worker staging",
+    "replacement": "1.3.0-6"
   }
 }

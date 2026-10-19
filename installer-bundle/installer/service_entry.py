@@ -1,5 +1,5 @@
 """Minimal explicit-authorization bridge from the desktop to a root-owned systemd job."""
-import argparse,fcntl,json,os,shutil,subprocess,sys
+import argparse,ast,fcntl,json,os,shutil,subprocess,sys,tempfile
 from pathlib import Path
 from common import STATE_ROOT,PUBLIC_STATE,UNIT,read_json,atomic_json,sha256,safe_relative,no_symlink_parents,check_password,detect_device_count
 from artifacts import load_catalog,source_config
@@ -11,8 +11,75 @@ def verify_app(bundle):
         relative=safe_relative(row['path']);p=bundle/relative;no_symlink_parents(p,bundle)
         if p.is_symlink() or not p.is_file() or sha256(p)!=row['sha256']:raise RuntimeError('安装向导文件损坏：'+str(relative))
 
+
+def worker_imports(directory, available):
+    """Include imports inside functions: engine dependencies are mostly lazy."""
+    pending=['engine','verify_selected'];seen=set()
+    while pending:
+        name=pending.pop()
+        if name in seen:continue
+        source=directory/(name+'.py')
+        if not source.is_file():raise RuntimeError('后台入口缺失：'+name)
+        seen.add(name)
+        for node in ast.walk(ast.parse(source.read_text('utf-8'),filename=str(source))):
+            names=[]
+            if isinstance(node,ast.Import):names=[alias.name.split('.')[0] for alias in node.names]
+            elif isinstance(node,ast.ImportFrom) and node.module:names=[node.module.split('.')[0]]
+            for dependency in names:
+                if dependency in available:
+                    if not (directory/(dependency+'.py')).is_file():
+                        raise RuntimeError('后台依赖未列入安装器完整性清单：'+dependency)
+                    pending.append(dependency)
+    return sorted(seen)
+
+
+def stage_worker(bundle,code):
+    """Publish a fresh private copy of every sealed flat installer module.
+
+    A hand-maintained list missed container_storage.py in revision 5. Use the
+    integrity manifest and test imports without the source tree or PYTHONPATH.
+    """
+    no_symlink_parents(code,STATE_ROOT)
+    if code.is_symlink() or (code.exists() and not code.is_dir()):raise RuntimeError('后台代码目录类型错误')
+    manifest=read_json(bundle/'installer-manifest.json')
+    rows={}
+    for row in manifest['files']:
+        relative=safe_relative(row['path'])
+        if (len(relative.parts)==2 and relative.parts[0]=='installer' and relative.suffix=='.py') or relative.as_posix()=='release.json':
+            name=relative.name
+            if name in rows:raise RuntimeError('后台代码清单包含重复文件')
+            rows[name]=row
+    if not {'engine.py','common.py','verify_selected.py','release.json'}.issubset(rows):
+        raise RuntimeError('安装器完整性清单缺少后台入口')
+    available={p.stem for p in (bundle/'installer').glob('*.py')}
+    temporary=Path(tempfile.mkdtemp(prefix='.code-stage-',dir=code.parent));previous=None
+    try:
+        for name,row in rows.items():
+            source=bundle/safe_relative(row['path']);no_symlink_parents(source,bundle)
+            if source.is_symlink():raise RuntimeError('后台代码不能是符号链接')
+            target=temporary/name;shutil.copyfile(source,target);target.chmod(0o600)
+            if sha256(target)!=row['sha256']:raise RuntimeError('后台代码复制校验失败：'+name)
+        imports=worker_imports(temporary,available)
+        script='import importlib,sys;sys.path.insert(0,sys.argv[1]);[importlib.import_module(name) for name in sys.argv[2:]]'
+        checked=subprocess.run(['/usr/bin/python3','-I','-B','-c',script,str(temporary),*imports],
+                               cwd=temporary,capture_output=True,text=True,timeout=45)
+        if checked.returncode:raise RuntimeError('后台模块依赖自检失败，未启动安装任务：'+checked.stderr[-1200:])
+        atomic_json(temporary/'worker-manifest.json',{'schema':1,'source_commit':read_json(temporary/'release.json').get('source_commit'),
+                                                     'files':rows,'checked_imports':imports})
+        if code.exists():
+            previous=Path(tempfile.mkdtemp(prefix='.code-previous-',dir=code.parent));os.replace(code,previous)
+        try:os.replace(temporary,code)
+        except BaseException:
+            if previous is not None:os.replace(previous,code);previous=None
+            raise
+        if previous is not None:shutil.rmtree(previous)
+    finally:
+        if temporary.exists():shutil.rmtree(temporary)
+
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('action',choices=['install','resume','pause']);parser.add_argument('--bundle',required=True);args=parser.parse_args()
+    parser=argparse.ArgumentParser();parser.add_argument('action',choices=['install','resume','pause']);parser.add_argument('--bundle',required=True)
+    parser.add_argument('--preflight-only',action='store_true',help='Validate the real worker entry and storage, then pause before installation stages')
+    args=parser.parse_args()
     if os.geteuid()!=0:raise SystemExit('需要系统管理员授权')
     os.environ['PATH']='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
     os.umask(0o077);bundle=Path(args.bundle).resolve()
@@ -85,16 +152,10 @@ def dispatch(args,bundle):
             if 'selected_models' in update and validate_selected(catalog,update['selected_models'])!=request['selected_models']:
                 raise RuntimeError('继续安装时不能更改已选模型；请仅修改来源。')
     (STATE_ROOT/'private/pause.request').unlink(missing_ok=True)
-    code=STATE_ROOT/'private/code';no_symlink_parents(code,STATE_ROOT)
-    if code.is_symlink():raise RuntimeError('后台代码目录不能是链接')
-    code.mkdir(exist_ok=True)
-    for name in ['common.py','engine.py','artifacts.py','storage.py','npu_runtime.py','npu_payload.py','port_takeover.py','platform_takeover.py','runtime_overlay.py','registry.py','selection.py','verify_selected.py','version.py','workflow.py','probe.py','probe_replace.py','docker_runtime.py','components.py','probe_runner.py']:
-        shutil.copyfile(bundle/'installer'/name,code/name);(code/name).chmod(0o600)
-    for name in ['yiqiban.py','yiqiban_config.py','yiqiban_payload.py','yiqiban_verify.py']:
-        shutil.copyfile(bundle/'installer'/name,code/name);(code/name).chmod(0o600)
-    shutil.copyfile(bundle/'release.json',code/'release.json');(code/'release.json').chmod(0o600)
+    code=STATE_ROOT/'private/code';stage_worker(bundle,code)
     # Credentials are never command-line arguments, environment values or public status fields.
     command=['systemd-run','--unit='+UNIT,'--collect','--property=Type=exec','--property=Restart=no','--property=UMask=0077','--property=TimeoutStopSec=45','--setenv=PYTHONDONTWRITEBYTECODE=1','--setenv=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin','/usr/bin/python3','-u',str(code/'engine.py'),'--bundle',str(bundle)]
+    if getattr(args,'preflight_only',False):command.append('--preflight-only')
     subprocess.run(command,check=True)
     print('后台安装任务已启动；关闭窗口不会中断任务。')
 

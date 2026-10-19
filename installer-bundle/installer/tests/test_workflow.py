@@ -363,6 +363,15 @@ class StageIntegrationTests(unittest.TestCase):
         stack.enter_context(mock.patch('container_storage.layout',return_value={'stores':{},'docker':h,'images':h}))
         helper.simulate_commands(obj,m)
         return obj
+    def test_preflight_uses_storage_preparation_and_pauses_before_all_installation_stages(self):
+        with ExitStack() as stack:
+            obj=self.fixture(stack)
+            obj.workflow=SimpleNamespace(settings=settings(),probe=mock.Mock(),components=mock.Mock())
+            with mock.patch.object(obj,'acquire') as acquire:
+                obj.run(preflight_only=True)
+            self.assertEqual(obj.state['status'],'paused');self.assertTrue(obj.state['worker_preflight_passed'])
+            obj.workflow.probe.assert_not_called();obj.workflow.components.assert_not_called();acquire.assert_not_called()
+            self.assertEqual(obj.state['completed'],[])
     def test_container_storage_failure_prevents_probe_components_and_models(self):
         with ExitStack() as stack:
             import container_storage
