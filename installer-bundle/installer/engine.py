@@ -81,7 +81,7 @@ class Installer:
             from workflow import Workflow
             self.workflow=Workflow(self);self.current='probe'
 
-    def resource_plan(self):
+    def resource_plan(self,prepare_storage=False):
         from artifacts import source_config,plan_sources
         settings=read_json(self.root/'private/request.json')
         config=source_config(self.bundle,settings.get('sources'))
@@ -91,25 +91,38 @@ class Installer:
             raise RuntimeError('缺少 '+str(len(missing))+' 个资源的本地文件或远端地址；请在资源来源页补齐后继续')
         from storage import existing,budgets,require_space,WORK_RESERVE,METADATA_RESERVE
         docker=Path('/var/lib/docker')
-        if shutil.which('docker'):
+        placement=None
+        if self.workflow:
+            from container_storage import ContainerStorage,layout
+            placement=ContainerStorage(self)
+            if prepare_storage:placement.recover()
+            detected=layout(placement.run)
+            docker=detected['docker'];image_root=detected['images']
+        else:image_root=docker
+        if not self.workflow and shutil.which('docker'):
             info=subprocess.run(['docker','info','--format','{{.DockerRootDir}}'],capture_output=True,text=True)
-            if info.returncode==0 and info.stdout.strip():docker=Path(info.stdout.strip())
+            if info.returncode==0 and info.stdout.strip():docker=image_root=Path(info.stdout.strip())
         selected_bytes=sum(r['size'] for r in self.install_catalog['resources'] if r['category']=='models')
         base_bytes=int(self.manifest['installed_payload_bytes'])-int(self.manifest['all_model_file_bytes'])
         entries=[(self.home,base_bytes+selected_bytes,'平台与所选模型'),
-                 (docker,self.docker_space_budget(),'Docker 镜像'),
+                 (image_root,self.docker_space_budget(),'Docker 镜像'),
                  (self.root,METADATA_RESERVE,'安装记录与日志'),
                  (self.storage.work,WORK_RESERVE,'运行时解压与工作空间'),
                  (self.storage.cache,plan['cache_bytes_needed'],'资源缓存')]
+        if image_root!=docker:entries.append((docker,2*1024**3,'Docker 容器与数据卷'))
         if self.release.get('yiqiban_resource_id'):
             from yiqiban_payload import load
             apps=load(self.bundle)
             image_paths={r['archive'] for r in apps['images']}
             app_bytes=sum(r['size'] for r in apps['files'] if r['path'] in image_paths)
-            entries += [(docker,app_bytes*3+2*1024**3,'翼起办应用镜像'),
+            entries += [(image_root,app_bytes*3+2*1024**3,'翼起办应用镜像'),
                         (self.storage.data_root,8*1024**3,'翼起办业务数据')]
         if existing(self.storage.cache).stat().st_dev!=existing(self.resources).stat().st_dev:
             entries.append((self.resources,plan['total_bytes'],'跨分区资源暂存'))
+        if prepare_storage and placement:
+            placement.prepare(entries,detected)
+            # Re-read actual mount devices; never approve using a projected budget.
+            return self.resource_plan()
         rows=budgets(entries);require_space(rows)
         self.state['storage']={'data_root':str(self.storage.data_root),'cache':str(self.storage.cache),
                                'work':str(self.storage.work),'budgets':rows}
@@ -520,9 +533,9 @@ class Installer:
                 p=subprocess.run(['docker','info','--format','{{.DockerRootDir}}'],capture_output=True,text=True)
                 if p.returncode==0 and p.stdout.strip():docker_root=Path(p.stdout.strip())
             while not docker_root.exists():docker_root=docker_root.parent
-            if docker_root.stat().st_dev!=self.home.stat().st_dev and shutil.disk_usage(docker_root).free<self.docker_space_budget():raise RuntimeError('Docker 数据分区空间不足')
             if self.storage:
-                self.resource_plan();self.update(force=True)
+                self.resource_plan(prepare_storage=True);self.update(force=True)
+            elif docker_root.stat().st_dev!=self.home.stat().st_dev and shutil.disk_usage(docker_root).free<self.docker_space_budget():raise RuntimeError('Docker 数据分区空间不足')
             elif shutil.disk_usage(self.root).free<8*1024**3:raise RuntimeError('安装状态分区至少需要 8 GiB 暂存空间')
             actions={'acquire':self.acquire,'verify':self.verify,'prepare':self.prepare,'conflicts':self.conflicts,'docker':self.docker,'payload':self.payload,'credentials':self.credentials,'images':lambda:self.base.images(self.manifest),'systemd':self.systemd,'start':self.start,'acceptance':self.acceptance}
             actions.update(probe=self.probe,components=self.components,yiqiban=self.yiqiban,

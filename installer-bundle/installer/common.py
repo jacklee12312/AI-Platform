@@ -224,7 +224,7 @@ def quick_checks(bundle,selected_models=None,selected_components=None):
     except RuntimeError as exc:
         device_count=None;row('设备拓扑',False,str(exc))
     row('厂家驱动 / SDK',Path('/usr/local/houmo-drv-xh2_v1.4.0').is_dir(),'要求 XH2 v1.4.0；本安装包不安装底层驱动')
-    missing=[c for c in ['python3','tar','gzip','dpkg','dpkg-deb','dpkg-query','systemctl','systemd-run','curl','cp','chown','chmod','usermod','runuser','sha256sum','ip','timeout','flock','tee','pkexec','openssl'] if not shutil.which(c)]
+    missing=[c for c in ['python3','tar','gzip','dpkg','dpkg-deb','dpkg-query','systemctl','systemd-run','systemd-escape','systemd-analyze','findmnt','sync','curl','cp','chown','chmod','usermod','runuser','sha256sum','ip','timeout','flock','tee','pkexec','openssl'] if not shutil.which(c)]
     row('基础命令',not missing,'齐全' if not missing else '缺少：'+', '.join(missing))
     payload=int(m['installed_payload_bytes'])
     if selected_models is not None and modular:
