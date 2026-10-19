@@ -4,8 +4,8 @@ import argparse,json,os,subprocess,sys,time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from urllib import request
-from PySide6.QtCore import Qt,QThread,Signal,QTimer,QProcess,QProcessEnvironment,QUrl
-from PySide6.QtGui import QColor,QFont,QDesktopServices,QFontDatabase
+from PySide6.QtCore import Qt,QThread,Signal,QTimer,QProcess,QProcessEnvironment
+from PySide6.QtGui import QColor,QFont,QFontDatabase
 from PySide6.QtWidgets import (QApplication,QWidget,QFrame,QLabel,QVBoxLayout,QHBoxLayout,QPushButton,
  QStackedWidget,QLineEdit,QCheckBox,QProgressBar,QPlainTextEdit,QTableWidget,QTableWidgetItem,
  QHeaderView,QMessageBox,QFileDialog,QDialog,QRadioButton,QScrollArea,QTabWidget,QGridLayout)
@@ -15,6 +15,7 @@ from download_speed import DownloadSpeedMeter
 from selection import selected_catalog,validate_selected,supported_on
 from workflow import COMPONENTS,COMPONENT_DEPENDENCIES,requested_components,resolved_components
 from probe import detect_probe,matching_probe
+from browser_open import browser_request
 
 STYLE='''
 QWidget {font-family: "Noto Sans CJK SC"; font-size: 14px; color:#1c2c43; background:#f6f8fc;}
@@ -484,15 +485,34 @@ class Wizard(QWidget):
         v=self.page();self.finish_title=label('平台与翼起办模型联通检查通过，业务授权待完成' if self.yiqiban_enabled else '探针、组件库及模型平台已通过安装检查' if self.workflow_enabled else '平台与所选模型已安装并验收通过','cardTitle');v.addWidget(self.finish_title)
         v.addWidget(card('你的 AI 平台已就绪','所选模型资源安装完成。管理中心、API 网关和配套服务已经配置，可通过管理中心切换已安装模型。'))
         v.addWidget(label('管理中心：http://127.0.0.1:17780/\nAPI 网关：http://127.0.0.1:17700/v1\n使用安装时设置的管理员密码登录；局域网访问时改用盒子的 IP。','notice'))
-        open_button=QPushButton('打开 AI 平台管理中心');open_button.setObjectName('primary');open_button.clicked.connect(lambda:None if self.preview else QDesktopServices.openUrl(QUrl('http://127.0.0.1:17780/')));v.addWidget(open_button,alignment=Qt.AlignLeft)
+        open_button=QPushButton('打开 AI 平台管理中心');open_button.setObjectName('primary');open_button.clicked.connect(lambda:self.open_browser('http://127.0.0.1:17780/'));v.addWidget(open_button,alignment=Qt.AlignLeft)
         if self.yiqiban_enabled:
             self.yiqiban_finish=label('翼起办模型联通报告将在安装完成后显示。','notice');v.addWidget(self.yiqiban_finish)
             for key,title in [('portal','打开翼起办门户'),('workflow','打开星辰工作流'),('paw','打开 QwenPaw 工作台')]:
-                button=QPushButton(title);button.clicked.connect(lambda checked=False,key=key:None if self.preview else QDesktopServices.openUrl(QUrl(self.latest.get('yiqiban_urls',{}).get(key,''))));v.addWidget(button,alignment=Qt.AlignLeft)
+                button=QPushButton(title);button.clicked.connect(lambda checked=False,key=key:self.open_browser(self.latest.get('yiqiban_urls',{}).get(key,'')));v.addWidget(button,alignment=Qt.AlignLeft)
         report=QPushButton('导出安装报告');report.clicked.connect(self.export_report);v.addWidget(report,alignment=Qt.AlignLeft)
         if self.workflow_enabled:
             connections=QPushButton('导出组件连接配置（含密码）');connections.clicked.connect(self.export_connections);v.addWidget(connections,alignment=Qt.AlignLeft)
         v.addWidget(label('已配置开机自启。离线重启验证需另行进行，不因本页成功而自动视为通过。','subtitle'));v.addStretch()
+
+    def open_browser(self,url):
+        if self.preview:return
+        try:command,environ=browser_request(url)
+        except (OSError,ValueError) as exc:
+            QMessageBox.warning(self,'无法打开浏览器',str(exc));return
+        process=QProcess(self);env=QProcessEnvironment()
+        for key,value in environ.items():env.insert(key,value)
+        process.setProcessEnvironment(env)
+        if not hasattr(self,'browser_requests'):self.browser_requests=[]
+        self.browser_requests.append(process)
+        def complete(code=0,*args):
+            if process not in self.browser_requests:return
+            self.browser_requests.remove(process)
+            if code:QMessageBox.warning(self,'无法打开浏览器','浏览器启动失败。请在浏览器中输入：\n'+url)
+            process.deleteLater()
+        process.finished.connect(complete)
+        process.errorOccurred.connect(lambda error:complete(1) if error==QProcess.FailedToStart else None)
+        process.start(command[0],command[1:])
 
     def show_page(self,index):
         self.page_index=index;self.stack.setCurrentIndex(index)

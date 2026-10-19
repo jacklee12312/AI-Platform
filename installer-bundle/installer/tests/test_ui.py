@@ -38,6 +38,10 @@ class WizardTests(unittest.TestCase):
     def test_preview_never_dispatches(self):
         with mock.patch('wizard.QProcess') as process:self.w.dispatch('install');process.assert_not_called()
 
+    def test_preview_never_opens_browser(self):
+        with mock.patch('wizard.browser_request') as request,mock.patch('wizard.QProcess') as process:
+            self.w.open_browser('http://127.0.0.1:17780/');request.assert_not_called();process.assert_not_called()
+
     def test_existing_probe_hides_registration_and_needs_no_fields(self):
         with mock.patch('wizard.detect_probe',return_value=True),mock.patch('wizard.matching_probe',return_value=True):
             self.w.show_page(3)

@@ -1,6 +1,7 @@
 """Launch native Qt from bundled wheels, with no pip/network/system-package install."""
 import hashlib,io,json,os,platform,subprocess,sys,tarfile,zipfile
 from pathlib import Path
+from browser_open import ENV_MARKER,capture_desktop_environment
 
 def digest(path):
     h=hashlib.sha256()
@@ -63,7 +64,8 @@ def main():
             if digest(deb)!=item['sha256']:raise RuntimeError('GUI 依赖损坏：'+deb.name)
             unpack_private_libs(deb,cache/'system-libs')
         marker.write_text(json.dumps({'runtime':'6.7.3','source':key}))
-    env=os.environ.copy();env['PYTHONDONTWRITEBYTECODE']='1';env['PYTHONPATH']=str(cache)
+    env=os.environ.copy();env[ENV_MARKER]=capture_desktop_environment(env)
+    env['PYTHONDONTWRITEBYTECODE']='1';env['PYTHONPATH']=str(cache)
     env['QT_PLUGIN_PATH']=str(cache/'PySide6/Qt/plugins');env['QT_QPA_PLATFORM']=env.get('QT_QPA_PLATFORM') or ('xcb' if env.get('DISPLAY') else 'wayland')
     libs=cache/'system-libs'
     env['LD_LIBRARY_PATH']=str(libs)+':'+str(cache/'PySide6/Qt/lib')
