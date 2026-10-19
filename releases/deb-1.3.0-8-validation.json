@@ -1,0 +1,109 @@
+{
+  "schema": 1,
+  "recorded_at": "2026-10-19T23:57:17.731945+00:00",
+  "package_version": "1.3.0-8",
+  "source_commit": "f4d4507287c6af946ca066cfd44990b0a9df604a",
+  "archive_sha256": "17ad2d14bcf70e66b999cd3f86fbd878d79437c86cb6793f2ab3489bffd2351a",
+  "archive_bytes": 3775631904,
+  "automated_tests": 374,
+  "package_inspection": {
+    "passed": true,
+    "source_commit": "f4d4507287c6af946ca066cfd44990b0a9df604a",
+    "package_version": "1.3.0-8",
+    "archive_bytes": 3775631904,
+    "archive_sha256": "17ad2d14bcf70e66b999cd3f86fbd878d79437c86cb6793f2ab3489bffd2351a",
+    "previous_bytes": 8174981526,
+    "saved_bytes": 4399349622,
+    "reduction_percent": 53.81,
+    "yiqiban_payload_embedded": false,
+    "probe_archive_embedded": false,
+    "yiqiban_source": {
+      "mode": "harbor-zip",
+      "embedded_payload": false,
+      "registry": "http://36.111.34.121:15436",
+      "repository": "aistore/ai-platform-yiqiban-harbor-upload-0.6.1-arm64-20261019-full",
+      "manifest_digest": "sha256:a5681e190176ba82cdf729d6ce7b46960f577f04d65d67724bcea1475aa5465a",
+      "blob_digest": "sha256:bb2608aaa06177e6e76317f3fe47b24a71b03cb8dac702ccd384e6fb33072a3c",
+      "blob_size": 4406266631
+    },
+    "all_sealed_files_present": true,
+    "controller_modules_match_source": true,
+    "sealed_backend_modules": 31,
+    "signed_metadata_preserved": true,
+    "device_installation": "not_run"
+  },
+  "anonymous_harbor_full_zip_pull": {
+    "passed": true,
+    "source_commit": "f4d4507287c6af946ca066cfd44990b0a9df604a",
+    "archive": "F:\\duoliuer\\AI-Platform-1.0.0\\build\\yiqiban-harbor-remote\\pull\\AI-Platform-YiQiBan-Harbor-Upload-0.6.1-arm64-20261019-full.zip",
+    "zip_bytes": 4406266631,
+    "zip_sha256": "bb2608aaa06177e6e76317f3fe47b24a71b03cb8dac702ccd384e6fb33072a3c",
+    "remote_manifest_digest": "sha256:a5681e190176ba82cdf729d6ce7b46960f577f04d65d67724bcea1475aa5465a",
+    "anonymous_pull": true,
+    "signed_release_id": "yiqiban-0.6.1-arm64-20261019",
+    "signed_files_verified": 936,
+    "arm64_application_images_verified": 10,
+    "elapsed_seconds": 64.4,
+    "upload_tools_executed": false,
+    "device_deployment": "not_run"
+  },
+  "harbor_http_range": {
+    "pinned_manifest_verified": true,
+    "range_status": 206,
+    "range_header": "bytes 0-1023/4406266631",
+    "range_bytes_received": 1024
+  },
+  "private_worker_staging": {
+    "passed": true,
+    "source_commit": "f4d4507287c6af946ca066cfd44990b0a9df604a",
+    "checked_imports": [
+      "artifacts",
+      "common",
+      "components",
+      "container_storage",
+      "docker_runtime",
+      "engine",
+      "npu_payload",
+      "npu_runtime",
+      "platform_takeover",
+      "port_takeover",
+      "probe",
+      "probe_replace",
+      "probe_runner",
+      "probe_source",
+      "registry",
+      "runtime_overlay",
+      "selection",
+      "storage",
+      "verify_selected",
+      "version",
+      "workflow",
+      "yiqiban",
+      "yiqiban_config",
+      "yiqiban_payload",
+      "yiqiban_source",
+      "yiqiban_verify"
+    ],
+    "module_count": 31,
+    "from_actual_debian_package": true,
+    "without_source_pythonpath": true
+  },
+  "signed_resource_bytes_preserved": true,
+  "known_excluded_remote_models": [
+    {
+      "key": "qwen36-2-model",
+      "repository": "aistore/qwen3.6-35b-a3b-2",
+      "passed": false,
+      "detail": "仓库 aistore/qwen3.6-35b-a3b-2:v1 尚未上传完成或标签不存在（HTTP 404）"
+    },
+    {
+      "key": "qwen36-2-mmproj",
+      "repository": "aistore/qwen3.6-35b-a3b-2",
+      "passed": false,
+      "detail": "仓库 aistore/qwen3.6-35b-a3b-2:v1 尚未上传完成或标签不存在（HTTP 404）"
+    }
+  ],
+  "fresh_device_installation": "not_run",
+  "existing_box_modified": false,
+  "reboot": "not_run"
+}
