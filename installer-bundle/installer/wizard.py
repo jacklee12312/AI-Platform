@@ -506,7 +506,7 @@ class Wizard(QWidget):
         process.setProgram(command[0]);process.setArguments(command[1:])
         process.setStandardInputFile(QProcess.nullDevice())
         process.setStandardOutputFile(QProcess.nullDevice());process.setStandardErrorFile(QProcess.nullDevice())
-        started,pid=process.startDetached()
+        result=process.startDetached();started=result[0] if isinstance(result,tuple) else result
         if not started:QMessageBox.warning(self,'无法打开浏览器','浏览器启动失败。请在浏览器中输入：\n'+url)
 
     def show_page(self,index):

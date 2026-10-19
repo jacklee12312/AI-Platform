@@ -45,14 +45,15 @@ class WizardTests(unittest.TestCase):
     def test_browser_is_detached_with_clean_environment_and_explicit_url(self):
         self.w.preview=False
         command=['/usr/bin/chromium','http://127.0.0.1:17780/']
-        with mock.patch('wizard.browser_request',return_value=(command,{'DISPLAY':':10'})),mock.patch('wizard.QProcess') as process:
-            process.return_value.startDetached.return_value=(True,1234)
-            self.w.open_browser(command[1])
-            process.return_value.setProgram.assert_called_once_with(command[0])
-            process.return_value.setArguments.assert_called_once_with([command[1]])
-            process.return_value.startDetached.assert_called_once_with()
-            process.return_value.start.assert_not_called()
-            self.assertEqual(process.return_value.setProcessEnvironment.call_args.args[0].value('DISPLAY'),':10')
+        for result in [True,(True,1234)]:
+            with mock.patch('wizard.browser_request',return_value=(command,{'DISPLAY':':10'})),mock.patch('wizard.QProcess') as process:
+                process.return_value.startDetached.return_value=result
+                self.w.open_browser(command[1])
+                process.return_value.setProgram.assert_called_once_with(command[0])
+                process.return_value.setArguments.assert_called_once_with([command[1]])
+                process.return_value.startDetached.assert_called_once_with()
+                process.return_value.start.assert_not_called()
+                self.assertEqual(process.return_value.setProcessEnvironment.call_args.args[0].value('DISPLAY'),':10')
 
     def test_detached_browser_start_failure_displays_the_url(self):
         self.w.preview=False
