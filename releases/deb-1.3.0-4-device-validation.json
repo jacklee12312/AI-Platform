@@ -1,0 +1,174 @@
+{
+  "schema": 1,
+  "recorded_at": "2026-10-19T03:44:55.093926+00:00",
+  "package_version": "1.3.0-4",
+  "source_commit": "cf39e26b5e595d3cd77440b7f568cae043286e7b",
+  "archive_sha256": "9c65b6676fde0b93a64622c941723582aa2371bc55c103ab18255648949903f8",
+  "automated_tests": 328,
+  "wired_transfer": {
+    "verified": true,
+    "sha256": "9c65b6676fde0b93a64622c941723582aa2371bc55c103ab18255648949903f8",
+    "bytes": 8178872434,
+    "local": "F:\\duoliuer\\AI-Platform-1.0.0\\delivery\\ai-platform-installer_1.3.0-4_arm64.deb",
+    "remote": "/home/cix/ai-platform-installer_1.3.0-4_arm64.deb",
+    "ssh_connection": "192.168.133.254 7086 192.168.133.47 22",
+    "transport": "SSH wired delta; identical file bodies reused from SHA-verified revision 3",
+    "reused_bytes": 8166394641,
+    "wire_metadata_bytes": 6272690,
+    "elapsed_seconds": 30.7
+  },
+  "browser_acceptance": {
+    "passed": true,
+    "candidate_source": false,
+    "cold_and_warm_browser": [
+      {
+        "browser_initial_state": "cold",
+        "pages": [
+          {
+            "url": "http://127.0.0.1:17780/?installer-browser-check=cold",
+            "final_url": "http://127.0.0.1:17780/?installer-browser-check=cold",
+            "title": "ModelDeck · 模型网关管理台"
+          },
+          {
+            "url": "http://192.168.1.47:8081/?installer-browser-check=cold",
+            "final_url": "http://192.168.1.47:8081/login?redirect=/platform/creatChat?installer-browser-check=cold",
+            "title": "六耳·翼企办"
+          },
+          {
+            "url": "http://192.168.1.47:3000/?installer-browser-check=cold",
+            "final_url": "http://192.168.1.47:3000/?installer-browser-check=cold",
+            "title": "星辰智能体平台"
+          },
+          {
+            "url": "http://192.168.1.47:8088/chat?installer-browser-check=cold",
+            "final_url": "http://192.168.1.47:8088/chat?installer-browser-check=cold",
+            "title": "个人工作台"
+          }
+        ],
+        "wizard_closed": true,
+        "browser_survives_wizard": true,
+        "qt": {
+          "launches": 4,
+          "wizard_closed": true
+        }
+      },
+      {
+        "browser_initial_state": "warm",
+        "pages": [
+          {
+            "url": "http://127.0.0.1:17780/?installer-browser-check=warm",
+            "final_url": "http://127.0.0.1:17780/?installer-browser-check=warm",
+            "title": "ModelDeck · 模型网关管理台"
+          },
+          {
+            "url": "http://192.168.1.47:8081/?installer-browser-check=warm",
+            "final_url": "http://192.168.1.47:8081/login?redirect=/platform/creatChat?installer-browser-check=warm",
+            "title": "六耳·翼企办"
+          },
+          {
+            "url": "http://192.168.1.47:3000/?installer-browser-check=warm",
+            "final_url": "http://192.168.1.47:3000/?installer-browser-check=warm",
+            "title": "星辰智能体平台"
+          },
+          {
+            "url": "http://192.168.1.47:8088/chat?installer-browser-check=warm",
+            "final_url": "http://192.168.1.47:8088/chat?installer-browser-check=warm",
+            "title": "个人工作台"
+          }
+        ],
+        "wizard_closed": true,
+        "browser_survives_wizard": true,
+        "qt": {
+          "launches": 4,
+          "wizard_closed": true
+        }
+      }
+    ],
+    "http": [
+      {
+        "url": "http://127.0.0.1:17780/",
+        "status": 200,
+        "html": true
+      },
+      {
+        "url": "http://192.168.1.47:8081/",
+        "status": 200,
+        "html": true
+      },
+      {
+        "url": "http://192.168.1.47:3000/",
+        "status": 200,
+        "html": true
+      },
+      {
+        "url": "http://192.168.1.47:8088/chat",
+        "status": 200,
+        "html": true
+      }
+    ],
+    "source_sha256": {
+      "browser_open.py": "0f8f45431303c7f7116d3667af1866a207b7a87ffc28d0837878a2cb4811f880",
+      "wizard.py": "6eba91f9a6b8b01f44eb2a7e66799ad0916be099f1b8d40bfcd20aceded05d14"
+    },
+    "package_version": "1.3.0-4",
+    "source_commit": "cf39e26b5e595d3cd77440b7f568cae043286e7b"
+  },
+  "final_device_reset": {
+    "reset_completed": true,
+    "latest_package_version": "1.3.0-4",
+    "latest_package": "/home/cix/桌面/AI平台安装包-1.3.0-4/ai-platform-installer_1.3.0-4_arm64.deb",
+    "latest_package_sha256": "9c65b6676fde0b93a64622c941723582aa2371bc55c103ab18255648949903f8",
+    "installer_application_installed": false,
+    "new_installation_started": false,
+    "platform_containers_removed": 30,
+    "platform_image_ids_removed": 26,
+    "task_state_removed": true,
+    "cache_and_staging_removed": true,
+    "deployed_models_removed": true,
+    "model_library_preserved_files": 65,
+    "model_library_preserved_bytes": 74978925279,
+    "model_library_index_sha256": "2d2c81326b1d1316c7ecc0111703c72fb1b231ffd6479bb299fe305b012b88de",
+    "original_probe_program_restored": true,
+    "probe_registration_and_configuration_preserved": true,
+    "probe_active": true,
+    "original_mysql_container_id_preserved": "aa15655956e141e8f8c11090a33c57e81fb0d43eb0956cae21cc3349166ca79f",
+    "original_mysql_name": "/mysql8",
+    "original_mysql_running": true,
+    "original_docker_versions_restored": {
+      "containerd.io": "2.4.2-2~debian.12~bookworm",
+      "docker-ce-cli": "5:29.7.2-1~debian.12~bookworm",
+      "docker-ce": "5:29.7.2-1~debian.12~bookworm",
+      "docker-buildx-plugin": "0.38.0-1~debian.12~bookworm",
+      "docker-compose-plugin": "5.6.0-1~debian.12~bookworm"
+    },
+    "vendor_npu_unchanged": true,
+    "network_ssh_and_desktop_preserved": true,
+    "private_recovery_backup": "/var/backups/ai-platform-reset-20261019T034155Z",
+    "free_bytes": {
+      "/": 42779082752,
+      "/home": 694824464384
+    },
+    "latest_installer_only_on_desktop": true,
+    "desktop_directory": "/home/cix/桌面/AI平台安装包-1.3.0-4",
+    "installation_readme": "/home/cix/桌面/AI平台安装包-1.3.0-4/安装说明.md",
+    "ssh_active": true,
+    "platform_and_yiqiban_ports_released": true,
+    "previous_task_resume_impossible": true
+  },
+  "fresh_platform_install": "not_run; intentionally left for the user",
+  "reboot": "not_run",
+  "business_activation_and_full_business_api": "not_run",
+  "harbor_proposal": {
+    "implemented": false,
+    "current_application_resource_bytes": 4396856031,
+    "current_application_images": 10,
+    "current_application_image_archive_bytes": 4389224448,
+    "estimated_deb_bytes_after_externalizing_yiqiban_images": 3789647986,
+    "estimate_excludes_future_fetcher_and_packaging_overhead": true,
+    "recommended_distribution": "native Harbor images pinned to ARM64 digests; signed config locally; local import supported",
+    "references": [
+      "https://goharbor.io/docs/main/working-with-projects/working-with-images/repositories/",
+      "https://oras.land/docs/how_to_guides/pushing_and_pulling/"
+    ]
+  }
+}
