@@ -504,6 +504,8 @@ class Wizard(QWidget):
         for key,value in environ.items():env.insert(key,value)
         process.setProcessEnvironment(env)
         process.setProgram(command[0]);process.setArguments(command[1:])
+        process.setStandardInputFile(QProcess.nullDevice())
+        process.setStandardOutputFile(QProcess.nullDevice());process.setStandardErrorFile(QProcess.nullDevice())
         started,pid=process.startDetached()
         if not started:QMessageBox.warning(self,'无法打开浏览器','浏览器启动失败。请在浏览器中输入：\n'+url)
 
