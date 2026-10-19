@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "installer_version": "1.3.0",
+  "resource_release_id": "ai-platform-installer-1.2.0-20261015",
+  "source_commit": "0ad8d02f96ce6b33e935bebe7831f413553f33da",
+  "source_tag": "v1.3.0",
+  "build_time": "2026-10-19T01:37:12+00:00",
+  "validation_status": "candidate",
+  "sources_sha256": "7c4e7efe5475bfcfcc48a88a283f5ff5cf9317564da8847f95cc76c642d67bcb",
+  "catalog_sha256": "dc7ebe18e7012d8f85653d878c63278e0648b007694eb25d3001201407f52b3b",
+  "external_assets_lock_sha256": "d8849f958648f7cdbcdddffafc0875e30f30d2802b12d6d95e48113079d482e8",
+  "test_report_sha256": "a38685e0f7b6ba76815327d6b8f48eee8ab87d41c85f87814cd3ece3966957d8",
+  "release_config_sha256": "ccf7cd9d0d5ca1313729fcd2154cd36cc8c5b2483e7dcbcaacb5e33916f2fae8",
+  "model_weights_in_distribution": false,
+  "yiqiban_resource_id": "yiqiban-0.6.1-arm64-20261019",
+  "yiqiban_manifest_sha256": "b518496d8ee1a9c6c7354527d6c202930da9bb920f0cafb34da534c2f9fcd9e6",
+  "archive": "delivery/AI-Platform-1.3.0-linux-arm64.tar.gz",
+  "archive_bytes": 8094710787,
+  "archive_sha256": "3069c7b871298c782578ee7561eed738c76cc1ad04934f62c2befb3d65972b35",
+  "distribution": "delivery/AI-Platform-1.3.0-linux-arm64",
+  "verified_archive_files": 422,
+  "automated_tests": 316,
+  "blocked_remote_models": [
+    "qwen36-2-model",
+    "qwen36-2-mmproj"
+  ],
+  "fresh_device_acceptance": "not_run"
+}
