@@ -1,0 +1,126 @@
+{
+  "schema": 1,
+  "recorded_at": "2026-10-19T05:04:47.165180+00:00",
+  "package_version": "1.3.0-5",
+  "source_commit": "75d9270a44cd33d506bc5ff80519762f6f6b61d7",
+  "archive_sha256": "056ad6191adbb21c44ea9c807c4fbdb05b11742e289009cdfb57769a475c6763",
+  "automated_tests": 341,
+  "wired_transfer": {
+    "verified": true,
+    "sha256": "056ad6191adbb21c44ea9c807c4fbdb05b11742e289009cdfb57769a475c6763",
+    "bytes": 8178903290,
+    "local": "F:\\duoliuer\\AI-Platform-1.0.0\\delivery\\ai-platform-installer_1.3.0-5_arm64.deb",
+    "remote": "/home/cix/ai-platform-installer_1.3.0-5_arm64.deb",
+    "ssh_connection": "192.168.133.254 10532 192.168.133.47 22",
+    "transport": "SSH wired delta; identical file bodies reused from SHA-verified revision 4",
+    "reused_bytes": 8166394641,
+    "wire_metadata_bytes": 6291514,
+    "elapsed_seconds": 28.0
+  },
+  "device": {
+    "migration": {
+      "package_version": "1.3.0-5",
+      "source_commit": "75d9270a44cd33d506bc5ff80519762f6f6b61d7",
+      "installed_files": {
+        "engine.py": "fa27a06b2d98f3e12b54816f909fd967cf07916915ab4f6b5bab970a355f27f9",
+        "common.py": "99e6a9ae240e83d4f79aa5413d0ac346589fd4583d5e4269a30b05db36fd23a6",
+        "container_storage.py": "3e528dc4770fc486f3e4b187bb25643d5559f2589baf0cc92b96f88627e73c7d"
+      },
+      "original_failure_reproduced": "/var/lib/containerd 所在分区空间不足：需约 52.9 GB，可用 42.8 GB（Docker 镜像、安装记录与日志、Docker 容器与数据卷、翼起办应用镜像）",
+      "automatic_migration_without_manual_intervention": true,
+      "docker_and_containerd_on_bulk_partition": true,
+      "container_image_volume_inventory_preserved": true,
+      "original_mysql_responding": true,
+      "service_start_activates_storage_mounts": true,
+      "repeated_preparation_passed": true,
+      "selected_models": 24,
+      "completed_steps": [],
+      "storage": {
+        "data_root": "/opt/ai-platform-data",
+        "cache": "/opt/ai-platform-data/cache",
+        "work": "/opt/ai-platform-data/work/aa4d0369030baf7886af169d",
+        "budgets": [
+          {
+            "path": "/home/cix",
+            "need_bytes": 184924180178,
+            "free_bytes": 658585997312,
+            "purposes": [
+              "平台与所选模型",
+              "Docker 镜像",
+              "运行时解压与工作空间",
+              "资源缓存",
+              "Docker 容器与数据卷",
+              "翼起办应用镜像",
+              "翼起办业务数据"
+            ]
+          },
+          {
+            "path": "/var/lib/ai-platform-installer",
+            "need_bytes": 1073741824,
+            "free_bytes": 42790391808,
+            "purposes": [
+              "安装记录与日志"
+            ]
+          }
+        ]
+      },
+      "migration_record": "/var/lib/ai-platform-container-storage/migration.json",
+      "original_stores_retained": true,
+      "previous_copy": "/opt/ai-platform-container-storage-pre-r5-package-validation-20261019T050224Z",
+      "platform_install_started": false,
+      "reboot_tested": false,
+      "private_backup": "/var/backups/ai-platform-r5-package-storage-20261019T050224Z"
+    },
+    "package_installation": {
+      "package": "1.3.0-5",
+      "deb_sha256": "056ad6191adbb21c44ea9c807c4fbdb05b11742e289009cdfb57769a475c6763",
+      "installed_package_md5_verified": true,
+      "user_entry": {
+        "verified": true,
+        "bundle": "/opt/ai-platform-installer/1.3.0/bundle",
+        "sources_file": "/home/cix/.config/ai-platform-installer/1.3.0/sources.json",
+        "installation_started": false
+      },
+      "desktop_directory": "/home/cix/桌面/AI平台安装包-1.3.0-5",
+      "platform_installation_started_by_dpkg": false
+    },
+    "library": {
+      "files": 65,
+      "index_sha256": "2d2c81326b1d1316c7ecc0111703c72fb1b231ffd6479bb299fe305b012b88de"
+    },
+    "unit_states": {
+      "docker.service": true,
+      "containerd.service": true,
+      "data-probe.service": true,
+      "ssh.service": true
+    }
+  },
+  "accepted_storage_fix": true,
+  "scope": "installed official package storage preflight, automatic migration, state preservation, and cold service mount dependencies",
+  "fresh_platform_model_inference_and_yiqiban_install": "not_run; user retains control of the installation workflow",
+  "reboot": "not_run",
+  "signed_resources_and_sources_unchanged": true,
+  "harbor_slimming_implemented": false,
+  "known_excluded_remote_models": [
+    {
+      "key": "qwen36-2-model",
+      "repository": "aistore/qwen3.6-35b-a3b-2",
+      "passed": false,
+      "detail": "仓库 aistore/qwen3.6-35b-a3b-2:v1 尚未上传完成或标签不存在（HTTP 404）"
+    },
+    {
+      "key": "qwen36-2-mmproj",
+      "repository": "aistore/qwen3.6-35b-a3b-2",
+      "passed": false,
+      "detail": "仓库 aistore/qwen3.6-35b-a3b-2:v1 尚未上传完成或标签不存在（HTTP 404）"
+    }
+  ],
+  "handoff": {
+    "task_status": "paused",
+    "completed_steps": [],
+    "selected_models": 24,
+    "platform_install_continued": false,
+    "temporary_candidate_helpers_removed": true,
+    "desktop_directory": "/home/cix/桌面/AI平台安装包-1.3.0-5"
+  }
+}
