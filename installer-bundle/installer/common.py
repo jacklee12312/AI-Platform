@@ -12,6 +12,7 @@ UNIT='ai-platform-install.service'
 STEPS=[('verify','校验所选资源'),('prepare','展开配套运行时'),('conflicts','检查文件冲突与可复用模型'),('docker','配置容器基础环境'),('payload','安装所选模型与项目文件'),('credentials','配置账号与独立密钥'),('images','导入配套平台镜像'),('systemd','配置开机自启'),('start','启动平台与所选服务'),('acceptance','依次验收所选模型')]
 STEPS.insert(0,('acquire','准备资源：缓存、本地源与远端下载'))
 STEPS[0:0]=[('probe','第一阶段：安装探针，完成注册和 MQTT 连接'),('components','第二阶段：安装组件库并检查健康状态')]
+STEPS.extend([('yiqiban','第四阶段：部署翼起办，复用共享组件库'),('yiqiban-check','翼起办模型接入与真实推理联通测试')])
 STEPS.append(('integration','联检探针、组件库和模型平台'))
 CORE_DIRS=['houmo-docker-deployment','ai-model-gateway','gateway-admin','cv_deploy','sensevoice-cpu','kokoro-cix','matcha-tts-cpu','modeldeck-models']
 ACCELERATOR_MODELS={'copaw':'copaw-flash-9b','spark-x1':'spark-x1-4b','qwen38':'qwen3.8-27b','qwen36':'qwen3.6-35b-a3b','qwen-vl':'qwen3-vl-8b','glm-ocr':'glm-ocr-0.9b','bge-m3':'bge-m3','reranker':'bge-reranker-v2-m3','cosyvoice':'cosyvoice3-0.5b'}
@@ -179,12 +180,26 @@ def quick_checks(bundle,selected_models=None,selected_components=None):
                 from npu_payload import load,contents
                 runtime,archive=load(bundle);contents(runtime,archive)
                 row('NPU 离线运行库',True,'配套 NOE 3.1.2 已随包提供；缺失自动补齐，兼容性以实际 NPU 推理检查为准')
+            if release.get('yiqiban_resource_id'):
+                from yiqiban_payload import load as load_yiqiban
+                from yiqiban_config import REQUIRED_COMPONENTS,model_plan
+                load_yiqiban(bundle)
+                row('翼起办离线应用',True,'10 个已签名应用镜像；模型验收后部署，复用 MySQL、Redis、ParadeDB')
+                row('翼起办共享组件',selected_components is None or REQUIRED_COMPONENTS.issubset(selected_components),
+                    'MySQL、Redis、ParadeDB 为必需组件；为翼起办创建独立业务库和账号')
+                if selected_models is not None:
+                    plan=model_plan(selected_models)
+                    missing=[title for key,title in [('embedding','Embedding'),('rerank','重排')] if not plan[key]]
+                    row('翼起办模型接入',True,'默认对话模型：'+plan['default_chat']+'；容器发起真实推理并恢复原模式'+
+                        ('；未选择的能力：'+'、'.join(missing) if missing else ''),warning=bool(missing))
             if catalog.get('workflow_sha256'):
                 from workflow import COMPONENTS,load_workflow,resolved_components
                 workflow=load_workflow(bundle,catalog)
                 components=resolved_components({} if selected_components is None else {'selected':selected_components})
                 scope='、'.join(COMPONENTS[name] for name in components) if components else '未选组件，跳过组件库'
-                row('三阶段安装',True,'探针 '+workflow['probe']['version']+' 注册与 MQTT → '+scope+' → 所选模型；Docker / Compose 为必需环境')
+                row('四阶段安装' if release.get('yiqiban_resource_id') else '三阶段安装',True,
+                    '探针 '+workflow['probe']['version']+' 注册与 MQTT → '+scope+' → 所选模型'+
+                    (' → 翼起办与模型联通测试' if release.get('yiqiban_resource_id') else '')+'；Docker / Compose 为必需环境')
             if catalog.get('limits')!={'bge-m3_parallel_sequences':8,'reranker_parallel_sequences':8}:raise RuntimeError('配套后端参数锁定信息错误')
         else:
             row('资源清单',sha256(resources/'manifests/SHA256SUMS')==release['resources_checksums_sha256'],'后续会逐文件校验全部资源；本页不加载模型')

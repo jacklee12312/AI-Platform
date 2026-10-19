@@ -144,6 +144,12 @@ def check(root, online=False):
         if overlay['release_id']!=spec['component_runtime_release_id']:raise RuntimeError('Component runtime resource identity differs')
         report.update(component_runtime_release_id=overlay['release_id'],component_runtime_signed=True,
                       component_runtime_manifest_sha256=digest(bundle/DIRECTORY/'manifest.json'))
+    if spec.get('yiqiban_resource_id'):
+        from yiqiban_payload import load
+        apps=load(bundle)
+        if apps['release_id']!=spec['yiqiban_resource_id']:raise RuntimeError('YiQiBan resource identity differs')
+        report.update(yiqiban_resource_id=apps['release_id'],yiqiban_signed=True,
+                      yiqiban_manifest_sha256=digest(bundle/'yiqiban/manifest.json'),yiqiban_application_images=len(apps['images']))
     if online:
         def probe(item):
             key, source = item
@@ -239,7 +245,7 @@ def build(root, online=False):
         workflow_lock=read(inside(root,spec['source_bundle'])/'catalog/workflow.json')
         image_report='component-sources.json' if workflow_lock.get('image_acquisition','').startswith('on-demand') else 'component-archives.json'
         required_reports=['workflow-artifacts.json',image_report]
-        if version=='1.2.0':required_reports+=['model-supply.json','modeldeck-ui.json']
+        if version in ('1.2.0','1.3.0'):required_reports+=['model-supply.json','modeldeck-ui.json']
         if workflow_lock.get('image_acquisition','').startswith('on-demand'):required_reports.append('platform-images.json')
         for name in required_reports:
             path=root/'build/validation'/name
@@ -293,7 +299,7 @@ def build(root, online=False):
     write(assembled / 'validation/tests.json', tests)
     shutil.copyfile(root / 'build/validation/tests.log', assembled / 'validation/tests.log')
     for report in workflow_reports:shutil.copyfile(report,assembled/'validation'/report.name)
-    if version=='1.2.0':
+    if version in ('1.2.0','1.3.0'):
         for name in read(root/'build/validation/modeldeck-ui.json').get('screenshots',[]):
             shutil.copyfile(root/'build/validation'/name,assembled/'validation'/name)
     for relative in ['workflow-settings.example.json','docs/1.1安装流程.md']:
@@ -306,6 +312,9 @@ def build(root, online=False):
                   'catalog_sha256': release['catalog_sha256'], 'external_assets_lock_sha256': digest(root / 'external-assets.json'),
                   'test_report_sha256': digest(test_path), 'release_config_sha256': digest(root / 'release-config.json'),
                   'model_weights_in_distribution': False}
+    if spec.get('yiqiban_resource_id'):
+        provenance.update(yiqiban_resource_id=spec['yiqiban_resource_id'],
+                          yiqiban_manifest_sha256=digest(bundle/'yiqiban/manifest.json'))
     write(assembled / 'provenance.json', provenance)
     warnings = [row for row in checks['remote_checks'] if not row['passed']]
     lines = [f'# AI 平台安装器 {version} 验证记录', '', f'源码提交：`{commit}`。自动化测试：{tests["tests_run"]} 项通过，无跳过。',
@@ -313,6 +322,9 @@ def build(root, online=False):
              '', '不跨版本接管已有安装任务；1.0.x 任务请继续使用对应版本。',
              '', '本版安装顺序：探针自动识别及 MQTT 检查 → 所选组件库认证与健康检查 → 所选模型安装与真实推理检查。已有兼容探针时隐藏注册表单并复用，没有探针时强制安装；Milvus 自动包含 MinIO 与 etcd。',
              '', 'MinIO 使用 dappros/minio:RELEASE.2025-09-07T16-13-09Z，ARM64 清单及配置摘要固定在签名工作流中。']
+    if spec.get('yiqiban_resource_id'):
+        lines += ['', '模型验收后部署翼起办，复用共享 MySQL、Redis、ParadeDB；自动配置模型网关并从应用容器逐项切换测试，最后恢复原模式。',
+                  '', '翼起办业务 API、首次管理员注册与有效许可证导入尚未验收，不能以容器健康或模型联通检查替代。']
     if warnings:
         lines += ['', '远端检查未通过的项目（候选包保留这些选项，请在使用前补齐或取消勾选）：']
         lines += ['- ' + row['key'] + '：' + row['detail'] for row in warnings]
@@ -372,11 +384,11 @@ def main():
         if candidate and candidate.is_file():
             os.environ['PATH'] = str(candidate.parent) + os.pathsep + os.environ.get('PATH', '')
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('command', choices=['check', 'test', 'build', 'deb', 'verify', 'assets', 'sync-version', 'npu-runtime', 'component-runtime'])
+    parser.add_argument('command', choices=['check', 'test', 'build', 'deb', 'verify', 'assets', 'sync-version', 'npu-runtime', 'component-runtime', 'yiqiban-resource'])
     parser.add_argument('--deb-revision', default='1', help='Debian packaging revision; immutable once published')
     parser.add_argument('--online', action='store_true', help='Read-only remote manifest checks; no model weight download')
     parser.add_argument('--path', type=Path, help='Delivery directory for verify; external asset store for assets')
-    parser.add_argument('--key', type=Path, help='Existing trusted publisher key for a new NPU runtime resource release')
+    parser.add_argument('--key', type=Path, help='Existing trusted publisher key for a new signed resource release')
     args = parser.parse_args()
     if args.command == 'check':
         report = check(ROOT, args.online)
@@ -405,6 +417,10 @@ def main():
     elif args.command == 'npu-runtime':
         if not args.path or not args.key:parser.error('npu-runtime requires --path vendor export directory and --key')
         from npu_runtime_release import prepare
+        prepare(ROOT,args.path,args.key)
+    elif args.command == 'yiqiban-resource':
+        if not args.key or not args.path:parser.error('yiqiban-resource requires --path original ZIP and --key existing trusted key')
+        from yiqiban_release import prepare
         prepare(ROOT,args.path,args.key)
     elif args.command == 'component-runtime':
         if not args.key:parser.error('component-runtime requires the existing trusted signing key')

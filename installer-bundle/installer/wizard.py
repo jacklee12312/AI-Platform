@@ -128,6 +128,7 @@ class Wizard(QWidget):
         self.sources=source_config(self.bundle);self.source_plan=None;self.editing_sources=False
         self.catalog=read_json(self.bundle/'catalog/release-catalog.json',{'models':[],'resources':[]})
         self.workflow_enabled=bool(self.catalog.get('workflow_sha256'))
+        self.yiqiban_enabled=bool(self.release.get('yiqiban_resource_id'))
         self.component_requested=set();self.component_checks={};self.component_rows={}
         self.probe_installed=None;self.probe_detection_error=''
         if self.workflow_enabled:self.refresh_probe_detection()
@@ -160,7 +161,8 @@ class Wizard(QWidget):
     def build_welcome(self):
         v=self.page();stats=QHBoxLayout()
         stages=('2 阶段','组件库 → 模型') if self.probe_installed else ('3 阶段','探针 → 组件库 → 模型')
-        for number,title in [(str(len(self.catalog['models'])),'注册模型及服务'),(str(self.catalog['image_count']+(6 if self.workflow_enabled else 0)),'配套容器镜像'),stages if self.workflow_enabled else ('2 种','本地与远端来源')]:
+        if self.yiqiban_enabled:stages=('3 阶段','组件库 → 模型 → 翼起办') if self.probe_installed else ('4 阶段','探针 → 组件库 → 模型 → 翼起办')
+        for number,title in [(str(len(self.catalog['models'])),'注册模型及服务'),(str(self.catalog['image_count']+(6 if self.workflow_enabled else 0)+(10 if self.yiqiban_enabled else 0)),'配套容器镜像'),stages if self.workflow_enabled else ('2 种','本地与远端来源')]:
             f=QFrame();f.setObjectName('card');l=QVBoxLayout(f);l.setContentsMargins(18,14,18,14);l.addWidget(label(number,'number'));l.addWidget(label(title,'subtitle'));stats.addWidget(f)
         v.addLayout(stats)
         v.addWidget(card('完整推理能力','LLM / 图文理解 / OCR / 语音识别与合成 / 向量与重排 / CV / Guard / 民主测评识别'))
@@ -213,7 +215,8 @@ class Wizard(QWidget):
     def build_component_choices(self):
         self.component_group=QWidget();v=QVBoxLayout(self.component_group)
         self.choice_tabs.addTab(self.component_group,'组件库（按需选择）')
-        v.addWidget(label('勾选需要的组件；未勾选的服务不会安装、启动或参加验收。可以全部不选。选择 Milvus 时自动包含必需的 MinIO 和 etcd。','notice'))
+        v.addWidget(label('勾选需要的组件；翼起办所需组件固定勾选，其余服务按需安装。选择 Milvus 时自动包含 MinIO 和 etcd。' if self.yiqiban_enabled else '勾选需要的组件；未勾选的服务不会安装、启动或参加验收。可以全部不选。选择 Milvus 时自动包含必需的 MinIO 和 etcd。','notice'))
+        if self.yiqiban_enabled:v.addWidget(label('翼起办复用本组件库，MySQL、Redis、ParadeDB 必须安装；其他组件仍可按需选择。','notice'))
         base=QCheckBox('Docker / Compose（模型平台必需）');base.setChecked(True);base.setEnabled(False);v.addWidget(base)
         grid=QGridLayout()
         for index,(name,title) in enumerate(COMPONENTS.items()):
@@ -229,7 +232,9 @@ class Wizard(QWidget):
         self.refresh_component_selection()
 
     def component_selection(self):
-        return [name for name in COMPONENTS if name in self.component_requested]
+        from yiqiban_config import REQUIRED_COMPONENTS
+        chosen=self.component_requested | (REQUIRED_COMPONENTS if self.yiqiban_enabled else set())
+        return [name for name in COMPONENTS if name in chosen]
 
     def set_component_selection(self,selected):
         self.component_requested=set(requested_components({'selected':selected}))
@@ -243,9 +248,11 @@ class Wizard(QWidget):
     def refresh_component_selection(self):
         requested=self.component_selection();selected=resolved_components({'selected':requested})
         required={dep for name in requested for dep in COMPONENT_DEPENDENCIES.get(name,())}
+        from yiqiban_config import REQUIRED_COMPONENTS
+        wing_required=REQUIRED_COMPONENTS if self.yiqiban_enabled else set();required |= wing_required
         for name,check in self.component_checks.items():
             check.blockSignals(True);check.setChecked(name in selected);check.setEnabled(name not in required);check.blockSignals(False)
-            check.setText(COMPONENTS[name]+('（Milvus 必需）' if name in required else ''))
+            check.setText(COMPONENTS[name]+('（翼起办必需）' if name in wing_required else '（Milvus 必需）' if name in required else ''))
         text='所选组件：'+('、'.join(COMPONENTS[name] for name in selected) if selected else '无，将跳过组件库安装')
         automatic=[COMPONENTS[name] for name in selected if name not in requested]
         if automatic:text+='\n自动包含依赖：'+'、'.join(automatic)
@@ -275,7 +282,11 @@ class Wizard(QWidget):
         self.models_table.blockSignals(False);self.sources_changed()
 
     def selected_models(self):
-        return validate_selected(self.catalog,[self.catalog['models'][row] for row in range(self.models_table.rowCount()) if self.models_table.item(row,0).checkState()==Qt.Checked])
+        values=validate_selected(self.catalog,[self.catalog['models'][row] for row in range(self.models_table.rowCount()) if self.models_table.item(row,0).checkState()==Qt.Checked])
+        if self.yiqiban_enabled:
+            from yiqiban_config import model_plan
+            model_plan(values)
+        return values
 
     def model_size_label(self,model):
         if self.device_count is not None and not supported_on(self.catalog,model,self.device_count):return '仅双卡可用'
@@ -353,6 +364,10 @@ class Wizard(QWidget):
     def build_settings(self):
         page=self.page();scroll=QScrollArea();scroll.setWidgetResizable(True);content=QWidget();v=QVBoxLayout(content);scroll.setWidget(content);page.addWidget(scroll)
         self.settings_scope=card('安装范围：探针、所选组件与所选模型' if self.workflow_enabled else '安装范围：平台基础组件 + 已选模型','组件镜像按勾选联网拉取，也可本地导入；Milvus 自动包含 MinIO 与 etcd。所需端口由安装器自动接管：停用旧服务、归档旧容器、备份隔离旧数据后安装；失败恢复对应旧环境。Docker 配套版本不一致时将自动卸载旧软件包并安装包内版本，保留数据，现有容器会短暂停止。' if self.workflow_enabled else '配套平台镜像、运行时、网关与管理界面固定安装；模型权重、模型服务和验收仅包含上一步勾选项。');v.addWidget(self.settings_scope)
+        if self.yiqiban_enabled:
+            v.addWidget(label('翼起办将在模型验收后安装，复用共享组件并自动配置模型网关。安装期逐项切换模型测试，结束后恢复原模式；日常仍按现有方式切换模型。首次管理员注册、许可证导入和业务验收需在部署后完成。','notice'))
+            v.addWidget(label('翼起办访问 IP / 域名（留空自动识别本机默认网络地址）'))
+            self.yiqiban_host=QLineEdit();self.yiqiban_host.setPlaceholderText('例如 192.168.1.47，不含协议和端口');v.addWidget(self.yiqiban_host)
         self.probe_fields={};self.component_fields={}
         if self.workflow_enabled:
             import_button=QPushButton('导入安装配置');import_button.clicked.connect(self.import_workflow_settings);v.addWidget(import_button,alignment=Qt.AlignLeft)
@@ -405,6 +420,16 @@ class Wizard(QWidget):
         if hasattr(self,'consent'):
             self.consent.setText('我确认备份后替换探针程序及服务，保留原注册配置，并安装所选组件及模型。' if replacement else '我确认安装所选组件及模型，并授权接管所需端口、备份隔离旧数据及配置开机服务。' if existing else '我确认安装必需探针、所选组件及模型，并授权接管所需端口、备份隔离旧数据、设备注册和开机服务配置。')
             if previous!=(self.probe_installed,replacement):self.consent.setChecked(False)
+        if self.yiqiban_enabled:
+            if hasattr(self,'settings_scope'):
+                title=self.settings_scope.layout().itemAt(0).widget();title.setText(title.text()+'、翼起办')
+            if hasattr(self,'confirm_overview'):
+                title=self.confirm_overview.layout().itemAt(0).widget();title.setText(title.text()+'及翼起办')
+                details=self.confirm_overview.layout().itemAt(1).widget()
+                details.setText(details.text().replace('④ 平台联检','④ 复用共享组件，部署翼起办并从应用容器逐项测试模型，恢复原运行模式\n⑤ 平台联检；首次管理员注册与许可证导入另行完成'))
+            if hasattr(self,'consent'):
+                probe='替换探针、' if replacement else '' if existing else '必需探针、'
+                self.consent.setText('我确认安装'+probe+'所选组件、模型及翼起办，并授权端口接管、备份和业务库初始化。')
 
     def collect_workflow_settings(self):
         from workflow import validate_settings
@@ -438,7 +463,7 @@ class Wizard(QWidget):
             self.confirm_components=label('','notice');v.addWidget(self.confirm_components);self.refresh_component_selection()
         self.confirm_sources=label('来源与下载量将在检查后显示。','subtitle');v.addWidget(self.confirm_sources)
         v.addWidget(label('所选组件和平台端口会自动接管，旧数据与配置备份隔离后安装。\n清单之外的模型和其他项目保持不动。\n请保持电源和 U 盘连接；关闭此窗口不会终止后台安装。','notice'))
-        self.consent=QCheckBox('我确认安装探针、所选组件及模型，并授权接管所需端口、备份隔离旧数据、设备注册和开机服务配置。' if self.workflow_enabled else '我确认在本机安装所选模型及平台组件，并允许配置开机服务。');self.consent.setChecked(False);self.consent.toggled.connect(self.update_buttons);v.addWidget(self.consent)
+        self.consent=QCheckBox('我确认安装探针、所选组件、模型及翼起办，并授权所需端口接管、备份、业务库初始化和开机服务配置。' if self.yiqiban_enabled else '我确认安装探针、所选组件及模型，并授权接管所需端口、备份隔离旧数据、设备注册和开机服务配置。' if self.workflow_enabled else '我确认在本机安装所选模型及平台组件，并允许配置开机服务。');self.consent.setChecked(False);self.consent.toggled.connect(self.update_buttons);v.addWidget(self.consent)
         v.addWidget(label('点击“开始安装”后，系统会请求管理员授权。\n资源复制和真实推理验收可能持续较长时间；不自动重启或复位加速卡。','subtitle'));v.addStretch()
         if self.workflow_enabled:self.refresh_probe_detection()
 
@@ -456,10 +481,14 @@ class Wizard(QWidget):
         self.edit_sources=QPushButton('修改资源来源');self.edit_sources.clicked.connect(self.edit_source_settings);row.addWidget(self.edit_sources);row.addStretch();v.addLayout(row)
 
     def build_finish(self):
-        v=self.page();self.finish_title=label('探针、组件库及模型平台已通过安装检查' if self.workflow_enabled else '平台与所选模型已安装并验收通过','cardTitle');v.addWidget(self.finish_title)
+        v=self.page();self.finish_title=label('平台与翼起办模型联通检查通过，业务授权待完成' if self.yiqiban_enabled else '探针、组件库及模型平台已通过安装检查' if self.workflow_enabled else '平台与所选模型已安装并验收通过','cardTitle');v.addWidget(self.finish_title)
         v.addWidget(card('你的 AI 平台已就绪','所选模型资源安装完成。管理中心、API 网关和配套服务已经配置，可通过管理中心切换已安装模型。'))
         v.addWidget(label('管理中心：http://127.0.0.1:17780/\nAPI 网关：http://127.0.0.1:17700/v1\n使用安装时设置的管理员密码登录；局域网访问时改用盒子的 IP。','notice'))
         open_button=QPushButton('打开 AI 平台管理中心');open_button.setObjectName('primary');open_button.clicked.connect(lambda:None if self.preview else QDesktopServices.openUrl(QUrl('http://127.0.0.1:17780/')));v.addWidget(open_button,alignment=Qt.AlignLeft)
+        if self.yiqiban_enabled:
+            self.yiqiban_finish=label('翼起办模型联通报告将在安装完成后显示。','notice');v.addWidget(self.yiqiban_finish)
+            for key,title in [('portal','打开翼起办门户'),('workflow','打开星辰工作流'),('paw','打开 QwenPaw 工作台')]:
+                button=QPushButton(title);button.clicked.connect(lambda checked=False,key=key:None if self.preview else QDesktopServices.openUrl(QUrl(self.latest.get('yiqiban_urls',{}).get(key,''))));v.addWidget(button,alignment=Qt.AlignLeft)
         report=QPushButton('导出安装报告');report.clicked.connect(self.export_report);v.addWidget(report,alignment=Qt.AlignLeft)
         if self.workflow_enabled:
             connections=QPushButton('导出组件连接配置（含密码）');connections.clicked.connect(self.export_connections);v.addWidget(connections,alignment=Qt.AlignLeft)
@@ -554,6 +583,12 @@ class Wizard(QWidget):
             try:payload={'sources':self.collect_sources(),'selected_models':self.selected_models(),'device_count':self.device_count}
             except Exception as exc:self.pending=False;self.update_buttons();QMessageBox.warning(self,'来源配置错误',str(exc));return
             if action=='install':payload['admin_password']=self.password.text()
+            if action=='install' and self.yiqiban_enabled:
+                from yiqiban_config import validate_host
+                try:
+                    host=self.yiqiban_host.text().strip()
+                    payload['yiqiban']={'public_host':validate_host(host) if host else ''}
+                except ValueError as exc:self.pending=False;self.update_buttons();QMessageBox.warning(self,'翼起办访问地址',str(exc));return
             if action=='install' and self.workflow_enabled:
                 try:
                     previous=self.probe_installed;payload['workflow']=self.collect_workflow_settings()
@@ -605,6 +640,11 @@ class Wizard(QWidget):
             state=dict(state,status='failed',message='后台任务已停止（例如断电或系统重启）。保留的安装记录可用于继续；不会自动回滚或重置设备。')
         self.latest=state;status=state.get('status');current=state.get('current','verify')
         if status=='installed':
+            if self.yiqiban_enabled:
+                urls=state.get('yiqiban_urls',{});report=state.get('yiqiban_acceptance',{})
+                self.yiqiban_finish.setText('翼起办容器到模型网关联通测试：'+('通过' if report.get('passed') else '未通过')+
+                    '\n'+'\n'.join(k+'：'+v for k,v in urls.items())+
+                    '\n首次注册管理员并导入有效许可证后，再完成业务验收。\n独立工作台账号保存在 ~/AI-Platform-1.3-YiQiBan-connections.json（仅安装用户可读）。')
             if self.page_index!=6:self.show_page(6)
             return
         if status in ['running','paused','failed'] and self.page_index!=5 and not self.editing_sources:self.show_page(5)
@@ -642,6 +682,10 @@ class Wizard(QWidget):
         if self.workflow_enabled:
             workflow=read_json(self.bundle/'catalog/workflow.json')
             contents='安装顺序：探针 → 组件库 → 模型\n\n探针 '+workflow['probe']['version']+'\n组件库：Docker、Nginx、etcd\n'+'\n'.join(x['image']+'\n  '+x['manifest_digest'] for x in workflow['images'])+'\n\n'+contents
+        if self.yiqiban_enabled:
+            app=read_json(self.bundle/'yiqiban/manifest.json')
+            contents=contents.replace('探针 → 组件库 → 模型','探针 → 组件库 → 模型 → 翼起办')
+            contents+='\n\n翼起办应用镜像（复用 MySQL、Redis、ParadeDB）\n\n'+'\n'.join(x['tag']+'\n  '+x['id'] for x in app['images'])
         text.setPlainText(contents);v.addWidget(text);b=QPushButton('关闭');b.clicked.connect(d.accept);v.addWidget(b);d.exec()
 
     def closeEvent(self,event):

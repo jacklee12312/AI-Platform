@@ -171,6 +171,10 @@ def build(root, revision='1'):
         metadata_release.update(component_runtime_release_id=config['component_runtime_release_id'],
                                 component_runtime_directory=config['component_runtime_directory'],
                                 component_runtime_manifest_sha256=release.digest(bundle/config['component_runtime_directory']/'manifest.json'))
+    if config.get('yiqiban_resource_id'):
+        if not preflight.get('yiqiban_signed') or preflight.get('yiqiban_resource_id')!=config['yiqiban_resource_id']:
+            raise RuntimeError('YiQiBan resource signature was not verified')
+        metadata_release.update(yiqiban_resource_id=config['yiqiban_resource_id'])
     metadata_release['validation']['automated_tests'] = str(tests['tests_run']) + ' passed'
     release.write(bundle / 'release.json', metadata_release)
     subprocess.run([sys.executable, '-B', str(bundle / 'tools/seal_installer.py'),
@@ -214,6 +218,9 @@ def build(root, revision='1'):
     if config.get('component_runtime_release_id'):
         provenance.update(component_runtime_release_id=config['component_runtime_release_id'],
                           component_runtime_manifest_sha256=release.digest(bundle/config['component_runtime_directory']/'manifest.json'))
+    if config.get('yiqiban_resource_id'):
+        provenance.update(yiqiban_resource_id=config['yiqiban_resource_id'],
+                          yiqiban_manifest_sha256=release.digest(bundle/'yiqiban/manifest.json'))
     files[prefix + '/debian-provenance.json'] = ((json.dumps(provenance, ensure_ascii=False, indent=2) + '\n').encode(), 0o644)
     files['usr/share/doc/ai-platform-installer/packaging-tests.json'] = (root / 'build/validation/tests.json', 0o644)
     md5sums, manifest, installed_size = [], [], 0

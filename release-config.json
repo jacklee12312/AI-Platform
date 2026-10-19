@@ -1,13 +1,14 @@
 {
   "schema": 1,
-  "installer_version": "1.2.0",
+  "installer_version": "1.3.0",
   "resource_release_id": "ai-platform-installer-1.2.0-20261015",
-  "release_date": "2026-10-15",
+  "release_date": "2026-10-19",
   "source_bundle": "installer-bundle",
   "resources_root": "build/resources-1.2.0",
   "target": "linux-arm64",
   "validation_status": "candidate",
   "npu_runtime_release_id": "cix-noe-runtime-3.1.2-arm64-20261016",
   "component_runtime_release_id": "modeldeck-component-runtime-1.2.0-r9-20261016",
-  "component_runtime_directory": "component-runtime-r9"
+  "component_runtime_directory": "component-runtime-r9",
+  "yiqiban_resource_id": "yiqiban-0.6.1-arm64-20261019"
 }

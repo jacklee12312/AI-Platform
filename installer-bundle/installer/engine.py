@@ -101,6 +101,13 @@ class Installer:
                  (self.root,METADATA_RESERVE,'安装记录与日志'),
                  (self.storage.work,WORK_RESERVE,'运行时解压与工作空间'),
                  (self.storage.cache,plan['cache_bytes_needed'],'资源缓存')]
+        if self.release.get('yiqiban_resource_id'):
+            from yiqiban_payload import load
+            apps=load(self.bundle)
+            image_paths={r['archive'] for r in apps['images']}
+            app_bytes=sum(r['size'] for r in apps['files'] if r['path'] in image_paths)
+            entries += [(docker,app_bytes*3+2*1024**3,'翼起办应用镜像'),
+                        (self.storage.data_root,8*1024**3,'翼起办业务数据')]
         if existing(self.storage.cache).stat().st_dev!=existing(self.resources).stat().st_dev:
             entries.append((self.resources,plan['total_bytes'],'跨分区资源暂存'))
         rows=budgets(entries);require_space(rows)
@@ -148,6 +155,16 @@ class Installer:
 
     def integration(self):
         if self.workflow:self.workflow.finish()
+
+    def yiqiban(self):
+        if self.release.get('yiqiban_resource_id'):
+            from yiqiban import YiQiBan
+            YiQiBan(self).deploy()
+
+    def yiqiban_check(self):
+        if self.release.get('yiqiban_resource_id'):
+            from yiqiban import YiQiBan
+            YiQiBan(self).check()
 
     def update(self,message=None,fraction=None,force=False,**fields):
         self.state.update(fields);self.state['current']=self.current;self.state['updated_at']=time.time()
@@ -508,7 +525,8 @@ class Installer:
                 self.resource_plan();self.update(force=True)
             elif shutil.disk_usage(self.root).free<8*1024**3:raise RuntimeError('安装状态分区至少需要 8 GiB 暂存空间')
             actions={'acquire':self.acquire,'verify':self.verify,'prepare':self.prepare,'conflicts':self.conflicts,'docker':self.docker,'payload':self.payload,'credentials':self.credentials,'images':lambda:self.base.images(self.manifest),'systemd':self.systemd,'start':self.start,'acceptance':self.acceptance}
-            actions.update(probe=self.probe,components=self.components,integration=self.integration)
+            actions.update(probe=self.probe,components=self.components,yiqiban=self.yiqiban,
+                           **{'yiqiban-check':self.yiqiban_check},integration=self.integration)
             for name,title in STEPS:
                 if name=='probe' and self.workflow and getattr(self.workflow,'skip_existing_probe',lambda:False)():
                     if name not in self.state['completed']:self.state['completed'].append(name)
@@ -524,7 +542,7 @@ class Installer:
                 self.event(title);actions[name]()
                 if name not in self.state['completed']:self.state['completed'].append(name)
                 self.update(fraction=1,force=True)
-            self.update('整套平台安装完成，全部验收通过',1,force=True,status='installed',finished_at=time.time())
+            self.update('平台安装与翼起办模型联通检查完成；业务授权待完成' if self.release.get('yiqiban_resource_id') else '整套平台安装完成，全部验收通过',1,force=True,status='installed',finished_at=time.time())
         except Paused as exc:self.update(str(exc),force=True,status='paused')
         except Exception as exc:
             self.update(str(exc)[:1500],force=True,status='failed',error=str(exc)[:1500])

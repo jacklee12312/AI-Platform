@@ -14,7 +14,13 @@ BUNDLE=Path(__file__).resolve().parents[2]
 
 class WizardTests(unittest.TestCase):
     def setUp(self):
-        self.w=wizard.Wizard(BUNDLE,preview=True);self.w.timer.stop()
+        original_read=wizard.read_json
+        def legacy_read(path,*args):
+            value=original_read(path,*args)
+            if Path(path)==BUNDLE/'release.json':value=dict(value);value.pop('yiqiban_resource_id',None)
+            return value
+        with mock.patch.object(wizard,'read_json',side_effect=legacy_read):self.w=wizard.Wizard(BUNDLE,preview=True)
+        self.w.timer.stop()
         if self.w.workflow_enabled:
             import test_workflow
             config=test_workflow.settings()
@@ -120,8 +126,9 @@ class WizardTests(unittest.TestCase):
                 self.w.import_workflow_settings()
         self.assertEqual(self.w.component_selection(),['mysql'])
         self.w.preview=False
-        with mock.patch('wizard.QProcess') as process:
+        with mock.patch('wizard.QProcess') as process,mock.patch('wizard.QMessageBox.warning') as warning:
             self.w.dispatch('install');request=process.return_value;request.started.connect.call_args.args[0]()
+            warning.assert_not_called()
             payload=json.loads(request.write.call_args.args[0])
         self.assertEqual(payload['workflow']['components'],value['components'])
     def test_resume_locks_original_component_selection(self):
@@ -257,6 +264,50 @@ class WizardTests(unittest.TestCase):
         self.w.latest={'selected_models':['copaw-flash-9b']};self.w.edit_source_settings()
         self.assertFalse(self.w.models_table.isEnabled())
         self.assertEqual(self.w.selected_models(),['copaw-flash-9b'])
+
+
+class YiQiBanWizardTests(unittest.TestCase):
+    def setUp(self):
+        self.w=wizard.Wizard(BUNDLE,preview=True);self.w.timer.stop()
+    def tearDown(self):
+        self.w.preview=True;self.w.pending=False;self.w.close();self.w.deleteLater();APP.processEvents()
+
+    def test_required_shared_components_are_locked_but_optional_components_still_work(self):
+        required={'mysql','redis','paradedb'}
+        self.assertTrue(self.w.yiqiban_enabled)
+        self.assertEqual(set(self.w.component_selection()),required)
+        for name in required:
+            self.assertTrue(self.w.component_checks[name].isChecked())
+            self.assertFalse(self.w.component_checks[name].isEnabled())
+        self.w.set_component_selection(['milvus'])
+        self.assertEqual(set(self.w.component_selection()),required|{'milvus'})
+        for name in ['minio','etcd']:
+            self.assertTrue(self.w.component_checks[name].isChecked())
+        self.w.set_component_selection([])
+        self.assertEqual(set(self.w.component_selection()),required)
+        self.assertFalse(self.w.component_checks['minio'].isChecked())
+
+    def test_probe_refresh_preserves_yiqiban_scope_and_consent_without_duplication(self):
+        for installed in (True,False):
+            with mock.patch('wizard.detect_probe',return_value=installed),mock.patch('wizard.matching_probe',return_value=True):
+                for _ in range(2):self.w.refresh_probe_detection()
+                self.assertEqual(self.w.consent.text().count('翼起办'),1)
+                self.assertIn('翼起办',self.w.settings_scope.layout().itemAt(0).widget().text())
+                self.assertIn('恢复原运行模式',self.w.confirm_overview.layout().itemAt(1).widget().text())
+        self.assertIn('业务授权待完成',self.w.finish_title.text())
+
+    def test_install_payload_contains_public_host_and_required_components(self):
+        import test_workflow
+        config=test_workflow.settings()
+        for key,field in self.w.probe_fields.items():field.setText(config['probe'][key])
+        for key,field in self.w.component_fields.items():field.setText(config['components'][key])
+        self.w.yiqiban_host.setText('192.168.1.47');self.w.preview=False
+        with mock.patch('wizard.QProcess') as process,mock.patch('wizard.QMessageBox.warning') as warning:
+            self.w.dispatch('install');warning.assert_not_called()
+            request=process.return_value;request.started.connect.call_args.args[0]()
+            payload=json.loads(request.write.call_args.args[0])
+        self.assertEqual(payload['yiqiban'],{'public_host':'192.168.1.47'})
+        self.assertEqual(set(payload['workflow']['components']['selected']),{'mysql','redis','paradedb'})
 
 
 if __name__=='__main__':unittest.main(verbosity=2)

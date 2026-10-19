@@ -65,9 +65,9 @@ class NormalWorkerTests(unittest.TestCase):
             return run
         for name,_ in common.STEPS:
             if name=='images':obj.base.images=mock.Mock(side_effect=lambda m:action('images')())
-            else:setattr(obj,name,action(name))
+            else:setattr(obj,name.replace('-','_'),action(name))
         return calls
-    def test_first_install_uses_all_ten_stages(self):
+    def test_first_install_uses_all_stages_in_order(self):
         with ExitStack() as stack:
             b,s,h=self.environment(stack);o=engine.Installer(b,s,h);calls=self.configure(o);o.run()
             expected=[n for n,_ in common.STEPS]

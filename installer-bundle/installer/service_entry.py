@@ -60,6 +60,15 @@ def dispatch(args,bundle):
             if not isinstance(settings,dict):raise ValueError('缺少安装配置')
             settings=dict(settings,probe=dict(settings.get('probe') or {},mode='auto'))
             saved_request['workflow']=validate_settings(settings,probe_installed=detect_probe())
+        if release.get('yiqiban_resource_id'):
+            from yiqiban_config import REQUIRED_COMPONENTS,model_plan,validate_host
+            model_plan(selected)
+            if not REQUIRED_COMPONENTS.issubset(saved_request.get('workflow',{}).get('components',{}).get('selected',[])):
+                raise ValueError('翼起办需要 MySQL、Redis、ParadeDB')
+            yiqiban=request.get('yiqiban',{})
+            if not isinstance(yiqiban,dict):raise ValueError('翼起办配置格式错误')
+            host=yiqiban.get('public_host','')
+            saved_request['yiqiban']={'public_host':validate_host(host) if host else ''}
         atomic_json(request_path,saved_request)
     elif not saved or not request_path.exists():raise RuntimeError('没有可继续的完整任务记录')
     else:
@@ -80,6 +89,8 @@ def dispatch(args,bundle):
     if code.is_symlink():raise RuntimeError('后台代码目录不能是链接')
     code.mkdir(exist_ok=True)
     for name in ['common.py','engine.py','artifacts.py','storage.py','npu_runtime.py','npu_payload.py','port_takeover.py','platform_takeover.py','runtime_overlay.py','registry.py','selection.py','verify_selected.py','version.py','workflow.py','probe.py','probe_replace.py','docker_runtime.py','components.py','probe_runner.py']:
+        shutil.copyfile(bundle/'installer'/name,code/name);(code/name).chmod(0o600)
+    for name in ['yiqiban.py','yiqiban_config.py','yiqiban_payload.py','yiqiban_verify.py']:
         shutil.copyfile(bundle/'installer'/name,code/name);(code/name).chmod(0o600)
     shutil.copyfile(bundle/'release.json',code/'release.json');(code/'release.json').chmod(0o600)
     # Credentials are never command-line arguments, environment values or public status fields.

@@ -3,6 +3,7 @@
 /delivery/
 /transfer-state.json
 /delivery-result.json
+/installer-bundle/yiqiban/files/
 __pycache__/
 *.py[cod]
 .venv/

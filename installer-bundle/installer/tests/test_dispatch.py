@@ -12,7 +12,7 @@ class DispatchTests(unittest.TestCase):
         self.tmp=tempfile.TemporaryDirectory();self.root=Path(self.tmp.name)/'state';self.previous=os.umask(0o022)
         self.sources=common.read_json(BUNDLE/'sources.json');self.release=common.read_json(BUNDLE/'release.json');self.calls=[]
     def tearDown(self):os.umask(self.previous);self.tmp.cleanup()
-    def dispatch(self,action,data,old_active=False,workflow_enabled=False):
+    def dispatch(self,action,data,old_active=False,workflow_enabled=False,yiqiban_enabled=False):
         def run(args,**kwargs):
             self.calls.append(args)
             active=old_active and args==['systemctl','is-active','ai-platform-offline-install.service']
@@ -20,7 +20,29 @@ class DispatchTests(unittest.TestCase):
         stdin=SimpleNamespace(buffer=io.BytesIO(json.dumps(data).encode()))
         catalog={'models':['copaw-flash-9b']}
         if workflow_enabled:catalog['workflow_sha256']='fixture'
-        with mock.patch.object(service_entry,'STATE_ROOT',self.root),mock.patch('service_entry.os.geteuid',return_value=0),mock.patch.object(service_entry,'detect_device_count',return_value=2),mock.patch.object(service_entry,'verify_app'),mock.patch.object(service_entry,'load_catalog',return_value=catalog),mock.patch('service_entry.subprocess.run',side_effect=run),mock.patch.object(sys,'argv',['service_entry','--bundle',str(BUNDLE),action]),mock.patch.object(sys,'stdin',stdin):service_entry.main()
+        original_read=service_entry.read_json
+        def read_metadata(path,*args):
+            value=original_read(path,*args)
+            if Path(path)==BUNDLE/'release.json' and not yiqiban_enabled:value=dict(value);value.pop('yiqiban_resource_id',None)
+            return value
+        with mock.patch.object(service_entry,'read_json',side_effect=read_metadata),mock.patch.object(service_entry,'STATE_ROOT',self.root),mock.patch('service_entry.os.geteuid',return_value=0),mock.patch.object(service_entry,'detect_device_count',return_value=2),mock.patch.object(service_entry,'verify_app'),mock.patch.object(service_entry,'load_catalog',return_value=catalog),mock.patch('service_entry.subprocess.run',side_effect=run),mock.patch.object(sys,'argv',['service_entry','--bundle',str(BUNDLE),action]),mock.patch.object(sys,'stdin',stdin):service_entry.main()
+
+    def test_yiqiban_cannot_be_started_without_its_shared_components(self):
+        value={'admin_password':'fixture-password-123','sources':self.sources,'selected_models':['copaw-flash-9b'],'device_count':2,
+               'workflow':{'probe':{},'components':{'selected':[]}}}
+        with mock.patch('probe.detect_probe',return_value=True),self.assertRaisesRegex(ValueError,'MySQL'):
+            self.dispatch('install',value,workflow_enabled=True,yiqiban_enabled=True)
+        self.assertFalse((self.root/'private/request.json').exists())
+
+    def test_yiqiban_root_bridge_preserves_public_host_and_copies_acceptance_worker(self):
+        value={'admin_password':'fixture-password-123','sources':self.sources,'selected_models':['copaw-flash-9b'],'device_count':2,
+               'yiqiban':{'public_host':'192.168.1.47'},
+               'workflow':{'probe':{},'components':{'selected':['mysql','redis','paradedb'],
+                 'mysql_password':'fixture-password-123','redis_password':'fixture-password-123','paradedb_password':'fixture-password-123'}}}
+        with mock.patch('probe.detect_probe',return_value=True):self.dispatch('install',value,workflow_enabled=True,yiqiban_enabled=True)
+        saved=common.read_json(self.root/'private/request.json')
+        self.assertEqual(saved['yiqiban']['public_host'],'192.168.1.47')
+        self.assertTrue((self.root/'private/code/yiqiban_verify.py').is_file())
     def test_root_independently_detects_existing_probe_without_copying_client_registration(self):
         value={'admin_password':'fixture-password-123','sources':self.sources,'selected_models':['copaw-flash-9b'],'device_count':2,
                'workflow':{'probe':{'bindActivateToken':'unused-client-secret'},'components':{'selected':[]}}}
