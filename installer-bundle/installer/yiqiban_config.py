@@ -49,8 +49,9 @@ def model_files(plan):
                              'model_type': {'chat': 'llm', 'embedding': 'text-embedding', 'rerank': 'rerank'}[kind],
                              'credentials': {'api_key': '${PLATFORM_MODEL_API_KEY}', 'endpoint_url': '${PLATFORM_MODEL_BASE_URL}',
                                              'ModelName': name, 'mode': 'chat', 'context_size': '32768'}})
-    paw = {'default_active': {'provider_id': 'ai-platform', 'model': plan['default_chat']}, 'providers': [
-        {'id': 'ai-platform', 'base_url': '${PLATFORM_MODEL_BASE_URL}', 'api_key': '${PLATFORM_MODEL_API_KEY}',
+    # The vendor overlay updates code builtins only; unknown IDs are skipped.
+    paw = {'default_active': {'provider_id': 'opencode', 'model': plan['default_chat']}, 'providers': [
+        {'id': 'opencode', 'base_url': '${PLATFORM_MODEL_BASE_URL}', 'api_key': '${PLATFORM_MODEL_API_KEY}',
          'extra_models': [{'id': name, 'name': name, 'supports_image': name.startswith(('qwen3.8', 'qwen3-vl', 'qwen3.6'))}
                           for name in plan['chat']]}]}
     # JSON is valid YAML and avoids a new privileged YAML writer dependency.

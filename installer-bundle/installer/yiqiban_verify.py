@@ -8,6 +8,30 @@ from yiqiban_config import GATEWAY_URL, MODES, read_env
 SERVICES = ('weknora-backend', 'agent-runner', 'qwenpaw')
 
 
+def verify_paw_configuration(app):
+    ids=app.docker_compose('ps','-q','qwenpaw').stdout.split()
+    if len(ids)!=1:raise RuntimeError('QwenPaw 容器未就绪')
+    # Use the shipped loader in a temporary account scope: a healthy process and
+    # a successful curl do not prove that its model overlay was actually applied.
+    code="""import json,os,sys,tempfile
+from pathlib import Path
+from qwenpaw.providers.provider_manager import ProviderManager
+expected=json.load(sys.stdin)
+with tempfile.TemporaryDirectory(prefix='platform-model-check-') as root:
+ manager=ProviderManager(root_path=Path(root))
+ provider=manager.get_provider('opencode')
+ assert provider is not None
+ assert provider.base_url.rstrip('/')==os.environ['PLATFORM_MODEL_BASE_URL'].rstrip('/')
+ assert provider.api_key==os.environ['PLATFORM_MODEL_API_KEY']
+ assert manager.active_model is not None and manager.active_model.provider_id=='opencode'
+ assert manager.active_model.model==expected['default_chat']
+ assert set(expected['chat']).issubset({row.id for row in [*provider.models,*provider.extra_models]})
+ print('configured')
+"""
+    result=app.run(['docker','exec','-i',ids[0],'python','-c',code],input=json.dumps(app.plan),timeout=90)
+    if result.stdout.strip().splitlines()[-1:]!=['configured']:raise RuntimeError('QwenPaw 未实际加载本地模型接入配置')
+
+
 def response_valid(kind, body):
     if not isinstance(body, dict):return False
     if kind == 'chat':
@@ -61,6 +85,7 @@ def verify(app):
         report['checks'].append({'name': name, 'passed': True})
         owner.event('翼起办联通检查通过：' + name)
     try:
+        owner.pause_point();verify_paw_configuration(app);record('paw-application-model-configuration')
         for service in SERVICES:
             owner.pause_point()
             status, data = container_request(app, service, '/models', key)

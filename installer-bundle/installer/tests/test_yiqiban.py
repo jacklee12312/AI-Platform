@@ -56,6 +56,11 @@ class ConfigurationTests(unittest.TestCase):
         embedding = next(r for r in files['pro/builtin_models.yaml']['builtin_models'] if r['type'] == 'Embedding')
         self.assertEqual(embedding['parameters']['embedding_parameters']['dimension'], 1024)
 
+    def test_paw_overlay_targets_a_vendor_builtin_instead_of_an_ignored_custom_id(self):
+        paw=model_files(model_plan(['copaw-flash-9b']))['paw/builtin_models.yaml']
+        self.assertEqual(paw['default_active']['provider_id'],'opencode')
+        self.assertEqual(paw['providers'][0]['id'],'opencode')
+
     def test_shared_credentials_do_not_overwrite_private_database_names_and_whitelist(self):
         credentials = dict(postgres_user='yiqiban_pro_example', postgres_db='yiqiban_pro_example', postgres_password='hex-secret', redis_pro_db=15)
         env = connection_environment({'SSRF_WHITELIST_EXTRA': 'internal.example'}, credentials, 'gateway-key', 'redis-secret', '172.17.0.1')
@@ -180,10 +185,11 @@ class InferenceAcceptanceTests(unittest.TestCase):
         events = [];calls = []
         owner = SimpleNamespace(home=home, pause_point=lambda: None, update=lambda *a, **k: None, event=events.append)
         app = SimpleNamespace(owner=owner, plan=model_plan(['copaw-flash-9b']), state={}, save=lambda: None, base=root)
+        app.docker_compose=lambda *args:SimpleNamespace(stdout='fixture-paw')
         def command(args, **kwargs):
             calls.append([str(x) for x in args])
             if str(args[0]).endswith('modelctl'):mode.write_text(args[-1])
-            return SimpleNamespace(stdout='', returncode=0)
+            return SimpleNamespace(stdout='configured\n' if args[0]=='docker' else '', returncode=0)
         app.run = command
         return app, calls
 
@@ -205,7 +211,7 @@ class InferenceAcceptanceTests(unittest.TestCase):
                 if path == '/models':return 200, {'data': [{'id': 'copaw-flash-9b'}]}
                 return 200, {'choices': [{'message': {'content': 'OK'}}]}
             with patch('yiqiban_verify.container_request', side_effect=request):report = verify(app)
-            self.assertTrue(report['passed']);self.assertEqual(len(report['checks']), 7)
+            self.assertTrue(report['passed']);self.assertEqual(len(report['checks']), 8)
             self.assertEqual(report['not_installed'], ['embedding', 'rerank'])
             self.assertEqual(report['application_business_api_acceptance'], 'not_run')
             self.assertIn('valid-license', report['business_activation'])
@@ -253,6 +259,15 @@ class InferenceAcceptanceTests(unittest.TestCase):
             report=json.loads((Path(temp)/'acceptance.json').read_text())
             self.assertFalse(report['passed']);self.assertTrue(report['mode_restore_failed'])
             self.assertEqual(app.state['verification_original_mode'],'qwen38')
+
+    def test_unloaded_paw_model_configuration_cannot_pass_via_gateway_curl(self):
+        with tempfile.TemporaryDirectory() as temp:
+            app,_=self.fixture(Path(temp))
+            with patch('yiqiban_verify.verify_paw_configuration',side_effect=RuntimeError('overlay ignored')),patch('yiqiban_verify.container_request') as request:
+                with self.assertRaisesRegex(RuntimeError,'overlay ignored'):verify(app)
+                request.assert_not_called()
+            report=json.loads((Path(temp)/'acceptance.json').read_text())
+            self.assertFalse(report['passed']);self.assertEqual(report['restored_mode'],'copaw')
 
 
 if __name__ == '__main__':unittest.main()
