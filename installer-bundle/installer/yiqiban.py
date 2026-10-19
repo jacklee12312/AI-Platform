@@ -81,7 +81,7 @@ class YiQiBan:
             if (self.state_path.is_symlink() or not self.state_path.is_file()
                     or self.state_path.stat().st_uid != os.geteuid() or self.state_path.stat().st_mode & 0o077):
                 raise RuntimeError('翼起办状态文件必须由管理员拥有且仅管理员可读写')
-        self.state = read_json(self.state_path)
+        self.state = read_json(self.state_path, {})
         fingerprint = hashlib.sha256(json.dumps({k: self.flow.settings['components'][k] for k in
                          ['mysql_password', 'redis_password', 'paradedb_password']}, sort_keys=True).encode()).hexdigest()
         if self.state:

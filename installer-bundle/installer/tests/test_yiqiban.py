@@ -101,6 +101,27 @@ class ConfigurationTests(unittest.TestCase):
 
 
 class DatabaseCommandTests(unittest.TestCase):
+    def test_first_install_creates_private_state_and_resume_preserves_database_identity(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp);(root/'private').mkdir()
+            (root/'private/request.json').write_text(json.dumps({'yiqiban':{'public_host':'192.168.133.47'}}))
+            app=YiQiBan.__new__(YiQiBan);app.base=root/'yiqiban';app.state_path=app.base/'private.json'
+            app.owner=SimpleNamespace(root=root);app.manifest={'release_id':'fixture'}
+            app.flow=SimpleNamespace(settings={'components':{'selected':['mysql','redis','paradedb'],
+                'mysql_password':'fixture-mysql-secret','redis_password':'fixture-redis-secret','paradedb_password':'fixture-postgres-secret'}})
+            def redis(*args):
+                if args[:1]==('INFO',):return '# Keyspace'
+                if args[:2]==('CONFIG','GET'):return 'databases\n16'
+                return '1'
+            app.redis=redis
+            with patch('yiqiban.Components') as components:
+                app.initialize();original=dict(app.state);app.initialize()
+                self.assertEqual(components.return_value.acceptance.call_count,2)
+            self.assertEqual(app.state,original)
+            self.assertNotEqual(app.state['redis_pro_db'],app.state['redis_workflow_db'])
+            self.assertEqual(app.state_path.stat().st_mode & 0o777,0o600)
+            self.assertTrue(app.state['mysql_db'].startswith('yiqiban_agent_'))
+
     def test_app_data_roots_keep_the_expected_service_owner(self):
         with tempfile.TemporaryDirectory() as temp:
             app=YiQiBan.__new__(YiQiBan);app.base=Path(temp)
