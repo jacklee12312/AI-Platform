@@ -1,0 +1,74 @@
+{
+  "schema": 1,
+  "recorded_at": "2026-10-19T09:14:53.546637+00:00",
+  "package_version": "1.3.0-7",
+  "source_commit": "999b3a8926a35ce4903db13f92b09712e12b09b7",
+  "archive_sha256": "3c703320193246eb913f45913e3800bc0979dbe005359f0481e55a0422144eb6",
+  "archive_bytes": 8174981526,
+  "automated_tests": 359,
+  "packaged_probe_source": {
+    "mode": "online-latest",
+    "url": "http://36.111.34.121:15433/api/liuer/ops/probe-package/download",
+    "embedded_archive": false
+  },
+  "package_inspection": {
+    "passed": true,
+    "source_commit": "999b3a8926a35ce4903db13f92b09712e12b09b7",
+    "package_version": "1.3.0-7",
+    "archive": "F:\\duoliuer\\AI-Platform-1.0.0\\delivery\\ai-platform-installer_1.3.0-7_arm64.deb",
+    "archive_bytes": 8174981526,
+    "archive_sha256": "3c703320193246eb913f45913e3800bc0979dbe005359f0481e55a0422144eb6",
+    "probe_archive_embedded": false,
+    "probe_source": {
+      "mode": "online-latest",
+      "url": "http://36.111.34.121:15433/api/liuer/ops/probe-package/download",
+      "embedded_archive": false
+    },
+    "new_module_in_seal": true,
+    "packaged_controller_bytes_match_source": true,
+    "signed_catalog_and_resource_bytes_unchanged": true,
+    "device_installation_or_probe_replacement": "not_run"
+  },
+  "live_api_download_validation": {
+    "passed": true,
+    "actual_api_get": true,
+    "probe_source": {
+      "version": "1.1.2",
+      "binary_sha256": "f426bcb4b779f5e485fd30fb3059c3bd635a3bf9182f02a076c9f054209fba7b",
+      "archive_sha256": "de52c548f02d345e69a921efcad5d31d4d58192aa56a56c45859380ae792f658",
+      "bytes": 3960840,
+      "url": "http://36.111.34.121:15433/api/liuer/ops/probe-package/download",
+      "downloaded_at": 1792400542.4372709
+    },
+    "old_embedded_binary_sha256": "fb8091c35ee80f4c4f5bf5e998be797476bdc9488886ae73523c18e4e6215d06",
+    "differs_from_old_bundled_program": true,
+    "extracted_files": [
+      "build/data-probe",
+      "config/certs/ca.pem",
+      "config/certs/sm2_pub.pem",
+      "deploy/data-probe-rollback.service",
+      "deploy/data-probe-rollback.sh",
+      "deploy/data-probe.service"
+    ],
+    "upstream_binding_configuration_not_imported": true,
+    "device_modified": false
+  },
+  "signed_resources_verified": true,
+  "known_excluded_remote_models": [
+    {
+      "key": "qwen36-2-model",
+      "repository": "aistore/qwen3.6-35b-a3b-2",
+      "passed": false,
+      "detail": "仓库 aistore/qwen3.6-35b-a3b-2:v1 尚未上传完成或标签不存在（HTTP 404）"
+    },
+    {
+      "key": "qwen36-2-mmproj",
+      "repository": "aistore/qwen3.6-35b-a3b-2",
+      "passed": false,
+      "detail": "仓库 aistore/qwen3.6-35b-a3b-2:v1 尚未上传完成或标签不存在（HTTP 404）"
+    }
+  ],
+  "live_device_installation_and_probe_replacement": "not_run; existing device services left untouched",
+  "reboot": "not_run",
+  "yiqiban_harbor_externalization": "not_implemented; waiting for the uploaded ZIP address"
+}
