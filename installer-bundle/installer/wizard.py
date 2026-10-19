@@ -366,7 +366,7 @@ class Wizard(QWidget):
         page=self.page();scroll=QScrollArea();scroll.setWidgetResizable(True);content=QWidget();v=QVBoxLayout(content);scroll.setWidget(content);page.addWidget(scroll)
         self.settings_scope=card('安装范围：探针、所选组件与所选模型' if self.workflow_enabled else '安装范围：平台基础组件 + 已选模型','组件镜像按勾选联网拉取，也可本地导入；Milvus 自动包含 MinIO 与 etcd。所需端口由安装器自动接管：停用旧服务、归档旧容器、备份隔离旧数据后安装；失败恢复对应旧环境。Docker 配套版本不一致时将自动卸载旧软件包并安装包内版本，保留数据，现有容器会短暂停止。' if self.workflow_enabled else '配套平台镜像、运行时、网关与管理界面固定安装；模型权重、模型服务和验收仅包含上一步勾选项。');v.addWidget(self.settings_scope)
         if self.yiqiban_enabled:
-            v.addWidget(label('翼起办将在模型验收后安装，复用共享组件并自动配置模型网关。安装期逐项切换模型测试，结束后恢复原模式；日常仍按现有方式切换模型。首次管理员注册、许可证导入和业务验收需在部署后完成。','notice'))
+            v.addWidget(label('翼起办将在模型验收后安装，复用共享组件并自动配置模型网关。应用资源约 4.41 GB，从 Harbor 单独下载；也可将同版本 ZIP 放入所选本地资源目录。安装期逐项切换模型测试，结束后恢复原模式；日常仍按现有方式切换模型。首次管理员注册、许可证导入和业务验收需在部署后完成。','notice'))
             v.addWidget(label('翼起办访问 IP / 域名（留空自动识别本机默认网络地址）'))
             self.yiqiban_host=QLineEdit();self.yiqiban_host.setPlaceholderText('例如 192.168.1.47，不含协议和端口');v.addWidget(self.yiqiban_host)
         self.probe_fields={};self.component_fields={}

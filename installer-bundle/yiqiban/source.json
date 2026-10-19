@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "release_id": "yiqiban-0.6.1-arm64-20261019",
+  "manifest_sha256": "b518496d8ee1a9c6c7354527d6c202930da9bb920f0cafb34da534c2f9fcd9e6",
+  "zip_prefix": "AI-Platform-YiQiBan-Harbor-Upload-0.6.1-arm64-20261019/upload/",
+  "archive": {
+    "path": "AI-Platform-YiQiBan-Harbor-Upload-0.6.1-arm64-20261019-full.zip",
+    "size": 4406266631,
+    "sha256": "bb2608aaa06177e6e76317f3fe47b24a71b03cb8dac702ccd384e6fb33072a3c",
+    "category": "platform",
+    "models": []
+  },
+  "templates": {
+    "size": 4860143,
+    "sha256": "7c20884db30f548d44dd6bb638fdfd64a972c3521e377832c210e219363bcffc"
+  },
+  "oci": {
+    "registry": "http://36.111.34.121:15436",
+    "repository": "aistore/ai-platform-yiqiban-harbor-upload-0.6.1-arm64-20261019-full",
+    "reference": "v1",
+    "manifest_digest": "sha256:a5681e190176ba82cdf729d6ce7b46960f577f04d65d67724bcea1475aa5465a",
+    "blob_digest": "sha256:bb2608aaa06177e6e76317f3fe47b24a71b03cb8dac702ccd384e6fb33072a3c",
+    "blob_size": 4406266631,
+    "format": "blob",
+    "files": {"AI-Platform-YiQiBan-Harbor-Upload-0.6.1-arm64-20261019-full.zip": null}
+  }
+}

@@ -54,6 +54,25 @@ class RegistryTests(unittest.TestCase):
     def test_blob_range_resume(self):
         part=artifacts.blob_path(self.store.cache,self.rows[0]).with_suffix('.part');part.parent.mkdir(parents=True);part.write_bytes(self.data[:321])
         self.store.ensure(self.rows[0]);self.assertEqual(self.blob_requests,['bytes=321-'])
+    def test_yiqiban_zip_source_downloads_as_platform_resource_with_range_resume(self):
+        from yiqiban_source import acquisition_config
+        row=dict(self.rows[0],path='application-full.zip',category='platform',models=[])
+        spec={'oci':dict(self.source,files={row['path']:None})}
+        config=acquisition_config(spec,[]);config['retries']=1
+        store=artifacts.BlobStore(self.root,config,self.root/'yiqiban-cache',rows=[row])
+        part=artifacts.blob_path(store.cache,row).with_suffix('.part');part.parent.mkdir(parents=True)
+        part.write_bytes(self.blob[:731])
+        self.assertEqual(store.ensure(row).read_bytes(),self.blob)
+        self.assertEqual(self.blob_requests,['bytes=731-'])
+        self.assertIn('repository%3Aaistore%2Ffixture%3Apull',self.request_scopes[0])
+    def test_yiqiban_zip_accepts_exact_local_file_without_registry_access(self):
+        from yiqiban_source import acquisition_config
+        row=dict(self.rows[0],path='application-full.zip',category='platform',models=[])
+        local=self.root/'local';local.mkdir();(local/row['path']).write_bytes(self.blob)
+        config=acquisition_config({'oci':dict(self.source,files={row['path']:None})},[str(local)])
+        store=artifacts.BlobStore(self.root,config,self.root/'yiqiban-cache',rows=[row])
+        self.assertEqual(store.ensure(row).read_bytes(),self.blob)
+        self.assertEqual(self.token_requests,0);self.assertEqual(self.blob_requests,[])
     def test_cached_blob_avoids_registry(self):
         self.store.ensure(self.rows[0]);self.bad_manifest=True;self.store.ensure(self.rows[0]);self.assertEqual(len(self.blob_requests),1)
     def test_changed_manifest_is_rejected(self):

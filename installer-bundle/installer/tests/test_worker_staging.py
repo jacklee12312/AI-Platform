@@ -86,6 +86,7 @@ class WorkerStagingTests(unittest.TestCase):
         self.assertIn('container_storage',proof['checked_imports'])
         self.assertIn('yiqiban',proof['checked_imports'])
         self.assertIn('yiqiban_verify',proof['checked_imports'])
+        self.assertIn('yiqiban_source',proof['checked_imports'])
         self.assertNotIn('wizard',proof['checked_imports'])
         self.assertEqual(len(list(self.code.glob('*.py'))),len(files))
 

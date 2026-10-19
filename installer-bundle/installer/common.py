@@ -182,9 +182,11 @@ def quick_checks(bundle,selected_models=None,selected_components=None):
                 row('NPU 离线运行库',True,'配套 NOE 3.1.2 已随包提供；缺失自动补齐，兼容性以实际 NPU 推理检查为准')
             if release.get('yiqiban_resource_id'):
                 from yiqiban_payload import load as load_yiqiban
+                from yiqiban_source import settings as yiqiban_source_settings
                 from yiqiban_config import REQUIRED_COMPONENTS,model_plan
                 load_yiqiban(bundle)
-                row('翼起办离线应用',True,'10 个已签名应用镜像；模型验收后部署，复用 MySQL、Redis、ParadeDB')
+                yiqiban_source_settings(bundle)
+                row('翼起办应用资源',True,'从 Harbor 下载约 4.41 GB（也可提供本地 ZIP）；锁定摘要及签名，模型验收后部署')
                 row('翼起办共享组件',selected_components is None or REQUIRED_COMPONENTS.issubset(selected_components),
                     'MySQL、Redis、ParadeDB 为必需组件；为翼起办创建独立业务库和账号')
                 if selected_models is not None:

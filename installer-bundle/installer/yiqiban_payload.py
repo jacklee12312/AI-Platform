@@ -25,7 +25,7 @@ def saved_image_info(path, tag):
         return {'config_id': 'sha256:' + hashlib.sha256(raw).hexdigest(), 'rootfs_diff_ids': data['rootfs']['diff_ids']}
 
 
-def load(bundle, *, verify_files=False):
+def load(bundle, *, verify_files=False, files_root=None):
     bundle = Path(bundle);metadata = read_json(bundle / 'release.json');base = bundle / DIRECTORY
     for path in [base / 'manifest.json', base / 'manifest.sig', bundle / 'catalog/release-public.pem']:
         no_symlink_parents(path, bundle)
@@ -41,14 +41,24 @@ def load(bundle, *, verify_files=False):
         raise RuntimeError('翼起办资源发行范围不一致')
     paths = set()
     for row in manifest['files']:
-        relative = safe_relative(row['path']);path = base / 'files' / relative
-        if row['path'] in paths or not re.fullmatch('[a-f0-9]{64}', row['sha256']) or type(row['size']) is not int:
+        relative = safe_relative(row['path'])
+        if (relative.as_posix() != row['path'] or row['path'] in paths or not re.fullmatch('[a-f0-9]{64}', row['sha256'])
+                or type(row['size']) is not int or row['size'] < 0):
             raise RuntimeError('翼起办文件清单无效')
-        paths.add(row['path']);no_symlink_parents(path, base)
-        if path.is_symlink() or not path.is_file() or path.stat().st_size != row['size']:
-            raise RuntimeError('翼起办文件缺失或大小错误：' + row['path'])
-        if verify_files and sha256(path) != row['sha256']:raise RuntimeError('翼起办文件摘要错误：' + row['path'])
+        paths.add(row['path'])
     for image in manifest['images']:
         if (image['archive'] not in paths or not re.fullmatch(r'sha256:[a-f0-9]{64}', image['id'])
                 or image['service'] in {'mysql', 'redis', 'paradedb'}):raise RuntimeError('翼起办镜像清单错误')
+    if verify_files:validate_files(manifest, files_root or base / 'files')
     return manifest
+
+
+def validate_files(manifest, root, pause=lambda: None):
+    """Metadata is bundled; only deployment requires the authenticated payload."""
+    root = Path(root)
+    for row in manifest['files']:
+        pause();path = root / safe_relative(row['path']);no_symlink_parents(path, root)
+        if path.is_symlink() or not path.is_file() or path.stat().st_size != row['size']:
+            raise RuntimeError('翼起办文件缺失或大小错误：' + row['path'])
+        if sha256(path, lambda n, size: pause()) != row['sha256']:
+            raise RuntimeError('翼起办文件摘要错误：' + row['path'])

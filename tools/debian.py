@@ -90,8 +90,8 @@ def overlay_bundle(source, reference, destination):
             raise RuntimeError('Debian code revision cannot change immutable bundle resources: ' + prefix)
     if (source / 'sources.json').read_bytes() != (reference / 'sources.json').read_bytes():
         raise RuntimeError('Debian code revision must preserve the base source routing')
-    shutil.copytree(source, destination, ignore=shutil.ignore_patterns('__pycache__', '*.pyc',
-                                                                   'installer-manifest.json', 'SHA256SUMS'))
+    from bundle_projection import copy_bundle
+    copy_bundle(source, destination)
 
 
 def metadata(version, package_version, date):
@@ -181,7 +181,13 @@ def build(root, revision='1'):
     if config.get('yiqiban_resource_id'):
         if not preflight.get('yiqiban_signed') or preflight.get('yiqiban_resource_id')!=config['yiqiban_resource_id']:
             raise RuntimeError('YiQiBan resource signature was not verified')
+        if not preflight.get('yiqiban_remote_source',{}).get('passed'):
+            raise RuntimeError('The pinned YiQiBan Harbor source must pass the online check')
         metadata_release.update(yiqiban_resource_id=config['yiqiban_resource_id'])
+        from yiqiban_source import settings as yiqiban_settings
+        spec = yiqiban_settings(bundle)
+        metadata_release['yiqiban_source'] = {'mode':'harbor-zip', 'embedded_payload':False,
+                                             **{k:spec['oci'][k] for k in ['registry','repository','manifest_digest','blob_digest','blob_size']}}
     metadata_release['validation']['automated_tests'] = str(tests['tests_run']) + ' passed'
     release.write(bundle / 'release.json', metadata_release)
     subprocess.run([sys.executable, '-B', str(bundle / 'tools/seal_installer.py'),
@@ -230,7 +236,8 @@ def build(root, revision='1'):
                           component_runtime_manifest_sha256=release.digest(bundle/config['component_runtime_directory']/'manifest.json'))
     if config.get('yiqiban_resource_id'):
         provenance.update(yiqiban_resource_id=config['yiqiban_resource_id'],
-                          yiqiban_manifest_sha256=release.digest(bundle/'yiqiban/manifest.json'))
+                          yiqiban_manifest_sha256=release.digest(bundle/'yiqiban/manifest.json'),
+                          yiqiban_source=metadata_release['yiqiban_source'])
     files[prefix + '/debian-provenance.json'] = ((json.dumps(provenance, ensure_ascii=False, indent=2) + '\n').encode(), 0o644)
     files['usr/share/doc/ai-platform-installer/packaging-tests.json'] = (root / 'build/validation/tests.json', 0o644)
     md5sums, manifest, installed_size = [], [], 0

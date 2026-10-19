@@ -24,7 +24,7 @@ class YiQiBan:
         self.owner = owner;self.flow = owner.workflow
         self.base = owner.storage.data_root / 'yiqiban';self.app = self.base / 'app'
         self.state_path = self.base / 'private.json';self.compose = self.app / 'compose.yaml'
-        self.manifest = load(owner.bundle);self.source = owner.bundle / 'yiqiban/files'
+        self.manifest = load(owner.bundle);self.source = None
         self.plan = model_plan(owner.selected)
         self.state = None
 
@@ -221,7 +221,9 @@ class YiQiBan:
                 transaction.created(info)
 
     def deploy(self):
-        load(self.owner.bundle, verify_files=True);self.initialize();self.images();self.databases();self.configure()
+        from yiqiban_source import ensure
+        self.source = ensure(self.owner)
+        self.initialize();self.images();self.databases();self.configure()
         transaction = Takeover(self.flow, 'yiqiban-ports')
         if transaction.record and transaction.record['status'] not in ('committed', 'rolled-back'):
             self.recover_deployment(transaction);transaction.rollback()

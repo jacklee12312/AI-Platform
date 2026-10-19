@@ -112,11 +112,13 @@ class Installer:
         if image_root!=docker:entries.append((docker,2*1024**3,'Docker 容器与数据卷'))
         if self.release.get('yiqiban_resource_id'):
             from yiqiban_payload import load
+            from yiqiban_source import settings as yiqiban_settings,reservations
             apps=load(self.bundle)
             image_paths={r['archive'] for r in apps['images']}
             app_bytes=sum(r['size'] for r in apps['files'] if r['path'] in image_paths)
             entries += [(image_root,app_bytes*3+2*1024**3,'翼起办应用镜像'),
                         (self.storage.data_root,8*1024**3,'翼起办业务数据')]
+            entries += reservations(self.storage,yiqiban_settings(self.bundle),apps)
         if existing(self.storage.cache).stat().st_dev!=existing(self.resources).stat().st_dev:
             entries.append((self.resources,plan['total_bytes'],'跨分区资源暂存'))
         if prepare_storage and placement:

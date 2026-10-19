@@ -146,10 +146,18 @@ def check(root, online=False):
                       component_runtime_manifest_sha256=digest(bundle/DIRECTORY/'manifest.json'))
     if spec.get('yiqiban_resource_id'):
         from yiqiban_payload import load
-        apps=load(bundle)
+        from yiqiban_source import settings as yiqiban_settings
+        apps=load(bundle,verify_files=True)
+        app_source=yiqiban_settings(bundle)
         if apps['release_id']!=spec['yiqiban_resource_id']:raise RuntimeError('YiQiBan resource identity differs')
         report.update(yiqiban_resource_id=apps['release_id'],yiqiban_signed=True,
                       yiqiban_manifest_sha256=digest(bundle/'yiqiban/manifest.json'),yiqiban_application_images=len(apps['images']))
+        report['yiqiban_remote_source']={'passed':False,'status':'not_checked','repository':app_source['oci']['repository'],
+                                         'manifest_digest':app_source['oci']['manifest_digest'],
+                                         'zip_sha256':app_source['archive']['sha256'],'zip_bytes':app_source['archive']['size']}
+        if online:
+            registry.RegistryClient(app_source['oci'],timeout=15).verify_manifest()
+            report['yiqiban_remote_source'].update(passed=True,status='pinned_manifest_verified')
     if online:
         def probe(item):
             key, source = item
@@ -260,7 +268,8 @@ def build(root, online=False):
     work.mkdir(exist_ok=True)
     stage = Path(tempfile.mkdtemp(prefix=f'release-{version}-', dir=work))
     bundle = stage / 'installer-bundle'
-    shutil.copytree(inside(root, spec['source_bundle']), bundle, ignore=shutil.ignore_patterns('__pycache__', '*.pyc', 'installer-manifest.json', 'SHA256SUMS'))
+    from bundle_projection import copy_bundle
+    copy_bundle(inside(root, spec['source_bundle']), bundle)
     release = read(bundle / 'release.json')
     epoch = int(git(root, 'show', '-s', '--format=%ct', commit))
     build_time = datetime.fromtimestamp(epoch, timezone.utc).isoformat()

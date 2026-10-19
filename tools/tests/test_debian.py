@@ -37,6 +37,21 @@ class DebianTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError,'cannot change immutable'):
                 debian.overlay_bundle(source,reference,root/'must-not-exist')
             self.assertFalse((root/'must-not-exist').exists())
+
+    def test_slim_overlay_omits_payload_before_sealing_and_keeps_signed_metadata(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder)
+            for base in (root/'source',root/'reference'):
+                (base/'yiqiban/files').mkdir(parents=True)
+                (base/'yiqiban/files/image.tar').write_bytes(b'large image omitted from distribution')
+                (base/'yiqiban/manifest.json').write_bytes(b'exact signed manifest bytes')
+                (base/'yiqiban/source.json').write_text('{"pinned":"remote source"}')
+                (base/'sources.json').write_bytes(b'{}')
+            debian.overlay_bundle(root/'source',root/'reference',root/'output')
+            self.assertFalse((root/'output/yiqiban/files').exists())
+            self.assertEqual((root/'output/yiqiban/manifest.json').read_bytes(),b'exact signed manifest bytes')
+            self.assertTrue((root/'output/yiqiban/source.json').is_file())
+            self.assertTrue((root/'source/yiqiban/files/image.tar').is_file())
     def test_real_dpkg_extracts_owned_files_with_modes_and_reproducible_bytes(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
