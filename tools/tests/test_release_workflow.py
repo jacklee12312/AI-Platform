@@ -9,6 +9,7 @@ import sys
 import tarfile
 import tempfile
 import unittest
+import zipfile
 from pathlib import Path
 from unittest import mock
 
@@ -20,6 +21,18 @@ BUNDLE = ROOT / 'installer-bundle'
 
 
 class ReleaseWorkflowTests(unittest.TestCase):
+    def test_launcher_accepts_the_multi_gigabyte_yiqiban_bundle(self):
+        spec=importlib.util.spec_from_file_location('launcher_entry_test',BUNDLE/'tools/launcher_entry.py')
+        module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+        row=zipfile.ZipInfo('bundle/yiqiban/image.tar');row.file_size=4_515_569_551
+        self.assertEqual(module.archive_size([row]),row.file_size)
+
+    def test_launcher_keeps_a_finite_limit_before_writing_large_archives(self):
+        spec=importlib.util.spec_from_file_location('launcher_entry_limit_test',BUNDLE/'tools/launcher_entry.py')
+        module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+        row=zipfile.ZipInfo('bundle/oversized.tar');row.file_size=16*1024**3+1
+        with self.assertRaisesRegex(RuntimeError,'大小'):module.archive_size([row])
+
     def test_historical_1_0_1_preserves_the_1_0_0_trust_and_resource_baseline(self):
         for name in ('release-catalog.json', 'release-catalog.sig', 'release-public.pem', 'platform-manifest.json'):
             original = subprocess.check_output(['git', '-C', str(ROOT), 'show', 'v1.0.0:AI-Platform-Installer-1.0.0/catalog/' + name])

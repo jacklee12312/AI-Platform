@@ -25,7 +25,7 @@ def main():
         epoch=int(os.environ.get('SOURCE_DATE_EPOCH','315532800'))
         timestamp=datetime.fromtimestamp(max(epoch,315532800),timezone.utc).timetuple()[:6]
         def add(path,name):
-            info=zipfile.ZipInfo(name,date_time=timestamp);info.create_system=3;info.external_attr=0o100644<<16
+            info=zipfile.ZipInfo(name,date_time=timestamp);info.create_system=3;info.external_attr=0o100644<<16;info.file_size=path.stat().st_size
             with path.open('rb') as src,archive.open(info,'w') as dst:shutil.copyfileobj(src,dst)
         add(bundle/'tools/launcher_entry.py','__main__.py')
         for name in paths:add(bundle/name,'bundle/'+name)
