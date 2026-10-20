@@ -51,7 +51,7 @@ Git 仓库本身不包含这些依赖；当前机器的本地文件已保留。�
 4. 检查交付记录，将版本标签指向 `releases/版本.json` 里的 `source_commit`；再单独提交发布记录。标签与包内提交号必须相同。
 5. 在兼容空白设备完成安装、推理和重启验收，再记录现场结果。候选状态不自动变成通过。
 
-当前只建立本地 Git 管理，尚未配置远端仓库和异机备份。Git 历史支持恢复源码；1.2.0 提供 1.1.2 管理中心专用升级入口及失败恢复，其他跨版本迁移仍需单独处理。
+源码与发布记录同步到公开 GitHub 仓库 [jacklee12312/AI-Platform](https://github.com/jacklee12312/AI-Platform)。大型外置依赖仍按 `external-assets.json` 单独管理。Git 历史支持恢复源码；1.2.0 提供 1.1.2 管理中心专用升级入口及失败恢复，其他跨版本迁移仍需单独处理。
 
 制作新的 1.1 前置资源时，使用 `tools/prepare_workflow_resources.py` 和 WSL 中的 `tools/prepare_workflow_debs.py`，下载与构造归档，不安装宿主机软件。首次建立锁定之后默认复用锁定内容；更新来源需显式刷新并重新签名。`tools/finalize_workflow_release.py --key 项目外的原发布密钥路径` 校对原公钥、更新资源发行身份及摘要并签名。密钥不进入 Git 或交付包。
 
