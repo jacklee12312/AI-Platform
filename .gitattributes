@@ -11,6 +11,8 @@
 /support-files/** -text
 /AI-Platform-Installer-1.0.0/catalog/** -text
 /installer-bundle/catalog/** -text
+/installer-bundle/gui-runtime/lock.json -text
+/installer-bundle/gui-runtime/system-libs-lock.json -text
 /installer-bundle/npu-runtime/manifest.json -text
 # Preserve upstream Debian control descriptions verbatim, including their spacing.
 /support-files/files/workflow/host-debs/Packages -whitespace
