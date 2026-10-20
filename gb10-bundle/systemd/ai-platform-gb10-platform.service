@@ -1,0 +1,15 @@
+[Unit]
+Description=AI Platform GB10 gateway and ModelDeck
+After=docker.service ai-platform-gb10-controller.service
+Requires=docker.service ai-platform-gb10-controller.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+Environment=PYTHONPATH=@BUNDLE@
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/usr/bin/python3 -B -m gb10.install platform-start
+TimeoutStartSec=180
+
+[Install]
+WantedBy=multi-user.target

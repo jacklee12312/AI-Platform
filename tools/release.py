@@ -393,13 +393,17 @@ def main():
         if candidate and candidate.is_file():
             os.environ['PATH'] = str(candidate.parent) + os.pathsep + os.environ.get('PATH', '')
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('command', choices=['check', 'test', 'build', 'deb', 'verify', 'assets', 'sync-version', 'npu-runtime', 'component-runtime', 'yiqiban-resource'])
+    parser.add_argument('command', choices=['check', 'test', 'build', 'deb', 'verify', 'assets', 'sync-version', 'npu-runtime', 'component-runtime', 'yiqiban-resource', 'gb10'])
     parser.add_argument('--deb-revision', default='1', help='Debian packaging revision; immutable once published')
     parser.add_argument('--online', action='store_true', help='Read-only remote manifest checks; no model weight download')
     parser.add_argument('--path', type=Path, help='Delivery directory for verify; external asset store for assets')
     parser.add_argument('--key', type=Path, help='Existing trusted publisher key for a new signed resource release')
     args = parser.parse_args()
-    if args.command == 'check':
+    if args.command == 'gb10':
+        if not args.key:parser.error('gb10 requires --key pointing to the original trusted publisher key')
+        from gb10_release import build as build_gb10
+        build_gb10(ROOT, args.key, args.deb_revision)
+    elif args.command == 'check':
         report = check(ROOT, args.online)
         write(ROOT / 'build/validation/preflight.json', report)
         print(json.dumps(report, ensure_ascii=False, indent=2))

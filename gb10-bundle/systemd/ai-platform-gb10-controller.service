@@ -1,0 +1,16 @@
+[Unit]
+Description=AI Platform GB10 model controller
+After=docker.service network-online.target
+Requires=docker.service
+
+[Service]
+Type=simple
+Environment=PYTHONPATH=@BUNDLE@
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/usr/bin/python3 -B -m gb10.daemon
+Restart=on-failure
+RestartSec=5
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target
