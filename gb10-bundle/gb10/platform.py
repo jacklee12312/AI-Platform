@@ -58,6 +58,7 @@ def agent_app():
     from agent.model_api import Selection
     from agent import ops_api
     globals()['Selection'] = Selection
+    globals()['ConfigRequest'] = owner.ConfigRequest
     ops_api.host = lambda owner, path, body=None, timeout=120: host('/ops' + path, body, timeout)
 
     owner.VALID_MODES = frozenset(MODES)
@@ -72,6 +73,8 @@ def agent_app():
     owner.GATEWAY_DIR = Path('/platform')
     owner.MODEL_REGISTRY = Path('/platform/config/models.json')
     owner.HOUMO_DEPLOY_DIR = Path('/platform')
+    from .evaluation import install as install_evaluation
+    install_evaluation(owner, PROFILE, host)
 
     async def status():
         return await asyncio.to_thread(host, '/status')
@@ -79,8 +82,22 @@ def agent_app():
     async def configuration():
         raw = read('/platform/config/models.json')
         return {'services': raw.get('services', {}), 'schema': CONFIG_SCHEMA,
-                'settings': RuntimeSettings().model_dump(), 'models': raw['models'],
+                'settings': RuntimeSettings(**await asyncio.to_thread(host, '/settings')).model_dump(), 'models': raw['models'],
                 'hardware_profile': PROFILE['id']}
+
+    async def validate_config(body: ConfigRequest):
+        return await asyncio.to_thread(host, '/configure/plan', body.model_dump())
+
+    async def apply_config(body: ConfigRequest):
+        return await asyncio.to_thread(host, '/configure', body.model_dump())
+
+    async def job_status(job_id: str):
+        try:
+            return await owner.job(job_id)
+        except HTTPException as exc:
+            if exc.status_code != 404:
+                raise
+        return await asyncio.to_thread(host, '/jobs/' + job_id)
 
     async def logs(service: str, tail: int = 200):
         return await asyncio.to_thread(host, '/logs', {'service': service, 'tail': tail})
@@ -133,8 +150,8 @@ def agent_app():
                     '/v1/model-install': catalog, '/v1/model-install/plan': plan,
                     '/v1/model-install/actions/{action}': action,
                     '/v1/device-recovery': blocked, '/v1/startup-verification': blocked,
-                    '/v1/restart/{service}': blocked, '/v1/config/apply': blocked,
-                    '/v1/config/validate': blocked}
+                    '/v1/restart/{service}': blocked, '/v1/config/apply': apply_config,
+                    '/v1/config/validate': validate_config, '/v1/jobs/{job_id}': job_status}
     from fastapi.routing import APIRoute
     for route in owner.app.routes:
         if isinstance(route, APIRoute) and route.path in replacements:

@@ -19,10 +19,10 @@ CONTROLLER = None
 OPS = None
 
 
-def job(mode):
+def job(mode, kind='mode-switch', runner=None):
     if not LOCK.acquire(blocking=False):
         raise ValueError('模型管理操作正在执行')
-    value = {'id': uuid.uuid4().hex, 'kind': 'mode-switch', 'target': mode, 'status': 'queued',
+    value = {'id': uuid.uuid4().hex, 'kind': kind, 'target': mode, 'status': 'queued',
              'created_at': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()), 'error': None, 'result': None}
     path = ROOT / 'jobs' / (value['id'] + '.json')
     atomic(path, value, 0o644)
@@ -36,7 +36,7 @@ def job(mode):
                 value['progress'] = update
                 atomic(path, value, 0o644)
 
-            value['result'] = CONTROLLER.switch(mode, progress)
+            value['result'] = runner(progress) if runner else CONTROLLER.switch(mode, progress)
             value['status'] = 'succeeded'
         except Exception as exc:
             value.update(status='failed', error=str(exc)[:2000])
@@ -92,6 +92,13 @@ class Handler(BaseHTTPRequestHandler):
             body = json.loads(self.rfile.read(size)) if size else {}
             if self.command == 'GET' and self.path == '/status':
                 value = status()
+            elif self.command == 'GET' and self.path == '/settings':
+                value = read(ROOT / 'settings.json') if (ROOT / 'settings.json').exists() else {}
+            elif self.command == 'POST' and self.path in ('/configure/plan', '/configure'):
+                from . import configuration
+                value = configuration.validate(CONTROLLER, body)
+                if self.path == '/configure':
+                    value = job('gateway', kind='config-apply', runner=lambda progress: configuration.apply(CONTROLLER, body, progress))
             elif self.command == 'POST' and self.path == '/switch':
                 if body.get('mode') not in CONTROLLER.models:
                     raise ValueError('未知的模型模式')

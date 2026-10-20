@@ -12,6 +12,8 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'gb10-bundle'))
 from gb10.core import Controller, LABEL, atomic, unchanged, verify_model, safe_file
 from gb10 import operations
+from gb10 import configuration
+from gb10.evaluation import stable_snapshot
 
 
 class WeightVerificationTests(unittest.TestCase):
@@ -146,6 +148,42 @@ class ComponentBoundaries(unittest.TestCase):
         with patch('gb10.operations.run', return_value=SimpleNamespace(returncode=0, stdout=json.dumps(info))):
             with self.assertRaisesRegex(ValueError, '未接管'):
                 operations.inspect('mysql')
+
+
+class ConfigurationAndEvaluationTests(unittest.TestCase):
+    def body(self):
+        return {'settings': {'chat_timeout_seconds': 300, 'generation_defaults_enabled': False},
+                'models': [{'id': mid, 'enabled': True, 'base_url': 'http://127.0.0.1:17701'}
+                           for mid in ('gpt-oss-120b', 'nemotron-3-super')]}
+
+    def controller(self):
+        return SimpleNamespace(profile=json.loads((ROOT / 'gb10-bundle/profile.json').read_text()))
+
+    def test_configuration_cannot_inject_env_or_redirect_backend(self):
+        body = self.body()
+        self.assertTrue(configuration.validate(self.controller(), body)['valid'])
+        body['settings']['LD_PRELOAD'] = '/tmp/inject.so'
+        with self.assertRaises(ValueError):
+            configuration.validate(self.controller(), body)
+        body = self.body()
+        body['models'][0]['base_url'] = 'http://untrusted.example'
+        with self.assertRaises(ValueError):
+            configuration.validate(self.controller(), body)
+
+    def test_integer_environment_settings_reject_fractional_values(self):
+        body = self.body()
+        body['settings']['chat_timeout_seconds'] = 300.5
+        with self.assertRaises(ValueError):
+            configuration.validate(self.controller(), body)
+
+    def test_evaluation_snapshot_ignores_heartbeat_but_detects_instance_change(self):
+        value = {'runtime': {'container_id': 'one', 'boot_id': 'boot', 'verified': True, 'heartbeat_epoch': 1},
+                 'modelctl': {'configured_mode': 'gpt'}}
+        first = stable_snapshot(value, b'{}', b'{}')
+        value['runtime']['heartbeat_epoch'] = 2
+        self.assertEqual(first, stable_snapshot(value, b'{}', b'{}'))
+        value['runtime']['container_id'] = 'two'
+        self.assertNotEqual(first, stable_snapshot(value, b'{}', b'{}'))
 
 
 if __name__ == '__main__':
