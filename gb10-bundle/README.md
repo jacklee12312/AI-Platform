@@ -15,9 +15,9 @@
 2. 在原 `platform-overlays/1.2.0/modeldeck-frontend` 执行 `npm run build`。
 3. 提交源码后执行 `python tools/release.py test`，测试须对应同一干净提交且无跳过。
 4. 执行 `python tools/release.py check --online`，保留原资源来源检查结果；原 NPU 来源故障与 GB10 本地复用分开记录。
-5. `python tools/release.py gb10 --key <工程外原受信任发布私钥> --deb-revision 1`。
+5. `python tools/release.py gb10 --key <工程外原受信任发布私钥> --deb-revision 2`。
 
-产物名 `ai-platform-gb10-installer_1.3.1-1_arm64.deb`，使用独立包名、安装目录、
+产物名 `ai-platform-gb10-installer_1.3.1-2_arm64.deb`，使用独立包名、安装目录、
 桌面入口与 systemd 单元。构建拒绝覆盖已有产物，包内保留提交和测试记录。
 新增资源清单以原发布密钥签名，安装时校验清单、原公钥指纹及每个文件摘要。
 不包含大模型权重和 34.6GB 的推理镜像，不修改 Docker/驱动或其他容器。
@@ -25,7 +25,7 @@
 ## 盒子安装与调用
 
 ```sh
-sudo dpkg -i ai-platform-gb10-installer_1.3.1-1_arm64.deb
+sudo dpkg -i ai-platform-gb10-installer_1.3.1-2_arm64.deb
 sudo ai-platform-gb10 check
 sudo ai-platform-gb10 install \
   --model-root /home/user/gb10-bench/models \
@@ -53,6 +53,14 @@ GPT 使用原始 MXFP4；Nemotron 使用 NVFP4 与 MTP 3；FP8 KV、TP/EP=1、
 batch=4、max_num_tokens=4096、context=16384，关闭前缀复用。
 两套 120B 模型互斥运行。切换期间另一模型返回 503，不按每个请求自动加载。
 API Key 与公共地址保持不变。
+
+模型后端使用独立 Docker 网络空间，仅映射到本机 `127.0.0.1:17701`，
+避免 TensorRT-LLM 启动端口检查被上一模型的 `TIME_WAIT` 阻挡。
+切换前将上一实例的末尾日志保存在私有 `logs/` 目录。
+组件库使用原签名配方与认证检查，容器、配置和数据使用 GB10 独立前缀；
+端口被原有业务占用时中止，不执行原 NPU 安装器的端口接管或 Debian 12 依赖安装。
+Nginx 与 etcd 的镜像身份另行锁定于 `component-extras.json`；没有仓库摘要的
+既有 etcd 镜像仅支持按镜像 ID 本地复用/导入，不将可变标签当成可信下载来源。
 
 ## 验收边界
 

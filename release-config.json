@@ -15,7 +15,7 @@
     "gb10": {
       "installer_version": "1.3.1",
       "source_bundle": "gb10-bundle",
-      "resource_release_id": "ai-platform-gb10-1.3.1-20261020",
+      "resource_release_id": "ai-platform-gb10-1.3.1-r2-20261020",
       "target": "ubuntu-24.04-arm64-nvidia-gb10"
     }
   }

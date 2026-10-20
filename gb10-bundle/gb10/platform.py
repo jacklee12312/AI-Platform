@@ -56,7 +56,9 @@ def agent_app():
     from agent import main as owner
     from agent.configuration import RuntimeSettings, CONFIG_SCHEMA
     from agent.model_api import Selection
+    from agent import ops_api
     globals()['Selection'] = Selection
+    ops_api.host = lambda owner, path, body=None, timeout=120: host('/ops' + path, body, timeout)
 
     owner.VALID_MODES = frozenset(MODES)
     owner.MODE_SERVICES = {mode: {mode} for mode in MODES}

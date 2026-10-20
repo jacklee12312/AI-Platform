@@ -16,6 +16,7 @@ SOCKET = Path('/run/ai-platform-gb10/control.sock')
 WORK = ThreadPoolExecutor(max_workers=1)
 LOCK = threading.Lock()
 CONTROLLER = None
+OPS = None
 
 
 def job(mode):
@@ -108,6 +109,18 @@ class Handler(BaseHTTPRequestHandler):
                 if len(identity) != 32 or any(c not in '0123456789abcdef' for c in identity):
                     raise ValueError('无效任务 ID')
                 value = read(ROOT / 'jobs' / (identity + '.json'))
+            elif self.command == 'GET' and self.path == '/ops/overview':
+                value = OPS[1].overview()
+                value['hardware_profile'] = 'nvidia-gb10'
+            elif self.command == 'POST' and self.path in ('/ops/components/plan', '/ops/components/install', '/ops/components/action', '/ops/components/logs'):
+                runtime = OPS[0]
+                if self.path.endswith('/logs'):
+                    value = runtime.logs(body['id'])
+                elif self.path.endswith('/action'):
+                    value = runtime.action(body['id'], body['action'])
+                else:
+                    function = runtime.plan if self.path.endswith('/plan') else runtime.install
+                    value = function(body['ids'], body.get('settings'))
             else:
                 self.send_error(404)
                 return
@@ -133,9 +146,11 @@ class Server(socketserver.ThreadingMixIn, socketserver.UnixStreamServer):
 
 
 def main():
-    global CONTROLLER
+    global CONTROLLER, OPS
     config = read(CONFIG)
     CONTROLLER = Controller(config, read(Path(config['bundle']) / 'profile.json'))
+    from .operations import initialize
+    OPS = initialize(Path(config['bundle']))
     for path in (ROOT / 'jobs').glob('*.json'):
         value = read(path)
         if value.get('status') in ('running', 'queued'):
@@ -153,6 +168,7 @@ def main():
             time.sleep(5)
 
     threading.Thread(target=watch, daemon=True).start()
+    threading.Thread(target=OPS[1].watch, daemon=True).start()
 
     def restore():
         desired = ROOT / 'state/desired-mode'

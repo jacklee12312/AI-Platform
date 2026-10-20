@@ -1,0 +1,10 @@
+{
+  "package": "delivery/ai-platform-gb10-installer_1.3.1-1_arm64.deb",
+  "bytes": 15114820,
+  "sha256": "895b2802a5073e311bba16013e7df47fb02dfe30d249854e99eec0927d28c631",
+  "source_commit": "68a01df033e346a5d5c63c1961a3e786035c7d33",
+  "resource_release_id": "ai-platform-gb10-1.3.1-20261020",
+  "trusted_public_key_preserved": true,
+  "automated_tests": 392,
+  "candidate": true
+}

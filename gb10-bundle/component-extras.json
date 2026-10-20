@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "images": [
+    {
+      "id": "nginx",
+      "image": "nginx:1.22.0",
+      "pinned": "nginx@sha256:f0d28f2047853cbc10732d6eaa1b57f1f4db9b017679b9fd7966b6a2f9ccc2d1",
+      "config_id": "sha256:1ba321c81ccad46ccaf12a057f05814436990fa66e0c275fe0d4b9fcbec5913e",
+      "rootfs_diff_ids": [
+        "sha256:c75eaa0eefd3c60b86bed7b8e234f032b2234382d113a6125c40c553146271fe",
+        "sha256:ba48a3b6dcdab52fea7e326960d8a1a554fad06a7c7b47211607c9c32660ecf5",
+        "sha256:5591d6af5023eeaab9ed56558a1d9b2c610ada45851d84e5c589c7eae618737f",
+        "sha256:4ea88c704bae4c7f91bb2c06ed03725f43d74edbb9d960c8c3d6e8f81f5834a0",
+        "sha256:fd102429d263ddea8e3943a6e5f64e84442411b7834f4c29cbee3cdb5ddb7703",
+        "sha256:2f0273c987b04f8f70a3636b9279bf8ece685f6da88b0110c35279a7ad84fba1"
+      ]
+    },
+    {
+      "id": "etcd",
+      "image": "quay.io/coreos/etcd:v3.5.5",
+      "pinned": null,
+      "config_id": "sha256:1519592510624376530d31b2b200e093ac28863acb9ef02f3e5b873243e990f1",
+      "rootfs_diff_ids": [
+        "sha256:63c098a71e7b0258582647bf0688478097a6fa88ba93d911d0bfc0bf82fce5ab",
+        "sha256:457e7ccaa2ebabaff1c20a6cc831a451bf00a50783663795367005ebd4004a17",
+        "sha256:7a4d3a8c63de68e3575deeac4ad2954f451f2128f898b767b7a740bb9c42505f",
+        "sha256:e34aa923998ee4fb9ffec47efbc3afffb48fc3c3d9f84eb14c8c75b914d50c4f",
+        "sha256:cccbf9eff93e4a09e2ac6cb76339123898f0051e0648a22742c8546ee7b0f48e",
+        "sha256:06cda24713816288f87b5d02a1643963f558cd13e72bc8ec527a7100d2cec2bb"
+      ]
+    }
+  ]
+}

@@ -136,6 +136,9 @@ class Controller:
             return
         if value.get('Config', {}).get('Labels', {}).get(LABEL) != 'true':
             raise ValueError('容器不属于本安装器，拒绝操作：' + name)
+        log = self.run(['docker', 'logs', '--tail', '2000', name], check=False)
+        atomic(self.root / 'logs' / (name + '-' + str(time.time_ns()) + '.log'),
+               (log.stdout + log.stderr)[-1024**2])
         self.run(['docker', 'stop', '--time', '30', name], timeout=90)
         self.run(['docker', 'rm', name], timeout=60)
         if name == 'ai-platform-gb10-model' and hasattr(os, 'posix_fadvise'):
@@ -193,7 +196,8 @@ class Controller:
         yaml_path = self.root / 'runtime.yaml'
         atomic(yaml_path, yaml, 0o644)
         command = ['docker', 'run', '-d', '--name', name, '--label', LABEL + '=true',
-                   '--gpus', 'all', '--ipc', 'host', '--network', 'host', '--restart', 'no',
+                   '--gpus', 'all', '--ipc', 'host', '--network', 'bridge', '--restart', 'no',
+                   '-p', '127.0.0.1:17701:8000',
                    '--ulimit', 'memlock=-1', '--ulimit', 'stack=67108864',
                    '-v', str(self.model_path(mode)) + ':/model:ro', '-v', str(yaml_path) + ':/runtime.yaml:ro',
                    '-v', self.config['cache_root'] + ':/root/.cache',
@@ -202,7 +206,7 @@ class Controller:
                    '-e', 'TRANSFORMERS_OFFLINE=1', '-e', 'OMP_NUM_THREADS=4',
                    '-e', 'PYTORCH_ALLOC_CONF=expandable_segments:True', image,
                    'trtllm-serve', 'serve', '/model', '--served_model_name', model['id'],
-                   '--host', '127.0.0.1', '--port', '17701', '--max_batch_size', '4',
+                   '--host', '0.0.0.0', '--port', '8000', '--max_batch_size', '4',
                    '--max_num_tokens', '4096', '--max_seq_len', '16384', '--tp_size', '1', '--ep_size', '1',
                    '--no-telemetry', '--extra_llm_api_options', '/runtime.yaml', '--trust_remote_code']
         if model.get('reasoning_parser'):

@@ -40,6 +40,14 @@ def assemble(root, stage):
         copy_code(parent / name, stage / 'platform' / name)
         overlay = root / 'platform-overlays/1.2.0/files/payload/home/cix' / name
         copy_code(overlay, stage / 'platform' / name)
+    # The current platform also carries a separately signed component fix. Apply
+    # its verified bytes after the base overlay, just as the original installer does.
+    patch_root = root / 'installer-bundle/component-runtime-r9'
+    for row in read(patch_root / 'manifest.json')['files']:
+        source = patch_root / 'files' / row['path']
+        if source.stat().st_size != row['bytes'] or digest(source) != row['sha256']:
+            raise RuntimeError('Signed component compatibility resource changed')
+        shutil.copyfile(source, stage / 'platform' / row['path'])
     frontend = root / 'platform-overlays/1.2.0/modeldeck-frontend/dist'
     if not (frontend / 'index.html').is_file():
         raise RuntimeError('Build the existing ModelDeck frontend first')
