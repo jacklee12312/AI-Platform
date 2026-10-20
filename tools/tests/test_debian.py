@@ -128,6 +128,67 @@ class DebianTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, '校验失败'):
                 entry.verify_bundle(root)
 
+    def test_existing_online_config_recovers_packaged_resources_without_importing_models(self):
+        import sys
+        sys.path.insert(0, str(ROOT / 'installer-bundle/installer'))
+        from artifacts import plan_sources
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            app, home, library = root / 'app', root / 'home', root / 'model-library'
+            (app / 'bundle').mkdir(parents=True)
+            (app / 'bundle/release.json').write_text('{"installer_version":"1.3.0"}')
+            target = home / '.config/ai-platform-installer/1.3.0/sources.json'
+            target.parent.mkdir(parents=True)
+            config = {'schema': 1, 'mode': 'prefer-local', 'model_source': 'online',
+                      'local_roots': ['@bundle/support-files', str(library)],
+                      'file_urls': {'model.gguf': ['https://models.example.invalid/model.gguf']},
+                      'base_urls': {}, 'allow_http': False, 'retries': 2,
+                      'operator_setting': 'preserve this value'}
+            target.write_text(json.dumps(config))
+            target.chmod(0o600)
+            rows = []
+            for path, category, directory in [('README.md', 'platform', app / 'support-files'),
+                                              ('docker/engine.deb', 'docker', app / 'support-files'),
+                                              ('model.gguf', 'models', library)]:
+                file = directory / 'files' / path
+                file.parent.mkdir(parents=True, exist_ok=True)
+                file.write_bytes(b'test resource')
+                rows.append({'path': path, 'category': category, 'sha256': __import__('hashlib').sha256(file.read_bytes()).hexdigest(),
+                             'size': file.stat().st_size, 'models': ['model'] if category == 'models' else []})
+            catalog = {'resources': rows}
+            self.assertFalse(plan_sources(app / 'bundle', catalog, config, root / 'cache')['ready'])
+            self.assertEqual(entry.prepare_sources(app, home, {}), target)
+            fixed = json.loads(target.read_text())
+            self.assertEqual({k: v for k, v in fixed.items() if k != 'local_roots'},
+                             {k: v for k, v in config.items() if k != 'local_roots'})
+            self.assertEqual(fixed['local_roots'], ['@bundle/support-files', str(app / 'support-files'), str(library)])
+            self.assertEqual(target.stat().st_mode & 0o777, 0o600)
+            plan = plan_sources(app / 'bundle', catalog, fixed, root / 'cache')
+            self.assertTrue(plan['ready'])
+            self.assertEqual({row['path']: row['source'] for row in plan['rows']},
+                             {'README.md': 'local', 'docker/engine.deb': 'local', 'model.gguf': 'remote'})
+            before = target.read_bytes(), target.stat().st_mtime_ns
+            entry.prepare_sources(app, home, {})
+            self.assertEqual((target.read_bytes(), target.stat().st_mtime_ns), before)
+            self.assertEqual(list(target.parent.glob('.sources-*')), [])
+
+    def test_existing_local_config_keeps_import_choice_when_bundle_marker_is_missing(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            app, home = root / 'app', root / 'home'
+            (app / 'bundle').mkdir(parents=True)
+            (app / 'bundle/release.json').write_text('{"installer_version":"1.3.0"}')
+            target = home / '.config/ai-platform-installer/1.3.0/sources.json'
+            target.parent.mkdir(parents=True)
+            target.write_text(json.dumps({'mode': 'prefer-local', 'model_source': 'local',
+                                          'local_roots': ['/media/operator/models', str(app / 'support-files')],
+                                          'oci_artifacts': {'keep': 'custom repository'}}))
+            entry.prepare_sources(app, home, {})
+            value = json.loads(target.read_text())
+            self.assertEqual(value['model_source'], 'local')
+            self.assertEqual(value['local_roots'], ['@bundle/support-files', str(app / 'support-files'), '/media/operator/models'])
+            self.assertEqual(value['oci_artifacts'], {'keep': 'custom repository'})
+
     def test_standard_app_metadata_has_no_custom_file_association(self):
         import xml.etree.ElementTree as ET
         desktop, appstream = debian.metadata('1.2.0', '1.2.0-1', '2026-10-15')

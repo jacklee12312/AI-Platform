@@ -5,6 +5,7 @@ import os
 import shutil
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 
@@ -38,6 +39,27 @@ def prepare_sources(root, home, environ):
                 stream.write('\n')
         except FileExistsError:
             pass
+    # Older or manually edited configs may omit the sibling payload directory.
+    # Keep model/network choices, but always locate resources shipped by this .deb.
+    value = json.loads(target.read_text(encoding='utf-8'))
+    roots = value.get('local_roots')
+    if not isinstance(roots, list) or any(not isinstance(item, str) for item in roots):
+        raise RuntimeError('来源配置的本地目录列表无效：' + str(target))
+    required = ['@bundle/support-files', str(root / 'support-files')]
+    if any(item not in roots for item in required):
+        value['local_roots'] = required + [item for item in roots if item not in required]
+        fd, temporary = tempfile.mkstemp(prefix='.sources-', dir=target.parent)
+        try:
+            with os.fdopen(fd, 'w', encoding='utf-8') as stream:
+                json.dump(value, stream, ensure_ascii=False, indent=2)
+                stream.write('\n')
+                stream.flush()
+                os.fsync(stream.fileno())
+            os.chmod(temporary, target.stat().st_mode & 0o777)
+            os.replace(temporary, target)
+        finally:
+            if os.path.exists(temporary):
+                os.unlink(temporary)
     return target
 
 
