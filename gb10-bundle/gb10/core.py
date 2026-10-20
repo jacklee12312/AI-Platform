@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 from pathlib import Path, PurePosixPath
+import socket
 import subprocess
 import tempfile
 import time
@@ -166,6 +167,16 @@ class Controller:
         atomic(self.state / ('verified-' + mode + '.json'), evidence)
         return evidence
 
+    def verified(self, mode):
+        evidence = read(self.state / ('verified-' + mode + '.json'))
+        manifest = read(Path(self.config['bundle']) / 'models' / self.models[mode]['manifest'])
+        declared = {(r['name'], r['size'], r.get('sha256') or r.get('git_blob_sha1')) for r in manifest['files']}
+        saved = {(r['name'], r['size'], r['digest']) for r in evidence['files']}
+        if manifest['revision'] != evidence['revision'] or declared != saved:
+            raise ValueError('权重校验记录与本次签名发行不一致，请重新校验')
+        unchanged(self.model_path(mode), evidence)
+        return evidence
+
     def inference(self, mode):
         model = self.models[mode]
         value = self.http('http://127.0.0.1:17701/v1/chat/completions', {
@@ -180,10 +191,26 @@ class Controller:
 
     def launch(self, mode, progress):
         model, runtime = self.models[mode], self.profile['runtime']
-        unchanged(self.model_path(mode), read(self.state / ('verified-' + mode + '.json')))
+        self.verified(mode)
         image = self.image()
         name = 'ai-platform-gb10-model'
+        previous = self.inspect(name)
+        host_network = bool(previous and previous.get('HostConfig', {}).get('NetworkMode') == 'host')
         self.stop(name)
+        if host_network:
+            # One-time migration from the initial candidate. TRT's socket probe
+            # does not set SO_REUSEADDR; let its host TIME_WAIT sockets expire.
+            deadline = time.monotonic() + 90
+            while True:
+                with socket.socket() as probe:
+                    try:
+                        probe.bind(('127.0.0.1', 17701))
+                        break
+                    except OSError:
+                        if time.monotonic() >= deadline:
+                            raise RuntimeError('原后端端口未释放；未停止其他进程') from None
+                progress({'phase': 'port_release', 'stage': '等待旧版后端连接释放'})
+                time.sleep(2)
         yaml = ('kv_cache_config:\n  dtype: fp8\n  enable_block_reuse: false\n'
                 '  free_gpu_memory_fraction: 0.60\n  max_tokens: 65536\n')
         if mode == 'nemotron':
@@ -241,7 +268,7 @@ class Controller:
             raise ValueError('未知的 GB10 模型模式')
         with exclusive(self.root / 'operation.lock'):
             # Do all cheap validation before closing admission or unloading a model.
-            unchanged(self.model_path(mode), read(self.state / ('verified-' + mode + '.json')))
+            self.verified(mode)
             self.image()
             try:
                 previous = (self.state / 'desired-mode').read_text().strip()

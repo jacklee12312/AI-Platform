@@ -171,6 +171,8 @@ def main():
     threading.Thread(target=OPS[1].watch, daemon=True).start()
 
     def restore():
+        if (ROOT / 'install-in-progress').exists():
+            return
         desired = ROOT / 'state/desired-mode'
         if not desired.exists() or CONTROLLER.snapshot().get('verified'):
             return

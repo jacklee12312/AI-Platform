@@ -99,10 +99,17 @@ def configure(args, bundle):
     config['bundle'] = str(bundle)
     config.setdefault('install_user', os.environ.get('SUDO_USER') or 'root')
     ROOT.mkdir(parents=True, exist_ok=True, mode=0o700)
+    atomic(ROOT / 'install-in-progress', 'installation\n')
     atomic(CONFIG, config)
     controller = Controller(config, profile)
     for mode in controller.models:
-        controller.verify_files(mode, lambda p: print(p['stage'], flush=True))
+        try:
+            if not existing:
+                raise ValueError('first install')
+            controller.verified(mode)
+            print('复用已有完整校验记录：' + mode, flush=True)
+        except (OSError, ValueError, KeyError):
+            controller.verify_files(mode, lambda p: print(p['stage'], flush=True))
     atomic(ROOT / 'state/model-installations.json', {'schema_version': 1, 'models': {
         model['id']: {'installed': True, 'enabled': True} for model in profile['models']}}, 0o644)
     atomic(ROOT / 'state/active-mode', 'loading\n', 0o644)
@@ -136,8 +143,9 @@ def configure(args, bundle):
         unit = (bundle / ('systemd/ai-platform-gb10-' + name + '.service')).read_text().replace('@BUNDLE@', str(bundle))
         atomic(Path('/etc/systemd/system') / ('ai-platform-gb10-' + name + '.service'), unit, 0o644)
     run(['systemctl', 'daemon-reload'])
-    run(['systemctl', 'enable', '--now', 'ai-platform-gb10-controller.service'])
-    run(['systemctl', 'enable', '--now', 'ai-platform-gb10-platform.service'])
+    run(['systemctl', 'enable', 'ai-platform-gb10-controller.service', 'ai-platform-gb10-platform.service'])
+    run(['systemctl', 'restart', 'ai-platform-gb10-controller.service'])
+    run(['systemctl', 'restart', 'ai-platform-gb10-platform.service'])
     deadline = time.monotonic() + 120
     while time.monotonic() < deadline:
         try:
@@ -155,6 +163,7 @@ def configure(args, bundle):
         atomic(ROOT / 'state/active-mode', desired + '\n', 0o644)
     else:
         controller.switch(desired, lambda p: print(p['stage'], flush=True))
+    (ROOT / 'install-in-progress').unlink(missing_ok=True)
     print('GB10 平台已安装。凭据仅保存在 /etc/ai-platform-gb10/config.json（root 可读）。', flush=True)
     print('查看凭据：sudo ai-platform-gb10 credentials；加载模型：sudo ai-platform-gb10 switch gpt', flush=True)
 

@@ -52,6 +52,7 @@ class LifecycleTests(unittest.TestCase):
         self.root = Path(self.tmp.name)
         profile = json.loads((ROOT / 'gb10-bundle/profile.json').read_text())
         self.c = Controller({'model_root': str(self.root), 'management_token': 'fixture'}, profile, self.root)
+        self.c.verified = Mock(return_value={})
 
     def test_unowned_container_is_never_stopped(self):
         self.c.inspect = Mock(return_value={'Config': {'Labels': {LABEL: 'false'}}})
@@ -116,6 +117,22 @@ class LifecycleTests(unittest.TestCase):
         self.assertNotEqual(spec['resource_release_id'], profile['resource_release_id'])
         self.assertEqual(profile['runtime']['kv_cache_dtype'], 'fp8')
         self.assertFalse(profile['runtime']['prefix_cache'])
+
+    def test_reused_verification_must_match_the_signed_manifest_revision(self):
+        self.c.config['bundle'] = str(self.root / 'bundle')
+        model_root = self.c.model_path('gpt')
+        model_root.mkdir()
+        (model_root / 'weights').write_bytes(b'weights')
+        manifest = {'revision': 'a' * 40, 'files': [{'name': 'weights', 'size': 7,
+                     'sha256': hashlib.sha256(b'weights').hexdigest()}]}
+        path = self.root / 'bundle/models/gpt-oss-120b-mxfp4.manifest.json'
+        atomic(path, manifest)
+        self.c.verify_files('gpt')
+        self.assertEqual(Controller.verified(self.c, 'gpt')['revision'], 'a' * 40)
+        manifest['revision'] = 'b' * 40
+        atomic(path, manifest)
+        with self.assertRaisesRegex(ValueError, '签名发行'):
+            Controller.verified(self.c, 'gpt')
 
 
 class ComponentBoundaries(unittest.TestCase):
