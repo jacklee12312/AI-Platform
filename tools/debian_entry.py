@@ -46,6 +46,7 @@ def main():
     bundle = root / 'bundle'
     verify_bundle(bundle)
     env = dict(os.environ, PYTHONDONTWRITEBYTECODE='1')
+    env['PATH'] = '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
     env['AI_PLATFORM_SOURCES_FILE'] = str(prepare_sources(root, Path.home(), env))
     env['AI_PLATFORM_SOURCE_BASE'] = str(root)
     if sys.argv[1:] == ['--check']:

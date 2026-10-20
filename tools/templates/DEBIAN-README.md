@@ -1,10 +1,12 @@
 # AI 平台安装器 Debian 包
 
-适用厂家 Debian 12、ARM64、Python 3.11 设备。当前 Debian 包版本为 `1.3.0-8`，程序安装到 `/opt/ai-platform-installer/1.3.0/`，标准命令为 `/usr/bin/ai-platform-installer`。
+适用厂家 Debian 12、ARM64、Python 3.11 设备。当前 Debian 包版本为 `1.3.0-9`，程序安装到 `/opt/ai-platform-installer/1.3.0/`，标准命令为 `/usr/bin/ai-platform-installer`。
 
-1. 在桌面用“软件”打开 `.deb`，安装或更新安装器；也可执行 `sudo apt install ./ai-platform-installer_1.3.0-8_arm64.deb`。
-2. 从 GNOME“活动 → 显示应用”搜索“AI 平台安装器”。安装 `.deb` 本身只安装向导，不开始注册探针或部署平台。
+1. 在桌面打开 `.deb`，点击“安装软件包”并完成系统授权；也可执行 `sudo apt install ./ai-platform-installer_1.3.0-9_arm64.deb`。
+2. 软件包安装完成且安装锁释放后，自动在当前活动桌面以普通用户打开向导。已有向导时不重复打开；无活动图形桌面的 SSH 安装只安装软件，可稍后从 GNOME“活动 → 显示应用”搜索“AI 平台安装器”。安装 `.deb` 不自动开始注册探针或部署平台。
 3. 选择组件、模型及来源，填写现场配置后开始。顺序为探针 → 组件库 → 模型及验收 → 翼起办及模型网关联通测试。
+
+向导启动时自带完整系统命令搜索路径，兼容 GNOME 默认不含 `/usr/sbin` 的用户环境；无需在新设备修改桌面启动项或增加命令链接。自动打开失败时可从应用菜单重开，诊断见 `journalctl -u ai-platform-installer-open-wizard-1-3-0-9` 与 `journalctl --user -u ai-platform-installer-wizard`。
 
 探针每次执行该阶段都从平台下载当前版本，按二进制 SHA-256 与已有探针比较。一致复用，不一致备份后替换程序和服务，保留配置、证书与设备注册信息；失败恢复旧版本。没有探针才显示注册表单并强制安装。
 

@@ -117,6 +117,21 @@ def metadata(version, package_version, date):
     return desktop.encode('utf-8'), appstream.encode('utf-8')
 
 
+def maintainer_scripts(prefix, package_version):
+    refresh = ('  if command -v update-desktop-database >/dev/null 2>&1; then\n'
+               '    update-desktop-database -q /usr/share/applications\n  fi\n')
+    # A transient worker waits until the package manager releases its locks.
+    # GUI dispatch must never block or fail the package installation itself.
+    unit = 'ai-platform-installer-open-wizard-' + package_version.replace('.', '-').replace('+', '-')
+    postinst = ('#!/bin/sh\nset -e\nif [ "$1" = configure ]; then\n' + refresh +
+                '  if [ -d /run/systemd/system ] && command -v systemd-run >/dev/null 2>&1; then\n'
+                f'    systemd-run --quiet --collect --no-block --unit={unit} --property=Type=exec -- '
+                f'/usr/bin/python3 -B /{prefix}/debian_desktop.py --package-version {package_version} '
+                '>/dev/null 2>&1 || true\n  fi\nfi\nexit 0\n')
+    postrm = '#!/bin/sh\nset -e\nif [ "$1" = remove ] || [ "$1" = purge ]; then\n' + refresh + 'fi\nexit 0\n'
+    return {'postinst': (postinst.encode(), 0o755), 'postrm': (postrm.encode(), 0o755)}
+
+
 def build(root, revision='1'):
     import release
     if not re.fullmatch(r'[1-9][0-9]*', revision):
@@ -211,6 +226,7 @@ def build(root, revision='1'):
             target = prefix + '/delivery-info/' + relative
         files[target] = (source, 0o644)
     files[prefix + '/debian_entry.py'] = (root / 'tools/debian_entry.py', 0o644)
+    files[prefix + '/debian_desktop.py'] = (root / 'tools/debian_desktop.py', 0o644)
     files['usr/bin/ai-platform-installer'] = (
         f'#!/bin/sh\nexec /usr/bin/python3 -B /{prefix}/debian_entry.py "$@"\n'.encode(), 0o755)
     desktop, appstream = metadata(version, package_version, datetime.fromtimestamp(epoch, timezone.utc).date().isoformat())
@@ -264,17 +280,16 @@ Architecture: arm64
 Section: admin
 Priority: optional
 Maintainer: AI Platform Team <ai-platform@example.invalid>
-Depends: python3 (>= 3.11), python3 (<< 3.12), libc6 (>= 2.36)
+Depends: python3 (>= 3.11), python3 (<< 3.12), libc6 (>= 2.36), systemd, util-linux
 Installed-Size: {installed_size}
 Description: AI Platform graphical installer for Debian 12 ARM64
  Installs the graphical wizard and its verified runtime resources.
- Launch AI Platform Installer from the system applications menu.
+ Opens the installation wizard in the active desktop after package installation.
+ The wizard is also available from the system applications menu.
  Probe, component and model installation starts only inside the wizard.
 '''
     controls = {'control': (control.encode(), 0o644), 'md5sums': (''.join(md5sums).encode(), 0o644)}
-    for script, condition in (('postinst', '[ "$1" = configure ]'), ('postrm', '[ "$1" = remove ] || [ "$1" = purge ]')):
-        content = f'#!/bin/sh\nset -e\nif {condition}; then\n  if command -v update-desktop-database >/dev/null 2>&1; then\n    update-desktop-database -q /usr/share/applications\n  fi\nfi\nexit 0\n'
-        controls[script] = (content.encode(), 0o755)
+    controls.update(maintainer_scripts(prefix, package_version))
     artifact = work / name
     print('Creating the Debian package with normalized Linux permissions...', flush=True)
     pack(artifact, files, controls, epoch, work)

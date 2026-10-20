@@ -9,6 +9,15 @@ def digest(path):
         for b in iter(lambda:f.read(4*1024**2),b''):h.update(b)
     return h.hexdigest()
 
+def gui_environment(cache,environ):
+    env=dict(environ);env[ENV_MARKER]=capture_desktop_environment(env)
+    # GNOME's normal user PATH omits sbin; preflight also needs admin utilities.
+    env['PATH']='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+    env['PYTHONDONTWRITEBYTECODE']='1';env['PYTHONPATH']=str(cache)
+    env['QT_PLUGIN_PATH']=str(cache/'PySide6/Qt/plugins');env['QT_QPA_PLATFORM']=env.get('QT_QPA_PLATFORM') or ('xcb' if env.get('DISPLAY') else 'wayland')
+    env['LD_LIBRARY_PATH']=str(cache/'system-libs')+':'+str(cache/'PySide6/Qt/lib')
+    return env
+
 def unpack_private_libs(deb,destination):
     """Read .deb data archive, flatten only ARM64 shared libraries; do not run maintainer scripts."""
     with deb.open('rb') as f:
@@ -64,11 +73,7 @@ def main():
             if digest(deb)!=item['sha256']:raise RuntimeError('GUI 依赖损坏：'+deb.name)
             unpack_private_libs(deb,cache/'system-libs')
         marker.write_text(json.dumps({'runtime':'6.7.3','source':key}))
-    env=os.environ.copy();env[ENV_MARKER]=capture_desktop_environment(env)
-    env['PYTHONDONTWRITEBYTECODE']='1';env['PYTHONPATH']=str(cache)
-    env['QT_PLUGIN_PATH']=str(cache/'PySide6/Qt/plugins');env['QT_QPA_PLATFORM']=env.get('QT_QPA_PLATFORM') or ('xcb' if env.get('DISPLAY') else 'wayland')
-    libs=cache/'system-libs'
-    env['LD_LIBRARY_PATH']=str(libs)+':'+str(cache/'PySide6/Qt/lib')
+    env=gui_environment(cache,os.environ)
     result=subprocess.run([sys.executable,str(root/'installer/wizard.py'),'--bundle',str(root),*sys.argv[1:]],env=env)
     return result.returncode
 
