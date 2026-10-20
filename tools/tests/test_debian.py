@@ -20,6 +20,24 @@ debian, entry = load('debian'), load('debian_entry')
 
 
 class DebianTests(unittest.TestCase):
+    def test_packaging_base_can_live_in_build_cache_after_delivery_cleanup(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            name = 'AI-Platform-1.3.0-linux-arm64'
+            record = {'archive': 'delivery/' + name + '.tar.gz'}
+            with self.assertRaisesRegex(RuntimeError, 'Missing immutable base'):
+                debian.base_paths(root, '1.3.0', record)
+            cache = root / 'build/release-bases/1.3.0'
+            (cache / name).mkdir(parents=True)
+            (cache / (name + '.tar.gz')).write_bytes(b'unchanged archive')
+            self.assertEqual(debian.base_paths(root, '1.3.0', record),
+                             (cache / name, cache / (name + '.tar.gz')))
+            published = root / 'delivery'
+            (published / name).mkdir(parents=True)
+            (published / (name + '.tar.gz')).write_bytes(b'published archive')
+            self.assertEqual(debian.base_paths(root, '1.3.0', record),
+                             (published / name, published / (name + '.tar.gz')))
+
     def test_code_overlay_preserves_signed_resources_and_rejects_resource_changes(self):
         with tempfile.TemporaryDirectory() as folder:
             root=Path(folder);source=root/'source';reference=root/'reference'

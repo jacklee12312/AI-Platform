@@ -132,6 +132,21 @@ def maintainer_scripts(prefix, package_version):
     return {'postinst': (postinst.encode(), 0o755), 'postrm': (postrm.encode(), 0o755)}
 
 
+def base_paths(root, version, record):
+    """Allow delivery cleanup without losing the immutable packaging inputs."""
+    name = f'AI-Platform-{version}-linux-arm64'
+    cache = root / 'build/release-bases' / version
+    delivery = root / 'delivery' / name
+    archive = root / record['archive']
+    if not delivery.is_dir():
+        delivery = cache / name
+    if not archive.is_file():
+        archive = cache / Path(record['archive']).name
+    if not delivery.is_dir() or not archive.is_file():
+        raise RuntimeError('Missing immutable base delivery; restore it to delivery/ or ' + str(cache))
+    return delivery, archive
+
+
 def build(root, revision='1'):
     import release
     if not re.fullmatch(r'[1-9][0-9]*', revision):
@@ -150,15 +165,14 @@ def build(root, revision='1'):
     record_path = root / 'releases' / f'deb-{package_version}.json'
     if any(path.exists() for path in (output, checksum, record_path)):
         raise RuntimeError('Debian revision already published; never overwrite, use --deb-revision')
-    delivery = root / 'delivery' / f'AI-Platform-{version}-linux-arm64'
     base_record = release.read(root / 'releases' / f'{version}.json')
+    delivery, archive = base_paths(root, version, base_record)
     print('Verifying the immutable base delivery and its release identity...', flush=True)
     release.verify_checksums(delivery)
     base = release.read(delivery / 'provenance.json')
     for key in ('source_commit', 'installer_version', 'resource_release_id', 'catalog_sha256', 'sources_sha256'):
         if base.get(key) != base_record.get(key):
             raise RuntimeError('Base delivery identity differs from its release record: ' + key)
-    archive = root / base_record['archive']
     if release.digest(archive) != base_record['archive_sha256']:
         raise RuntimeError('Original delivery archive checksum mismatch')
     release.verify_archive(archive, delivery)
